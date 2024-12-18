@@ -28,6 +28,11 @@ class User():
         """
         db.users.insert_one(self.__dict__)
 
+    def delete(self):
+        """ Deletes self from storage.
+        """
+        db.users.delete_one({"id": self.id})
+
     def checkpwd(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.password)
 
@@ -44,3 +49,9 @@ class User():
                 password = data["password"],
                 other = data["other"]
             )
+
+    @staticmethod
+    def deleteByID(user_id):
+        """ Deletes user using ID
+        """
+        db.users.delete_one({"id": user_id})
