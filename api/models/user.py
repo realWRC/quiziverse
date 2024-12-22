@@ -34,7 +34,14 @@ class User():
         db.users.delete_one({"id": self.id})
 
     def checkpwd(self, password):
+        """ Checks if given password matches stored password.
+        """
         return bcrypt.checkpw(password.encode('utf-8'), self.password)
+
+    def returnID(self):
+        """ Returns the users ID.
+        """
+        return self.id
 
     @staticmethod
     def getByID(user_id):

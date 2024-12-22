@@ -1,5 +1,4 @@
 import uuid
-from models import db
 
 class Quiz():
     """ Defines the datamodel for a quiz.
@@ -8,8 +7,8 @@ class Quiz():
     def __init__(self, creator_id, questions=[]):
         """ Initialises the quiz datamodel
         """
-        self.id = uuid.uuid4()
-        self.creator = creator_id
+        self.id = str(uuid.uuid4())
+        self.creator_id = creator_id
         assert isinstance(questions, list)
         self.questions = questions
 
@@ -17,13 +16,21 @@ class Quiz():
         """ Adds a question to a quiz
         """
         assert isinstance(options, list)
-        assert answer in options
+        assert isinstance(answer, str)
+        if answer not in options:
+            print("Answer not in options!")
         question = {
             "id": str(uuid.uuid4()),
             "quiz_id": self.id,
             "question": question,
             "options": options,
             "answer": answer, 
-            "score": score
+            "score": score,
+            "index": len(self.questions)
         }
         self.questions.append(question)
+
+    def save(self):
+        """ Returns JSON form of class.
+        """
+        return self.__dict__
