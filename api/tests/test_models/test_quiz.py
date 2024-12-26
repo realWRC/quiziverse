@@ -85,7 +85,14 @@ class TestQuizModel(unittest.TestCase):
         quiz = Quiz(
             title = self.title,
             creator_id = user.returnID(),
-            questions = questions
+        )
+
+        quiz.addMultipleQuestions(questions)
+
+        quiz.addQuestion(
+            question = self.question2,
+            options = self.options2,
+            answer = self.answer2,
         )
 
         self.assertEqual(user.id, quiz.creator_id)
@@ -96,16 +103,57 @@ class TestQuizModel(unittest.TestCase):
         self.assertIsInstance(quiz.questions[1]["options"], list)
         self.assertTrue(self.answer1 in quiz.questions[0]["options"])
         self.assertTrue(self.answer2 in quiz.questions[1]["options"])
+        self.assertEqual(quiz.questions[0]["index"], 0)
+        self.assertEqual(quiz.questions[1]["index"], 1)
+        self.assertEqual(quiz.questions[2]["index"], 2)
 
-        quiz.addQuestion(
+    def test_quiz_persistence(self):
+        """ Tests the peristence of a quiz
+        """
+        questions = []
+        user = User(
+            username = self.username,
+            email = self.email,
+            password =  self.password
+        )
+        quizOne = Quiz(
+            title = self.title,
+            creator_id = user.returnID(),
+            questions = questions
+        )
+
+        quizOne.addQuestion(
+            question = self.question1,
+            options = self.options1,
+            answer = self.answer1,
+        )
+        quizOne.addQuestion(
             question = self.question2,
             options = self.options2,
             answer = self.answer2,
         )
 
-        self.assertEqual(quiz.questions[0]["index"], 0)
-        self.assertEqual(quiz.questions[1]["index"], 1)
-        self.assertEqual(quiz.questions[2]["index"], 2)
+        quiz_id = quizOne.quiz_id
+
+        # Save
+        quizOne.save()
+
+        # Recreate as quizTwo
+        quizTwo = Quiz.recreate(quiz_id)
+
+        # Delete
+        Quiz.delete(quiz_id)
+
+        # Recreate quiz but should be None it does not exist
+        quizThree = Quiz.recreate(quiz_id)
+
+        assert quizTwo is not None
+        self.assertIsInstance(quizTwo, Quiz)
+        self.assertEqual(quizOne.quiz_id, quizTwo.quiz_id)
+        self.assertEqual(quizOne.creator_id, quizTwo.creator_id)
+        self.assertEqual(quizOne.title, quizTwo.title)
+        self.assertEqual(quizOne.questions, quizTwo.questions)
+        self.assertIsNone(quizThree)
 
 
 if __name__ == '__main__':
