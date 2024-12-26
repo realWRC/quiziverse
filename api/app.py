@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from config.config import app, login_manager
-from flask import jsonify, request
+from flask import jsonify, request, session
+from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
 
 
@@ -108,6 +109,7 @@ def login():
         }), 400
 
     if user.checkpwd(password):
+        login_user(user)
         return jsonify({
             "status": "success",
             "message": "Logged in successfully!"
@@ -120,13 +122,22 @@ def login():
 
 
 @app.route("/unregister")
+@login_required
 def unregister():
+    temp_id = current_user.id
+    logout_user()
+    session.clear()
+    User.deleteByID(temp_id)
     return jsonify({
         "message": "Successfully deleted account!"
     }), 200
 
+
 @app.route("/logout", methods=["POST"])
+@login_required
 def logout():
+    logout_user()
+    session.clear()
     """ Logout route
     """
     return jsonify({
