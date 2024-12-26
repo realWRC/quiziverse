@@ -75,9 +75,48 @@ def register():
 def login():
     """ Login route
     """
-    return jsonify({
-        "message": "Successfully Logged in"
-    })
+    data = request.json
+
+    if not data:
+        return jsonify({
+            "status": "error",
+            "message": "Empty request"
+        }), 400
+
+    if not all(field in data for field in \
+            ['username', 'password']):
+        return jsonify({
+            "status": "error",
+            "message": "Please provide username and password."
+        }), 400
+
+    if not all(isinstance(data[field], str) for \
+            field in ['username', 'password']):
+        return jsonify({
+            "status": "error",
+            "message": "All fields are required and must be strings."
+        }), 400
+
+    username = data["username"].strip()
+    password = data["password"].strip()
+
+    user = User.getByUsername(username)
+    if not user:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid username"
+        }), 400
+
+    if user.checkpwd(password):
+        return jsonify({
+            "status": "success",
+            "message": "Logged in successfully!"
+        }), 200
+    else:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid user credentials."
+        }), 400
 
 
 @app.route("/logout", methods=["POST"])
