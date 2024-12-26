@@ -124,8 +124,9 @@ def logout():
     """ Logout route
     """
     return jsonify({
-        "message": "Successfully Logged out"
-    })
+        "message": "Logged out successfully!"
+    }), 201
+
 
 if __name__ == "__main__":
     app.run(debug = True)
