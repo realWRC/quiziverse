@@ -41,12 +41,49 @@ class TestUserModel(unittest.TestCase):
         )
         user1.save()
         user2 = User.getByID(user1.id)
+        User.deleteByID(user1.id)
+
         assert user2 is not None
         self.assertEqual(user1.id, user2.id)
         self.assertEqual(user1.username, user2.username)
         self.assertEqual(user1.email, user2.email)
         self.assertEqual(user1.password, user2.password)
+
+    def test_get_user_by_username(self):
+        """ Tests is user can be retrieved by username and email
+        """
+        user1 = User(
+            username=self.username,
+            email=self.email,
+            password=self.password
+        )
+        user1.save()
+        user2 = User.getByUsername(user1.username)
         User.deleteByID(user1.id)
+
+        assert user2 is not None
+        self.assertEqual(user1.id, user2.id)
+        self.assertEqual(user1.username, user2.username)
+        self.assertEqual(user1.email, user2.email)
+        self.assertEqual(user1.password, user2.password)
+    
+    def test_get_user_by_email(self):
+        """ Tests is user can be retrieved by username and email
+        """
+        user1 = User(
+            username=self.username,
+            email=self.email,
+            password=self.password
+        )
+        user1.save()
+        user2 = User.getByEmail(user1.email)
+        User.deleteByID(user1.id)
+
+        assert user2 is not None
+        self.assertEqual(user1.id, user2.id)
+        self.assertEqual(user1.username, user2.username)
+        self.assertEqual(user1.email, user2.email)
+        self.assertEqual(user1.password, user2.password)
 
 
 if __name__ == "__main__":

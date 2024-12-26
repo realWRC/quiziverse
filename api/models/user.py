@@ -58,6 +58,33 @@ class User(UserMixin):
             )
 
     @staticmethod
+    def getByUsername(username):
+        """ Gets the user using username
+        """
+        data = db.users.find_one({"username": username})
+        if data:
+            return User(
+                user_id = data["id"],
+                username = data["username"],
+                email = data["email"],
+                password = data["password"],
+                other = data["other"]
+            )
+
+    @staticmethod
+    def getByEmail(email):
+        """ Gets the user by email
+        """
+        data = db.users.find_one({"email": email})
+        if data:
+            return User(
+                user_id = data["id"],
+                username = data["username"],
+                email = data["email"],
+                password = data["password"],
+                other = data["other"]
+            )
+    @staticmethod
     def deleteByID(user_id):
         """ Deletes user using ID
         """
