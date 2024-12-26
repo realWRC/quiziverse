@@ -2,9 +2,9 @@ import bcrypt
 import uuid
 from datetime import datetime, timezone
 from models import db
+from flask_login import UserMixin
 
-
-class User():
+class User(UserMixin):
     """ Defines the User model for the quiziverse application
     """
 
