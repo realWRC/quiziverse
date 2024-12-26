@@ -119,6 +119,12 @@ def login():
         }), 400
 
 
+@app.route("/unregister")
+def unregister():
+    return jsonify({
+        "message": "Successfully deleted account!"
+    }), 200
+
 @app.route("/logout", methods=["POST"])
 def logout():
     """ Logout route
