@@ -7,9 +7,9 @@ class TestUserModel(unittest.TestCase):
 
     def setUp(self):
         """Set up test data before each test."""
-        self.username = "test"
-        self.email = "foo@bar.com"
-        self.password = "password123"
+        self.username = "unittesttest"
+        self.email = "unitestfoo@bar.com"
+        self.password = "unitestpassword123"
 
     def test_user_attributes(self):
         """ Tests if User has the correct attributes.

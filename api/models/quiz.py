@@ -8,11 +8,11 @@ class Quiz():
     def __init__(self, title, creator_id, quiz_id=str(uuid.uuid4()),questions=[]):
         """ Initialises the quiz datamodel
         """
-        self.quiz_id = quiz_id
-        self.title = title
-        self.creator_id = creator_id
-        assert isinstance(questions, list)
-        self.questions = questions
+        if isinstance(questions, list):
+            self.quiz_id = quiz_id
+            self.title = title
+            self.creator_id = creator_id
+            self.questions = questions
 
     def addMultipleQuestions(self, questions):
         """ Adds a list of questions to the quiz at once
