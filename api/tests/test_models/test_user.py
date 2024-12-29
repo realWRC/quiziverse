@@ -11,6 +11,13 @@ class TestUserModel(unittest.TestCase):
         self.email = "unitestfoo@bar.com"
         self.password = "unitestpassword123"
 
+    def tearDown(self):
+        """ Clean up for tests
+        """
+        user = User.getByUsername(self.username)
+        if user:
+            user.delete()
+
     def test_user_attributes(self):
         """ Tests if User has the correct attributes.
         """
