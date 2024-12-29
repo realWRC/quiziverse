@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from .config.config import app, login_manager
+from api.config.config import app, login_manager
 from flask import jsonify, request, session
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
