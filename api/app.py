@@ -122,9 +122,14 @@ def unregister():
     logout_user()
     session.clear()
     User.deleteByID(temp_id)
-    return jsonify({
-        "message": "Successfully deleted account!"
-    }), 200
+    if User.getByID(temp_id):
+        return jsonify({
+            "message": "Account deletion unsuccesful! Please contact Administrator."
+        }), 400
+    else:
+        return jsonify({
+            "message": "Successfully deleted account!"
+        }), 200
 
 
 @app.route("/logout", methods=["POST"])
