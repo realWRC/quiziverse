@@ -136,7 +136,7 @@ def logout():
     """
     return jsonify({
         "message": "Logged out successfully!"
-    }), 201
+    }), 200
 
 
 if __name__ == "__main__":
