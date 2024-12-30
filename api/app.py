@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from api.config.config import app, login_manager
-from flask import flash, jsonify, request, session, render_template
+from flask import flash, request, session, render_template
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
 
@@ -13,8 +13,16 @@ def load_user(user_id):
 
 
 @app.route("/")
-def home():
+@login_required
+def index():
     """ Welcome Page
+    """
+    return render_template("index.html")
+
+
+@app.route("/home/<username>")
+def home():
+    """ Renders the users home page
     """
     return render_template("home.html")
 
@@ -103,10 +111,10 @@ def unregister():
     User.deleteByID(temp_id)
     if User.getByID(temp_id):
         flash("Account deletion unsuccesful! Please contact Administrator.")
-        return render_template("home.html"), 400
+        return render_template("index.html"), 400
     else:
         flash("Successfully deleted account!")
-        return render_template("home.html"), 200
+        return render_template("index.html"), 200
 
 
 @app.route("/logout", methods=["POST"])
@@ -117,7 +125,7 @@ def logout():
     """ Logout route
     """
     flash("Logged out successfully!")
-    return render_template("home.html"), 200
+    return render_template("index.html"), 200
 
 
 if __name__ == "__main__":
