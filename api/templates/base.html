@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ title }}{% block title %}</title>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="./login.html">login</a>
+        <a href="url_for{{ logout }}">logout</a>
+      </nav>
+    </header>
+    {% block main %}
+    <main>
+      <div>
+        <p>Start your Journey in to the <b>QUIZIVERSE</b></p>
+
+        <a href="./login.html">login</a>
+        <a href="url_for{{ logout }}">logout</a>
+      </div>
+    </main>
+    {% endblock main %}
+    <footer>
+      <div>
+        <p>&copy; 2024 Flask APP</p>
+      </div>
+    </footer>
+  </body>
+</html>
