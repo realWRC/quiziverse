@@ -28,7 +28,14 @@ def home():
     if not current_user.is_authenticated:
         return redirect(url_for('index'))
 
-    return render_template("home.html", title="QUIZIVERSE", year=year)
+    return render_template("home.html", title="HOME", year=year)
+
+
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    """ Renders the users profile
+    """
+    return render_template("profile.html", title="PROFILE", year=year)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -122,7 +129,6 @@ def unregister():
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
-    print(current_user)
     if current_user.is_authenticated:
         logout_user()
         session.clear()
