@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from api.config import app, login_manager
 from datetime import date
-from flask import flash, request, session, render_template, url_for, redirect, make_response
+from flask import flash, request, session, render_template, url_for, redirect
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
 
@@ -85,7 +85,7 @@ def login():
 
         if not username or not password:
             flash("Please enter both username and password.")
-            return render_template("login.html"), 400
+            return redirect(url_for("login"))
 
         username.strip()
         password.strip()
@@ -93,15 +93,15 @@ def login():
         user = User.getByUsername(username)
         if not user:
             flash("Invalid username")
-            return render_template("login.html"), 400
+            return redirect(url_for("login"))
 
         if user.checkpwd(password):
             login_user(user)
-            flash("Logged in successfully!")
+            # flash("Logged in successfully!")
             return redirect(url_for("home"))
         else:
             flash("Invalid user credentials.")
-            return render_template("login.html"), 400
+            return redirect(url_for("login"))
     else:
         return render_template("login.html", title="Login", year=year)
 
@@ -113,10 +113,10 @@ def unregister():
     session.clear()
     User.deleteByID(temp_id)
     if User.getByID(temp_id):
-        flash("Account deletion unsuccesful! Please contact Administrator.")
-        return render_template("index.html", title="QUIZIVERSE", year=year), 400
+        # flash("Account deletion unsuccesful! Please contact Administrator.")
+        return redirect(url_for("index"))
     else:
-        flash("Successfully deleted account!")
+        # flash("Successfully deleted account!")
         return render_template("index.html"), 200
 
 
@@ -128,10 +128,10 @@ def logout():
         session.clear()
         """ Logout route
         """
-        flash("Logged out successfully!")
-        return make_response(redirect(url_for("index")), 200)
+        # flash("Logged out successfully!")
+        return redirect(url_for("index"))
     else:
-        flash("You must login first.")
+        # flash("You must login first.")
         return redirect(request.referrer)
 
 
