@@ -7,6 +7,7 @@ from models.user import User
 
 year = date.today().strftime("%Y")
 
+
 @login_manager.user_loader
 def load_user(user_id):
     """ Flask login user loader
@@ -42,6 +43,9 @@ def profile():
 def register():
     """ Registration route
     """
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+
     if request.method == "POST":
         username = request.form.get("username")
         email = request.form.get("email")
@@ -86,6 +90,9 @@ def register():
 def login():
     """ Login route
     """
+    if current_user.is_authenticated:
+        return redirect(request.referrer)
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
@@ -113,32 +120,42 @@ def login():
         return render_template("login.html", title="Login", year=year)
 
 
+@login_required
 @app.route("/unregister", methods=["GET", "POST"])
 def unregister():
-    temp_id = current_user.id
-    logout_user()
-    session.clear()
-    User.deleteByID(temp_id)
-    if User.getByID(temp_id):
-        # flash("Account deletion unsuccesful! Please contact Administrator.")
-        return redirect(url_for("index"))
+    if current_user.is_authenticated:
+        temp_id = current_user.id
+        logout_user()
+        session.clear()
+        User.deleteByID(temp_id)
+        if User.getByID(temp_id):
+            # flash("Account deletion unsuccesful! Please contact Administrator.")
+            return redirect(url_for("index"))
+        else:
+            # flash("Successfully deleted account!")
+            return render_template("index.html"), 200
     else:
-        # flash("Successfully deleted account!")
-        return render_template("index.html"), 200
+        return redirect(url_for('index'))
 
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
+    """ Logout route
+    """
     if current_user.is_authenticated:
         logout_user()
         session.clear()
-        """ Logout route
-        """
-        # flash("Logged out successfully!")
         return redirect(url_for("index"))
     else:
-        # flash("You must login first.")
-        return redirect(request.referrer)
+        flash("You are not logged in.")
+        return redirect(url_for('login'))
+
+
+@app.route("/create", methods=["GET", "POST"])
+def create():
+    """ Route for creating quizzes
+    """
+    return ""
 
 
 if __name__ == "__main__":
