@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-from api.config.config import app, login_manager
-from flask import jsonify, request, session
+from api.config import app, login_manager
+from datetime import date
+from flask import flash, request, session, render_template, url_for, redirect
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
 
+year = date.today().strftime("%Y")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -12,137 +14,132 @@ def load_user(user_id):
     return User.getByID(user_id)
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
     """ Welcome Page
     """
-    return jsonify({
-        "message": "Welcome to quizziverse",
-    })
+    return render_template("index.html", title="QUIZIVERSE", year=year)
 
 
-@app.route("/register", methods=["POST"])
+@app.route("/home", methods=["GET", "POST"])
+def home():
+    """ Renders the users home page
+    """
+    if not current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    return render_template("home.html", title="HOME", year=year)
+
+
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    """ Renders the users profile
+    """
+    return render_template("profile.html", title="PROFILE", year=year)
+
+
+@app.route("/register", methods=["GET", "POST"])
 def register():
     """ Registration route
     """
-    data = request.json
+    if request.method == "POST":
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
 
-    if not data:
-        return jsonify({
-            "message": "Empty request"
-        }), 400
+        if not username or not email or not password or not confirm_password:
+            flash("Please fill all fields")
+            return redirect(url_for('register'))
 
-    if not all(field in data for field in \
-            ['username', 'password', 'email','confirm_password']):
-        return jsonify({
-            "message": "All fields are required."
-        }), 400
+        username.strip()
+        email.strip()
+        password.strip()
+        confirm_password.strip()
 
-    if not all(isinstance(data[field], str) for \
-            field in ['username', 'email', 'password', 'confirm_password']):
-        return jsonify({
-            "message": "All fields are required and must be strings."
-        }), 400
+        if password != confirm_password:
+            flash("Passwords do not match.")
+            return redirect(url_for('register'))
 
-    username = data["username"].strip()
-    email = data["email"].strip()
-    password = data["password"].strip()
-    confirm_password = data["confirm_password"].strip()
+        if User.getByUsername(username):
+            flash("Username already in use. Please choose another username.")
+            return redirect(url_for('register'))
 
-    if password != confirm_password:
-        return {
-            "message": "Passwords do not match"
-        }, 400
+        if User.getByEmail(email):
+            flash("Email already in use. Please choose another email.")
+            return redirect(url_for('register'))
 
-    if User.getByUsername(username):
-        return {
-            "message": "Username already in use. Please choose another username."
-        }, 400
+        user = User(username=username, email=email, password=password)
+        if user:
+            user.save()
+            flash("Registration successful!")
+            return redirect(url_for('login'))
+        else:
+            flash("Registration failed!")
+            return redirect(url_for('register'))
 
-    if User.getByEmail(email):
-        return {
-            "message": "Email already in use. Please choose another email."
-        }, 400
-
-    user = User(username=username, email=email, password=password)
-    user.save()
-
-    return {
-        "message": "Registration successful!"
-    }, 201
+    else:
+        return render_template('register.html', title="Registration", year=year)
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     """ Login route
     """
-    data = request.json
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-    if not data:
-        return jsonify({
-            "message": "Empty request"
-        }), 400
+        if not username or not password:
+            flash("Please enter both username and password.")
+            return redirect(url_for("login"))
 
-    if not all(field in data for field in \
-            ['username', 'password']):
-        return jsonify({
-            "message": "Please provide username and password."
-        }), 400
+        username.strip()
+        password.strip()
 
-    if not all(isinstance(data[field], str) for \
-            field in ['username', 'password']):
-        return jsonify({
-            "message": "All fields are required and must be strings."
-        }), 400
+        user = User.getByUsername(username)
+        if not user:
+            flash("Invalid username")
+            return redirect(url_for("login"))
 
-    username = data["username"].strip()
-    password = data["password"].strip()
-
-    user = User.getByUsername(username)
-    if not user:
-        return jsonify({
-            "message": "Invalid username"
-        }), 400
-
-    if user.checkpwd(password):
-        login_user(user)
-        return jsonify({
-            "message": "Logged in successfully!"
-        }), 200
+        if user.checkpwd(password):
+            login_user(user)
+            # flash("Logged in successfully!")
+            return redirect(url_for("home"))
+        else:
+            flash("Invalid user credentials.")
+            return redirect(url_for("login"))
     else:
-        return jsonify({
-            "message": "Invalid user credentials."
-        }), 400
+        return render_template("login.html", title="Login", year=year)
 
 
-@app.route("/unregister")
-@login_required
+@app.route("/unregister", methods=["GET", "POST"])
 def unregister():
     temp_id = current_user.id
     logout_user()
     session.clear()
     User.deleteByID(temp_id)
     if User.getByID(temp_id):
-        return jsonify({
-            "message": "Account deletion unsuccesful! Please contact Administrator."
-        }), 400
+        # flash("Account deletion unsuccesful! Please contact Administrator.")
+        return redirect(url_for("index"))
     else:
-        return jsonify({
-            "message": "Successfully deleted account!"
-        }), 200
+        # flash("Successfully deleted account!")
+        return render_template("index.html"), 200
 
 
-@app.route("/logout", methods=["POST"])
-@login_required
+@app.route("/logout", methods=["GET", "POST"])
 def logout():
-    logout_user()
-    session.clear()
-    """ Logout route
-    """
-    return jsonify({
-        "message": "Logged out successfully!"
-    }), 200
+    if current_user.is_authenticated:
+        logout_user()
+        session.clear()
+        """ Logout route
+        """
+        # flash("Logged out successfully!")
+        return redirect(url_for("index"))
+    else:
+        # flash("You must login first.")
+        return redirect(request.referrer)
 
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(debug=True)

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block header %}
+<header>
+  <nav>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+    <a href="{{ url_for('profile') }}">Profile</a>
+  </nav>
+</header>
+{% endblock header %}
+{% block main %}
+<main>
+  <p>Welcome to Home</p>
+</main>
+{% endblock main %}
