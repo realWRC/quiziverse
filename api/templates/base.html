@@ -6,25 +6,28 @@
     <title>{% block title %}{{ title }}{% block title %}</title>
   </head>
   <body>
+    {% block header %}
     <header>
       <nav>
         <a href="./login.html">login</a>
         <a href="url_for{{ logout }}">logout</a>
+        <a href="url_for{{ register }}">register</a>
       </nav>
     </header>
+    {% endblock header %}
     {% block main %}
     <main>
       <div>
         <p>Start your Journey in to the <b>QUIZIVERSE</b></p>
-
-        <a href="./login.html">login</a>
-        <a href="url_for{{ logout }}">logout</a>
+        <a href="./login.html"><button>Login</button></a>
+        <a href="url_for{{ logout }}"><button>Logout</button></a>
+        <span><a href="url_for{{ register }}">register</a></span>
       </div>
     </main>
     {% endblock main %}
     <footer>
       <div>
-        <p>&copy; 2024 Flask APP</p>
+        <p>QUIZIVERSE&copy;{{ year }}</p>
       </div>
     </footer>
   </body>
