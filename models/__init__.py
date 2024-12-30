@@ -1,4 +1,4 @@
 from pymongo import MongoClient
 
 client = MongoClient()
-db = client.quizziverse
+db = client.quiziverse
