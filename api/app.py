@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from api.config.config import app, login_manager
+from config import app, login_manager
 from flask import flash, request, session, render_template
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
@@ -13,7 +13,6 @@ def load_user(user_id):
 
 
 @app.route("/")
-@login_required
 def index():
     """ Welcome Page
     """
