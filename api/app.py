@@ -54,52 +54,44 @@ def register():
         if user:
             user.save()
             flash("Registration successful!")
-            return render_template("login.html")
+            return render_template("login.html"), 201
+        else:
+            flash("Registration failed!")
+            return render_template("register.html"), 500
+
     else:
         return render_template('register.html')
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     """ Login route
     """
-    data = request.json
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-    if not data:
-        return jsonify({
-            "message": "Empty request"
-        }), 400
+        if not username or not password:
+            flash("Please enter both username and password.")
+            return render_template("login.html"), 400
 
-    if not all(field in data for field in \
-            ['username', 'password']):
-        return jsonify({
-            "message": "Please provide username and password."
-        }), 400
+        username.strip()
+        password.strip()
 
-    if not all(isinstance(data[field], str) for \
-            field in ['username', 'password']):
-        return jsonify({
-            "message": "All fields are required and must be strings."
-        }), 400
+        user = User.getByUsername(username)
+        if not user:
+            flash("Invalid username")
+            return render_template("login.html"), 400
 
-    username = data["username"].strip()
-    password = data["password"].strip()
-
-    user = User.getByUsername(username)
-    if not user:
-        return jsonify({
-            "message": "Invalid username"
-        }), 400
-
-    if user.checkpwd(password):
-        login_user(user)
-        return jsonify({
-            "message": "Logged in successfully!"
-        }), 200
+        if user.checkpwd(password):
+            login_user(user)
+            flash("Logged in successfully!")
+            return render_template("home.html"), 200
+        else:
+            flash("Invalid user credentials.")
+            return render_template("login.html"), 400
     else:
-        return jsonify({
-            "message": "Invalid user credentials."
-        }), 400
+        return render_template("login.html")
 
 
 @app.route("/unregister")
@@ -110,13 +102,11 @@ def unregister():
     session.clear()
     User.deleteByID(temp_id)
     if User.getByID(temp_id):
-        return jsonify({
-            "message": "Account deletion unsuccesful! Please contact Administrator."
-        }), 400
+        flash("Account deletion unsuccesful! Please contact Administrator.")
+        return render_template("home.html"), 400
     else:
-        return jsonify({
-            "message": "Successfully deleted account!"
-        }), 200
+        flash("Successfully deleted account!")
+        return render_template("home.html"), 200
 
 
 @app.route("/logout", methods=["POST"])
@@ -126,9 +116,8 @@ def logout():
     session.clear()
     """ Logout route
     """
-    return jsonify({
-        "message": "Logged out successfully!"
-    }), 200
+    flash("Logged out successfully!")
+    return render_template("home.html"), 200
 
 
 if __name__ == "__main__":
