@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from api.config.config import app, login_manager
-from flask import jsonify, request, session
+from flask import flash, jsonify, request, session, render_template
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
 
@@ -13,63 +13,50 @@ def load_user(user_id):
 
 
 @app.route("/")
-def index():
+def home():
     """ Welcome Page
     """
-    return jsonify({
-        "message": "Welcome to quizziverse",
-    })
+    return render_template("home.html")
 
 
-@app.route("/register", methods=["POST"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     """ Registration route
     """
-    data = request.json
+    if request.method == "POST":
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
 
-    if not data:
-        return jsonify({
-            "message": "Empty request"
-        }), 400
+        if not username or not email or not password or not confirm_password:
+            flash("Please fill all fields.")
+            return render_template("register.html"), 400
 
-    if not all(field in data for field in \
-            ['username', 'password', 'email','confirm_password']):
-        return jsonify({
-            "message": "All fields are required."
-        }), 400
+        username.strip()
+        email.strip()
+        password.strip()
+        confirm_password.strip()
 
-    if not all(isinstance(data[field], str) for \
-            field in ['username', 'email', 'password', 'confirm_password']):
-        return jsonify({
-            "message": "All fields are required and must be strings."
-        }), 400
+        if password != confirm_password:
+            flash("Passwords do not match.")
+            return render_template("register.html"), 400
 
-    username = data["username"].strip()
-    email = data["email"].strip()
-    password = data["password"].strip()
-    confirm_password = data["confirm_password"].strip()
+        if User.getByUsername(username):
+            flash("Username already in use. Please choose another username.")
+            return render_template("register.html"), 400
 
-    if password != confirm_password:
-        return {
-            "message": "Passwords do not match"
-        }, 400
+        if User.getByEmail(email):
+            flash("Email already in use. Please choose another email.")
+            return render_template("register.html"), 400
 
-    if User.getByUsername(username):
-        return {
-            "message": "Username already in use. Please choose another username."
-        }, 400
-
-    if User.getByEmail(email):
-        return {
-            "message": "Email already in use. Please choose another email."
-        }, 400
-
-    user = User(username=username, email=email, password=password)
-    user.save()
-
-    return {
-        "message": "Registration successful!"
-    }, 201
+        user = User(username=username, email=email, password=password)
+        if user:
+            user.save()
+            flash("Registration successful!")
+            return render_template("login.html")
+    else:
+        return render_template('register.html')
 
 
 @app.route("/login", methods=["POST"])
