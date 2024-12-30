@@ -13,7 +13,7 @@ app.config['SESSION_USE_SIGNER'] = True
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 app.config['SESSION_TYPE'] = 'mongodb'
 app.config['SESSION_MONGODB'] = client
-app.config['SESSION_MONGODB_DB'] = 'quizziverse'
+app.config['SESSION_MONGODB_DB'] = 'quiziverse'
 app.config['SESSION_MONGODB_COLLECTION'] = 'sessions'
 Session(app)
 

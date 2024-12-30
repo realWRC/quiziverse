@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from api.config import app, login_manager
 from datetime import date
-from flask import flash, request, session, render_template, url_for
+from flask import flash, request, session, render_template, url_for, redirect, make_response
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
 
@@ -14,22 +14,21 @@ def load_user(user_id):
     return User.getByID(user_id)
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
     """ Welcome Page
     """
-    context = {
-        "title": "QUIZIVERSE",
-        "year": year
-    }
-    return render_template("index.html", **context)
+    return render_template("index.html", title="QUIZIVERSE", year=year)
 
 
-@app.route("/home/<username>")
+@app.route("/home", methods=["GET", "POST"])
 def home():
     """ Renders the users home page
     """
-    return render_template("home.html")
+    if not current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    return render_template("home.html", title="QUIZIVERSE", year=year)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -43,8 +42,8 @@ def register():
         confirm_password = request.form.get("confirm_password")
 
         if not username or not email or not password or not confirm_password:
-            flash("Please fill all fields.")
-            return render_template("register.html"), 400
+            flash("Please fill all fields")
+            return redirect(url_for('register'))
 
         username.strip()
         email.strip()
@@ -53,27 +52,27 @@ def register():
 
         if password != confirm_password:
             flash("Passwords do not match.")
-            return render_template("register.html"), 400
+            return redirect(url_for('register'))
 
         if User.getByUsername(username):
             flash("Username already in use. Please choose another username.")
-            return render_template("register.html"), 400
+            return redirect(url_for('register'))
 
         if User.getByEmail(email):
             flash("Email already in use. Please choose another email.")
-            return render_template("register.html"), 400
+            return redirect(url_for('register'))
 
         user = User(username=username, email=email, password=password)
         if user:
             user.save()
             flash("Registration successful!")
-            return render_template("login.html"), 201
+            return redirect(url_for('login'))
         else:
             flash("Registration failed!")
-            return render_template("register.html"), 500
+            return redirect(url_for('register'))
 
     else:
-        return render_template('register.html')
+        return render_template('register.html', title="Registration", year=year)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -99,16 +98,15 @@ def login():
         if user.checkpwd(password):
             login_user(user)
             flash("Logged in successfully!")
-            return render_template("home.html"), 200
+            return redirect(url_for("home"))
         else:
             flash("Invalid user credentials.")
             return render_template("login.html"), 400
     else:
-        return render_template("login.html")
+        return render_template("login.html", title="Login", year=year)
 
 
-@app.route("/unregister")
-@login_required
+@app.route("/unregister", methods=["GET", "POST"])
 def unregister():
     temp_id = current_user.id
     logout_user()
@@ -116,22 +114,26 @@ def unregister():
     User.deleteByID(temp_id)
     if User.getByID(temp_id):
         flash("Account deletion unsuccesful! Please contact Administrator.")
-        return render_template("index.html"), 400
+        return render_template("index.html", title="QUIZIVERSE", year=year), 400
     else:
         flash("Successfully deleted account!")
         return render_template("index.html"), 200
 
 
-@app.route("/logout", methods=["POST"])
-@login_required
+@app.route("/logout", methods=["GET", "POST"])
 def logout():
-    logout_user()
-    session.clear()
-    """ Logout route
-    """
-    flash("Logged out successfully!")
-    return render_template("index.html"), 200
+    print(current_user)
+    if current_user.is_authenticated:
+        logout_user()
+        session.clear()
+        """ Logout route
+        """
+        flash("Logged out successfully!")
+        return make_response(redirect(url_for("index")), 200)
+    else:
+        flash("You must login first.")
+        return redirect(request.referrer)
 
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(debug=True)
