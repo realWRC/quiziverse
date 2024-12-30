@@ -155,7 +155,9 @@ def logout():
 def create():
     """ Route for creating quizzes
     """
-    return ""
+    if not current_user.is_authenticated:
+        return redirect(url_for('index'))
+    return render_template("create.html", title="Create", year=year)
 
 
 if __name__ == "__main__":
