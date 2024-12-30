@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-from config import app, login_manager
-from flask import flash, request, session, render_template
+from api.config import app, login_manager
+from datetime import date
+from flask import flash, request, session, render_template, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
 
+year = date.today().strftime("%Y")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -16,7 +18,11 @@ def load_user(user_id):
 def index():
     """ Welcome Page
     """
-    return render_template("index.html")
+    context = {
+        "title": "QUIZIVERSE",
+        "year": year
+    }
+    return render_template("index.html", **context)
 
 
 @app.route("/home/<username>")
