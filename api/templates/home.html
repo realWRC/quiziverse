@@ -1,16 +1,22 @@
 {% extends "base.html" %}
 
+{% block CSS %}
+
+{% block childcss %}{% endblock childcss %}
+{% endblock CSS %}
+
 {% block header %}
 <header>
   <nav>
     <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('create') }}"></a>
     <a href="{{ url_for('profile') }}">Profile</a>
     <a href="{{ url_for('logout') }}">Logout</a>
   </nav>
 </header>
 {% endblock header %}
+
 {% block main %}
+{% include "_verticalnav.html" %}
 <main>
   <p>Welcome to Home</p>
 </main>
