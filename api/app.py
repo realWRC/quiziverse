@@ -4,6 +4,7 @@ from datetime import date
 from flask import flash, request, session, render_template, url_for, redirect
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
+from pprint import pprint
 
 year = date.today().strftime("%Y")
 
@@ -157,6 +158,10 @@ def create():
     """
     if not current_user.is_authenticated:
         return redirect(url_for('index'))
+
+    if request.method == "POST":
+        pprint(request.form.get("quiz_json"))
+
     return render_template("create.html", title="Create", year=year)
 
 

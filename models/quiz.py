@@ -24,9 +24,10 @@ class Quiz():
         final_score = 0
         if questions:
             questionSet = []
-            keys = ['question', 'options', 'answer', 'score'] 
+            # keys = ['question', 'options', 'answer', 'score'] 
             for question in questions:
-                if isinstance(question, dict) and  all(key in question for key in keys):
+                # if isinstance(question, dict) and  all(key in question for key in keys):
+                if Quiz.validateQuestion(question):
                     final_score += self.__addMultipleQuestionsHelper(
                         questionSet = questionSet,
                         question = question['question'],
@@ -104,6 +105,17 @@ class Quiz():
                 questions = quiz_dict["questions"]
             )
             return quiz
+
+    @staticmethod
+    def validateQuestion(question):
+        """ Validates the content of a question dict for the class
+        Quiz
+        """ 
+        keys = ['question', 'options', 'answer', 'score'] 
+        if isinstance(question, dict) and  all(key in question for key in keys):
+            return True
+        else:
+            return False
 
     @staticmethod
     def get(quiz_id):

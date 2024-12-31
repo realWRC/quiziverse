@@ -58,7 +58,7 @@ form.addEventListener('submit', function(e) {
         };
     });
 
-    const quiz_json = {
+    const quizJson = {
         "title": title,
         "time_limit": time_limit,
         "questions": questionsData
