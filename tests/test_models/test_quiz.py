@@ -1,7 +1,6 @@
 import unittest
 from models.quiz import Quiz
 from models.user import User
-from pprint import pprint
 
 
 class TestQuizModel(unittest.TestCase):
