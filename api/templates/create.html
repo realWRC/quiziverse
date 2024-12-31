@@ -16,43 +16,24 @@
   {% endwith %}
 
   <form action="{{ url_for('create') }}" method="POST" id="createQuizForm">
-      <label>Quiz Title:
-          <input type="text" name="title" required>
-      </label><br><br>
-      <label>Time Limit (seconds, optional):
-          <input type="text" name="time_limit">
-      </label><br><br>
+      <label>Quiz Title: <input type="text" name="title" required></label><br><br>
+      <label>Time Limit (seconds, optional): <input type="text" name="time_limit"></label><br><br>
 
       <div id="questions-container">
-          <fieldset class="question-block">
-              <legend>Question 1</legend>
-              <label>Question Text:
-                  <input type="text" class="question-text" required>
-              </label><br>
-              <label>Option 1:
-                  <input type="text" class="option" required>
-              </label><br>
-              <label>Option 2:
-                  <input type="text" class="option" required>
-              </label><br>
-              <label>Option 3:
-                  <input type="text" class="option">
-              </label><br>
-              <label>Option 4:
-                  <input type="text" class="option">
-              </label><br>
-              <label>Correct Answer:
-                  <input type="text" class="answer" required>
-              </label><br>
-              <label>Score (optional, default 1):
-                  <input type="text" class="score">
-              </label>
+          <fieldset class="question-block"><legend>Question 1</legend>
+              <label>Question Text: <input type="text" class="question-text" required></label><br>
+              <label>Option 1: <input type="text" class="option" required></label><br>
+              <label>Option 2: <input type="text" class="option" required></label><br>
+              <label>Option 3: <input type="text" class="option"></label><br>
+              <label>Option 4: <input type="text" class="option"></label><br>
+              <label>Correct Answer: <input type="text" class="answer" required></label><br>
+              <label>Score (optional, default 1): <input type="text" class="score"></label><br>
           </fieldset>
       </div>
 
       <input type="hidden" name="quiz_json" id="quiz_json" value="">
       <button type="button" id="add-question-btn">Add Another Question</button>
-      <button type="button" id="remove-question-btn">Remove Last Question</button><br><br>
+      <button type="button" id="remove-question-btn">Remove Last Question</button><br>
 
       <button type="submit">Create Quiz</button>
       <a href="{{ url_for('index') }}"><button type="button">Cancel</button></a>
