@@ -10,7 +10,6 @@ from pprint import pprint
 
 year = date.today().strftime("%Y")
 
-
 @login_manager.user_loader
 def load_user(user_id):
     """ Flask login user loader
@@ -181,11 +180,10 @@ def create():
                 )
             else:
                 flash(validation[1])
-                # return redirect(url_for('create'))
-                pprint(data['title'])
                 return render_template("create.html", title="Create", year=year, data=data)
-        pprint(data)
-        pprint(quiz.__dict__)
+        # pprint(data)
+        # pprint(quiz.__dict__)
+        flash("Quiz created successfully")
         return redirect(url_for('home'))
 
     return render_template("create.html", title="Create", year=year)

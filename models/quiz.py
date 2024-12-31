@@ -39,7 +39,7 @@ class Quiz():
                 else:
                     self.questions = original_questions
                     self.total_score = original_total_score
-                    raise TypeError(validation[1])
+                    print(validation[1])
             self.questions = questionSet
             self.total_score = final_score
             return questionSet
@@ -68,27 +68,31 @@ class Quiz():
             self.questions.append(question)
             self.total_score += score
         else:
-            raise TypeError(validation[1])
+            print(validation[1])
 
     def __addMultipleQuestionsHelper(self, questionSet, question, options, answer, score=1):
         """ Adds a question to a quiz
         """
-        assert isinstance(questionSet, list)
-        assert isinstance(options, list)
-        assert isinstance(answer, str)
-        if answer not in options:
-            print("Answer not in options!")
-        question = {
-            "question_id": str(uuid.uuid4()),
-            "quiz_id": self.quiz_id,
+        validation = Quiz.validateQuestion({
             "question": question,
             "options": options,
             "answer": answer, 
             "score": score,
-            "index": len(questionSet)
-        }
-        questionSet.append(question)
-        return score
+        })
+        if validation[0]:
+            question = {
+                "question_id": str(uuid.uuid4()),
+                "quiz_id": self.quiz_id,
+                "question": question,
+                "options": options,
+                "answer": answer, 
+                "score": score,
+                "index": len(questionSet)
+            }
+            questionSet.append(question)
+            return score
+        else:
+            raise TypeError(validation[1])
 
     def save(self):
         """ Returns JSON form of class.
@@ -124,9 +128,22 @@ class Quiz():
                 return (False, "Options must be an array or list of strings.")
             if not question['answer'] in question['options']:
                 return (False, "The answer must match one of the questions.")
+            if not isinstance(question['score'], int) and not isinstance(question['score'], float):
+                return (False, "The score must be a number")
             return (True, "Valid")
         else:
             return (False, "Questions must be a dict.")
+
+    @staticmethod
+    def validateFields(title, time_limit):
+        """ Validates all external direct attributes of a Quiz object except creator_id
+        and questions.
+        """
+        if not isinstance(title, str):
+            return (False, "Title must be a string")
+        if not isinstance(time_limit, int) or not isinstance(time_limit, float):
+            return (False, "Time Limit must be an Integer or a Float")
+        return (True, "Valid fields")
 
     @staticmethod
     def get(quiz_id):
