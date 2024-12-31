@@ -172,7 +172,7 @@ def create():
 
         for question in data["questions"]:
             validation = Quiz.validateQuestion(question)
-            if validation[0]:
+            if validation[0] is True:
                 quiz.addQuestion(
                     question = question["question"],
                     options = question["options"],
@@ -181,7 +181,9 @@ def create():
                 )
             else:
                 flash(validation[1])
-                return redirect(url_for('create'))
+                # return redirect(url_for('create'))
+                pprint(data['title'])
+                return render_template("create.html", title="Create", year=year, data=data)
         pprint(data)
         pprint(quiz.__dict__)
         return redirect(url_for('home'))

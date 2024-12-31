@@ -18,6 +18,7 @@
     {% endif %}
   {% endwith %}
 
+  {% if not data %}
   <form action="{{ url_for('create') }}" method="POST" id="createQuizForm">
     <label>Quiz Title: <input type="text" name="title" required></label><br><br>
     <label>Time Limit (seconds, optional): <input type="text" name="time_limit"></label><br><br>
@@ -41,6 +42,36 @@
     <button type="submit">Create Quiz</button>
     <a href="{{ url_for('home') }}"><button type="button">Cancel</button></a>
   </form>
+
+  {% else %}
+
+  <form action="{{ url_for('create') }}" method="POST" id="createQuizForm">
+    <label>Quiz Title: <input type="text" name="title" value="{{ data['title'] }}" required></label><br><br>
+    <label>Time Limit (seconds, optional): <input type="text" name="time_limit" value="{{ data['time_limit'] }}"></label><br><br>
+
+    <div id="questions-container">
+      {% for question in data['questions']%}
+      <fieldset class="question-block"><legend>Question 1</legend>
+        <label>Question Text: <input type="text" class="question-text" value="{{ question['question'] }}" required></label><br>
+        <label>Option 1: <input type="text" class="option" value="{{ question['options'][0] if question['options']|length > 0 else '' }}" required></label><br>
+        <label>Option 2: <input type="text" class="option" value="{{ question['options'][1] if question['options']|length > 1 else '' }}" required></label><br>
+        <label>Option 3: <input type="text" class="option" value="{{ question['options'][2] if question['options']|length > 2 else '' }}"></label><br>
+        <label>Option 4: <input type="text" class="option" value="{{ question['options'][3] if question['options']|length > 3 else '' }}"></label><br>
+        <label>Correct Answer: <input type="text" class="answer" value="{{ question['answer'] }}" required></label><br>
+        <label>Score (optional, default 1): <input type="text" class="score" value="{{ question['score'] }}"></label><br>
+      </fieldset>
+      {% endfor %}
+    </div>
+
+    <input type="hidden" name="quiz_json" id="quiz_json" value="">
+    <button type="button" id="add-question-btn">Add Another Question</button>
+    <button type="button" id="remove-question-btn">Remove Last Question</button><br>
+
+    <button type="submit">Create Quiz</button>
+    <a href="{{ url_for('home') }}"><button type="button">Cancel</button></a>
+  </form>
+
+  {% endif %}
 
   <script src="{{ url_for('static', filename='js/create_quiz.js') }}"></script>
 
