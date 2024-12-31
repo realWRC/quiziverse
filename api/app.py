@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
+import json
 from api.config import app, login_manager
 from datetime import date
 from flask import flash, request, session, render_template, url_for, redirect
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
+from models.quiz import Quiz
 from pprint import pprint
 
 year = date.today().strftime("%Y")
@@ -160,7 +162,29 @@ def create():
         return redirect(url_for('index'))
 
     if request.method == "POST":
-        pprint(request.form.get("quiz_json"))
+        data = request.form.get("quiz_json", '')
+        data = json.loads(data)
+        quiz = Quiz(
+            title = data['title'],
+            creator_id = current_user.get_id(),
+            time_limit = data['time_limit']
+        )
+
+        for question in data["questions"]:
+            validation = Quiz.validateQuestion(question)
+            if validation[0]:
+                quiz.addQuestion(
+                    question = question["question"],
+                    options = question["options"],
+                    answer = question["answer"],
+                    score = question["score"],
+                )
+            else:
+                flash(validation[1])
+                return redirect(url_for('create'))
+        pprint(data)
+        pprint(quiz.__dict__)
+        return redirect(url_for('home'))
 
     return render_template("create.html", title="Create", year=year)
 
