@@ -4,6 +4,8 @@
 {% endblock childcss %}
 
 {% block main %}
+<main>
+
   {% include "_verticalnav.html" %}
   <h1>Create a New Quiz</h1>
   {% with messages = get_flashed_messages() %}
@@ -22,7 +24,7 @@
 
     <div id="questions-container">
       <fieldset class="question-block"><legend>Question 1</legend>
-        <label>Question Text: <input type="text" class="question" required></label><br>
+        <label>Question Text: <input type="text" class="question-text" required></label><br>
         <label>Option 1: <input type="text" class="option" required></label><br>
         <label>Option 2: <input type="text" class="option" required></label><br>
         <label>Option 3: <input type="text" class="option"></label><br>
@@ -37,6 +39,10 @@
     <button type="button" id="remove-question-btn">Remove Last Question</button><br>
 
     <button type="submit">Create Quiz</button>
-    <a href="{{ url_for('index') }}"><button type="button">Cancel</button></a>
+    <a href="{{ url_for('home') }}"><button type="button">Cancel</button></a>
   </form>
+
+  <script src="{{ url_for('static', filename='js/create_quiz.js') }}"></script>
+
+</main>
 {% endblock main %}
