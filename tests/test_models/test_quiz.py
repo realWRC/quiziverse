@@ -1,6 +1,7 @@
 import unittest
 from models.quiz import Quiz
 from models.user import User
+from pprint import pprint
 
 
 class TestQuizModel(unittest.TestCase):
@@ -51,6 +52,8 @@ class TestQuizModel(unittest.TestCase):
 
         self.assertEqual(user.id, quiz.creator_id)
         self.assertEqual(self.title, quiz.title)
+        self.assertEqual(quiz.time_limit, 0)
+        self.assertEqual(quiz.total_score, 2)
         self.assertIsInstance(quiz.questions, list)
         self.assertIsInstance(quiz.questions[0], dict)
         self.assertIsInstance(quiz.questions[0]["question"], str)
@@ -85,6 +88,7 @@ class TestQuizModel(unittest.TestCase):
         quiz = Quiz(
             title = self.title,
             creator_id = user.returnID(),
+            time_limit = 10
         )
 
         quiz.addMultipleQuestions(questions)
@@ -93,10 +97,13 @@ class TestQuizModel(unittest.TestCase):
             question = self.question2,
             options = self.options2,
             answer = self.answer2,
+            score = self.score2,
         )
 
         self.assertEqual(user.id, quiz.creator_id)
         self.assertEqual(self.title, quiz.title)
+        self.assertEqual(quiz.time_limit, 10)
+        self.assertEqual(quiz.total_score, 30)
         self.assertIsInstance(quiz.questions, list)
         self.assertIsInstance(quiz.questions[0], dict)
         self.assertIsInstance(quiz.questions[0]["question"], str)
@@ -152,6 +159,8 @@ class TestQuizModel(unittest.TestCase):
         self.assertEqual(quizOne.quiz_id, quizTwo.quiz_id)
         self.assertEqual(quizOne.creator_id, quizTwo.creator_id)
         self.assertEqual(quizOne.title, quizTwo.title)
+        self.assertEqual(quizOne.time_limit, quizTwo.time_limit)
+        self.assertEqual(quizOne.total_score, quizTwo.total_score)
         self.assertEqual(quizOne.questions, quizTwo.questions)
         self.assertIsNone(quizThree)
 
