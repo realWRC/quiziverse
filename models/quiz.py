@@ -27,7 +27,8 @@ class Quiz():
             # keys = ['question', 'options', 'answer', 'score'] 
             for question in questions:
                 # if isinstance(question, dict) and  all(key in question for key in keys):
-                if Quiz.validateQuestion(question):
+                validation = Quiz.validateQuestion(question)
+                if validation[0]:
                     final_score += self.__addMultipleQuestionsHelper(
                         questionSet = questionSet,
                         question = question['question'],
@@ -38,7 +39,7 @@ class Quiz():
                 else:
                     self.questions = original_questions
                     self.total_score = original_total_score
-                    raise TypeError("Question has wrong value")
+                    raise TypeError(validation[1])
             self.questions = questionSet
             self.total_score = final_score
             return questionSet
@@ -48,21 +49,26 @@ class Quiz():
     def addQuestion(self, question, options, answer, score=1):
         """ Adds a question to a quiz
         """
-        assert isinstance(options, list)
-        assert isinstance(answer, str)
-        if answer not in options:
-            print("Answer not in options!")
-        question = {
-            "question_id": str(uuid.uuid4()),
-            "quiz_id": self.quiz_id,
+        validation = Quiz.validateQuestion({
             "question": question,
             "options": options,
             "answer": answer, 
             "score": score,
-            "index": len(self.questions)
-        }
-        self.questions.append(question)
-        self.total_score += score
+        })
+        if validation[0]:
+            question = {
+                "question_id": str(uuid.uuid4()),
+                "quiz_id": self.quiz_id,
+                "question": question,
+                "options": options,
+                "answer": answer, 
+                "score": score,
+                "index": len(self.questions)
+            }
+            self.questions.append(question)
+            self.total_score += score
+        else:
+            raise TypeError(validation[1])
 
     def __addMultipleQuestionsHelper(self, questionSet, question, options, answer, score=1):
         """ Adds a question to a quiz
@@ -83,7 +89,6 @@ class Quiz():
         }
         questionSet.append(question)
         return score
-
 
     def save(self):
         """ Returns JSON form of class.
@@ -112,10 +117,16 @@ class Quiz():
         Quiz
         """ 
         keys = ['question', 'options', 'answer', 'score'] 
-        if isinstance(question, dict) and  all(key in question for key in keys):
-            return True
+        if isinstance(question, dict):
+            if not all(key in question for key in keys):
+                return (False, "A key is missing from the question dictionary.")
+            if not isinstance(question['options'], list):
+                return (False, "Options must be an array or list of strings.")
+            if not question['answer'] in question['options']:
+                return (False, "The answer must match one of the questions.")
+            return (True, "Valid")
         else:
-            return False
+            return (False, "Questions must be a dict.")
 
     @staticmethod
     def get(quiz_id):

@@ -36,7 +36,8 @@ form.addEventListener('submit', function(e) {
     const time_limit_str = form.querySelector('[name="time_limit"]').value.trim();
     const time_limit = time_limit_str ? parseInt(time_limit_str, 10) : null;
 
-    let questionsData = {};
+    // let questionsData = {};
+    let questionsData = []
     const questionBlocks = container.querySelectorAll('.question-block');
     questionBlocks.forEach((block, idx) => {
         const questionText = block.querySelector('.question-text').value.trim();
@@ -50,12 +51,18 @@ form.addEventListener('submit', function(e) {
         const scoreStr = block.querySelector('.score').value.trim();
         const score = scoreStr ? parseInt(scoreStr, 10) : 1;
 
-        questionsData[`question${idx}`] = {
+        // questionsData[`question${idx}`] = {
+        //     "question": questionText,
+        //     "options": options,
+        //     "answer": answer,
+        //     "score": score
+        // };
+        questionsData.push({
             "question": questionText,
             "options": options,
             "answer": answer,
             "score": score
-        };
+        });
     });
 
     const quizJson = {
