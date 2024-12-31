@@ -141,7 +141,7 @@ class Quiz():
         """
         if not isinstance(title, str):
             return (False, "Title must be a string")
-        if not isinstance(time_limit, int) or not isinstance(time_limit, float):
+        if not isinstance(time_limit, int) and not isinstance(time_limit, float):
             return (False, "Time Limit must be an Integer or a Float")
         return (True, "Valid fields")
 

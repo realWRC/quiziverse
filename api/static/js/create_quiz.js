@@ -34,7 +34,7 @@ const form = document.getElementById('createQuizForm');
 form.addEventListener('submit', function(e) {
     const title = form.querySelector('[name="title"]').value.trim();
     const time_limit_str = form.querySelector('[name="time_limit"]').value.trim();
-    const time_limit = time_limit_str ? parseInt(time_limit_str, 10) : null;
+    const time_limit = time_limit_str ? parseInt(time_limit_str, 10) : 0;
 
     // let questionsData = {};
     let questionsData = []

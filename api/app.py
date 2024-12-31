@@ -163,11 +163,24 @@ def create():
     if request.method == "POST":
         data = request.form.get("quiz_json", '')
         data = json.loads(data)
-        quiz = Quiz(
+
+        if data['time_limit'] is None:
+            data['time_limit'] = 0
+
+        validation = Quiz.validateFields(
             title = data['title'],
-            creator_id = current_user.get_id(),
-            time_limit = data['time_limit']
+            time_limit = data['time_limit'],
         )
+        if validation[0]:
+            quiz = Quiz(
+                title = data['title'],
+                creator_id = current_user.get_id(),
+                time_limit = data['time_limit']
+            )
+        else:
+            flash(validation[1])
+            return render_template("create.html", title="Create", year=year, data=data)
+
 
         for question in data["questions"]:
             validation = Quiz.validateQuestion(question)
