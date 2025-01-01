@@ -168,3 +168,26 @@ class Quiz():
         """ Deletes quiz by id
         """
         return db.quizzes.delete_one({"quiz_id": quiz_id})
+
+    @staticmethod
+    def update(quiz_id, data):
+        """ Updates a quiz object from storage
+        """
+        temp = Quiz(
+            title = data["title"],
+            creator_id = "dummy id",
+            time_limit = data["time_limit"],
+        )
+        temp.addMultipleQuestions(data["questions"])
+        result = db.quizzes.update_one(
+            {"quiz_id": quiz_id },
+            { "$set": {
+                "title": temp.title,
+                "questions": temp.questions,
+                "total_score": temp.total_score,
+                "time_limit": temp.time_limit,
+            }}
+        )
+        del temp
+        if result.modified_count == 0:
+            raise KeyError("Pymongo could not update the document due to an invalid quiz_id")

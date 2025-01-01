@@ -222,5 +222,60 @@ def create():
     return render_template("create.html", title="Create", year=year)
 
 
+@app.route('/edit/<quiz_id>', methods=['GET', 'POST'])
+def edit(quiz_id):
+    """ Route for editing a users quiz if they are the creator
+    """
+    if not current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    quiz = Quiz.get(quiz_id)
+
+    if not quiz:
+        flash("Invalid quiz id")
+        return redirect(url_for('home'))
+
+    if not quiz['creator_id'] == current_user.get_id():
+        flash("Not authorized to edit this quiz")
+        return redirect(url_for('home'))
+
+    if request.method == "POST":
+        data = request.form.get("quiz_json", '')
+
+        try:
+            data = json.loads(data)
+        except json.JSONDecodeError:
+            flash("Invalid quiz data")
+            return redirect(url_for('edit', quiz_id=quiz_id))
+
+        if data['time_limit'] is None:
+            data['time_limit'] = 0
+
+        validation = Quiz.validateFields(
+            title = data['title'],
+            time_limit = data['time_limit'],
+        )
+        if validation[0]:
+            pass
+        else:
+            flash(validation[1])
+            return redirect(url_for('edit', quiz_id=quiz_id))
+
+        for question in data["questions"]:
+            validation = Quiz.validateQuestion(question)
+            if validation[0]:
+                pass
+            else:
+                flash(validation[1])
+                return redirect(url_for('edit', quiz_id=quiz_id))
+
+        try:
+            Quiz.update(quiz_id, data)
+        except KeyError as e:
+            print(e)
+
+    return render_template("edit.html", title="Edit", year=year, data=quiz)
+
+
 if __name__ == "__main__":
     app.run(debug=True)

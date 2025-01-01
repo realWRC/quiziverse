@@ -19,7 +19,7 @@
           <h3>{{ quiz.title }}</h3>
           <p>Total Marks: {{ quiz.total_score }}</p>
           <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else "No Limit" }}</p>
-          <a href="">Edit Quiz</a>
+          <a href="{{ url_for('edit', quiz_id=quiz.quiz_id) }}">Edit Quiz</a>
       </div>
       {% endfor %}
   {% else %}
