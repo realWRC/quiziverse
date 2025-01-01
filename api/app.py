@@ -31,7 +31,9 @@ def home():
     if not current_user.is_authenticated:
         return redirect(url_for('index'))
 
-    return render_template("home.html", title="HOME", year=year)
+    quizzes = Quiz.getAll()
+
+    return render_template("home.html", title="HOME", year=year, quizzes=quizzes)
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -204,7 +206,8 @@ def create():
             time_limit = data['time_limit']
         )
         quiz.addMultipleQuestions(data['questions'])
-        pprint(quiz.__dict__)
+        # pprint(quiz.__dict__)
+        quiz.save()
         flash("Quiz created successfully")
         return redirect(url_for('home'))
 

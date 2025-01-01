@@ -30,5 +30,15 @@
     {% endif %}
   {% endwith %}
   </div>
+  <div>
+    {% for quiz in quizzes %}
+    <div>
+        <h3>{{ quiz.title }}</h3>
+        <p>Questions: {{ quiz.questions|length }}</p>
+        <p>Total Marks: {{ quiz.total_score }}</p>
+        <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
+    </div>
+    {% endfor %}
+  </div>
 </main>
 {% endblock main %}

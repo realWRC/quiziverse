@@ -152,6 +152,12 @@ class Quiz():
         return db.quizzes.find_one({"quiz_id": quiz_id})
 
     @staticmethod
+    def getAll():
+        """ Gets all quizzes from database
+        """
+        return db.quizzes.find()
+
+    @staticmethod
     def delete(quiz_id):
         """ Deletes quiz by id
         """
