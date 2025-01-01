@@ -42,6 +42,8 @@
     <button type="submit">Create Quiz</button>
     <a href="{{ url_for('home') }}"><button type="button">Cancel</button></a>
   </form>
+  
+  <script> let questionIndex = 1; </script>
 
   {% else %}
 
@@ -51,7 +53,7 @@
 
     <div id="questions-container">
       {% for question in data['questions']%}
-      <fieldset class="question-block"><legend>Question 1</legend>
+      <fieldset class="question-block"><legend>Question {{ loop.index }}</legend>
         <label>Question Text: <input type="text" class="question-text" value="{{ question['question'] }}" required></label><br>
         <label>Option 1: <input type="text" class="option" value="{{ question['options'][0] if question['options']|length > 0 else '' }}" required></label><br>
         <label>Option 2: <input type="text" class="option" value="{{ question['options'][1] if question['options']|length > 1 else '' }}" required></label><br>
@@ -70,6 +72,8 @@
     <button type="submit">Create Quiz</button>
     <a href="{{ url_for('home') }}"><button type="button">Cancel</button></a>
   </form>
+
+  <script> let questionIndex = {{ data['questions']|length }} </script>
 
   {% endif %}
 
