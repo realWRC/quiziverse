@@ -158,6 +158,12 @@ class Quiz():
         return db.quizzes.find()
 
     @staticmethod
+    def getByFilter(criteria):
+        """ Returns quiz by a given field
+        """
+        return db.quizzes.find(criteria)
+
+    @staticmethod
     def delete(quiz_id):
         """ Deletes quiz by id
         """

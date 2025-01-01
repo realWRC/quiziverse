@@ -35,6 +35,14 @@ def home():
 
     return render_template("home.html", title="HOME", year=year, quizzes=quizzes)
 
+@app.route("/myquizzes")
+def myquizzes():
+    """ Shows all quizes created by a given user.
+    """
+    my_quizzes = Quiz.getByFilter({"creator_id": current_user.get_id()})
+    my_quizzes = list(my_quizzes)
+    return render_template("myquizzes.html", quizzes=my_quizzes, title="My Quizzes", year=year)
+
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
