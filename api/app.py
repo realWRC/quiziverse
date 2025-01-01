@@ -162,9 +162,6 @@ def create():
 
     if request.method == "POST":
         data = request.form.get("quiz_json", '')
-        pprint("################3")
-        pprint(data)
-        pprint("################3")
         data = json.loads(data)
 
         if data['time_limit'] is None:
@@ -175,36 +172,38 @@ def create():
             time_limit = data['time_limit'],
         )
         if validation[0]:
-            quiz = Quiz(
-                title = data['title'],
-                creator_id = current_user.get_id(),
-                time_limit = data['time_limit']
-            )
+            pass
         else:
             flash(validation[1])
             return render_template("create.html", title="Create", year=year, data=data)
 
-        i = 0
+        # i = 0
         # pprint(data["questions"])
         # print(f"length of questions list {len(data['questions'])}")
-        for quest in data["questions"]:
-            validation = Quiz.validateQuestion(quest)
+        for question in data["questions"]:
+            validation = Quiz.validateQuestion(question)
             # print(f"index {i} = {question}")
-            if validation[0] is True:
-                print(f"index {i} = {quest}")
-                quiz.addQuestion(
-                    question = quest["question"],
-                    options = quest["options"],
-                    answer = quest["answer"],
-                    score = quest["score"],
-                )
-                pprint(quiz.__dict__)
-                i += 1
+            if validation[0]:
+                # print(f"index {i} = {quest}")
+                # quiz.addQuestion(
+                #     question = quest["question"],
+                #     options = quest["options"],
+                #     answer = quest["answer"],
+                #     score = quest["score"],
+                # )
+                # pprint(quiz.__dict__)
+                # i += 1
+                pass
             else:
-                del quiz
                 flash(validation[1])
                 return render_template("create.html", title="Create", year=year, data=data)
-        print("#####Final Quiz#####")
+
+        quiz = Quiz(
+            title = data['title'],
+            creator_id = current_user.get_id(),
+            time_limit = data['time_limit']
+        )
+        quiz.addMultipleQuestions(data['questions'])
         pprint(quiz.__dict__)
         flash("Quiz created successfully")
         return redirect(url_for('home'))
