@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
 from api.config import app, login_manager
-from datetime import date
+from datetime import date, datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
@@ -342,6 +342,7 @@ def quizinfo(quiz_id):
 
     return render_template('quizinfo.html', title=quiz['quiz_id'], year=year, quiz=quiz)
 
+
 @app.route('/take/<quiz_id>', methods=['GET'])
 def takequiz(quiz_id):
     """ Allows user to take a quiz from.
@@ -356,21 +357,32 @@ def takequiz(quiz_id):
         return redirect(request.referrer)
 
     if not "taking_quiz" in session:
+        start_time = datetime.now(timezone.utc)
+        finish_time = start_time + timedelta(minutes=quiz["time_limit"])
+        # This should cache without calling session.modified = True
         session["taking_quiz"] = {
             "quiz_id": quiz_id,
             "current_index": 0,
             "previous_index": None,
             "answers": [],
+            "timeout": False,
             "finished": False,
+            "start_time": start_time,
+            "current_time": start_time,
+            "finish_time": finish_time
         }
+        del start_time
+        del finish_time
 
-    # Potential Bug
+    # Potentially Bugged or useless
     if session["taking_quiz"]["quiz_id"] != quiz_id:
         flash("Use interface to take the quiz")
         del session["taking_quiz"]
         return redirect(url_for('home'))
 
-    return render_template('takequiz.html', question=quiz['questions'][session["current_index"]])
+    # Consider changing to redis for session storage to get faster access times by caching quiz in session
+    return render_template('takequiz.html', title=quiz["title"], year=year, question=quiz['questions'][session["current_index"]])
+
 
 @app.route('/submitanswer/<quiz_id>', methods=["POST"])
 def submitanswer(quiz_id):
@@ -384,26 +396,64 @@ def submitanswer(quiz_id):
         flash("You are not taking a quiz")
         return redirect(url_for('home'))
 
+    session["taking_quiz"]["current_time"] = datetime.now(timezone.utc)
+
     quiz = Quiz.get(quiz_id)
     if not quiz:
+        del session["taking_quiz"]
         flash("Quiz not found")
         return redirect(url_for('home'))
 
-    if session["taking_quiz"]["current_index"] == 0 and session["taking_quiz"]["previous_index"] != None:
-        flash("Quiz was temtered with")
-        del session["taking_quiz"]
-        return redirect(url_for('home'))
+    if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
+        session["taking_quiz"]["timeout"] = True
+        flash("Time Ran Out")
+        return redirect(url_for('finishquiz'))
+
+    # if session["taking_quiz"]["current_index"] == 0 and session["taking_quiz"]["previous_index"] != None:
+    #     flash("Quiz was temtered with")
+    #     del session["taking_quiz"]
+    #     return redirect(url_for('home'))
 
     if session["taking_quiz"]["current_index"] == (len(quiz["questions"]) - 1):
         session["taking_quiz"]["finished"] = True
-        return(url_for('finish'))
+        return(url_for('finishquiz'))
 
+    session["taking_quiz"]["answers"].append(request.form.get('answer', ''))
     session["taking_quiz"]["previous_index"] = session["current_index"]
-    session["current_index"] = session["current_index"] + 1
+    session["taking_quiz"]["current_index"] = session["current_index"] + 1
 
-    return render_template('takequiz.html', question=quiz['questions']['current_index'])
+    # return render_template('takequiz.html', question=quiz['questions']['current_index'])
+    session.modified = True
+    return redirect(url_for('takequiz'))
 
-# @app.route('/skip/<quiz_id>'):
+@app.route('/finishquiz/<quiz_id>')
+def finishquiz(quiz_id):
+    """ Finishes quiz
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not "taking_quiz" in session:
+        flash("You are not taking a quiz")
+        return redirect(url_for('home'))
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        del session["taking_quiz"]
+        flash("Quiz not found")
+        return redirect(url_for('home'))
+
+    i = 0
+    score = 0
+    for answer in session["taking_quiz"]["answers"]:
+        if answer == quiz["questions"][i]["answer"]:
+            score += quiz["questions"][i]["score"]
+        i += 1
+
+    del session["taking_quiz"]
+
+    return render_template('finishquiz.html', title=quiz['title'], year=year)
 
 
 if __name__ == "__main__":
