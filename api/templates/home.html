@@ -37,6 +37,7 @@
         <p>Questions: {{ quiz.questions|length }}</p>
         <p>Total Marks: {{ quiz.total_score }}</p>
         <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
+        <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}">Take Quiz</a>
     </div>
     {% endfor %}
   </div>

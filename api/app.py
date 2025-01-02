@@ -31,7 +31,8 @@ def home():
     """ Renders the users home page
     """
     if not current_user.is_authenticated:
-        return redirect(url_for('index'))
+        flash("You must be logged in first.")
+        return redirect(url_for('login'))
 
     quizzes = Quiz.getAll()
 
@@ -58,6 +59,7 @@ def register():
     """ Registration route
     """
     if current_user.is_authenticated:
+        flash("You are already registed and logged in")
         return redirect(url_for('home'))
 
     if request.method == "POST":
@@ -143,11 +145,11 @@ def unregister():
         session.clear()
         User.deleteByID(temp_id)
         if User.getByID(temp_id):
-            # flash("Account deletion unsuccesful! Please contact Administrator.")
+            flash("Account deletion unsuccesful! Please contact Administrator.")
             return redirect(url_for("index"))
         else:
-            # flash("Successfully deleted account!")
-            return render_template("index.html"), 200
+            flash("Successfully deleted account!")
+            return redirect(url_for("index"))
     else:
         return redirect(url_for('index'))
 
@@ -159,6 +161,7 @@ def logout():
     if current_user.is_authenticated:
         logout_user()
         session.clear()
+        flash("Logout Successful!")
         return redirect(url_for("index"))
     else:
         flash("You are not logged in.")
@@ -170,7 +173,8 @@ def create():
     """ Route for creating quizzes
     """
     if not current_user.is_authenticated:
-        return redirect(url_for('index'))
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
 
     if request.method == "POST":
         data = request.form.get("quiz_json", '')
@@ -229,7 +233,7 @@ def edit(quiz_id):
     """ Route for editing a users quiz if they are the creator
     """
     if not current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
 
 
     quiz = Quiz.get(quiz_id)
@@ -302,7 +306,7 @@ def edit(quiz_id):
 def delete(quiz_id):
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('home'))
+        return redirect(url_for('login'))
 
     quiz = Quiz.get(quiz_id)
     if not quiz:
@@ -321,6 +325,22 @@ def delete(quiz_id):
         print(e)
         flash("Quiz deletion failed")
     return redirect(request.referrer)
+
+
+@app.route('/quizinfo/<quiz_id>', methods=['GET'])
+def quizinfo(quiz_id):
+    """ Displays information about a quiz before it is taken
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        flash("Quiz not found")
+        return redirect(request.referrer)
+
+    return render_template('quizinfo.html', title=quiz['quiz_id'], year=year, quiz=quiz)
 
 
 if __name__ == "__main__":
