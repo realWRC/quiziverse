@@ -342,6 +342,69 @@ def quizinfo(quiz_id):
 
     return render_template('quizinfo.html', title=quiz['quiz_id'], year=year, quiz=quiz)
 
+@app.route('/take/<quiz_id>', methods=['GET'])
+def takequiz(quiz_id):
+    """ Allows user to take a quiz from.
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        flash("Quiz not found")
+        return redirect(request.referrer)
+
+    if not "taking_quiz" in session:
+        session["taking_quiz"] = {
+            "quiz_id": quiz_id,
+            "current_index": 0,
+            "previous_index": None,
+            "answers": {}
+        }
+
+    if session["taking_quiz"]["quiz_id"] != quiz_id:
+        flash("Use interface to take the quiz")
+        del session["taking_quiz"]
+        return redirect(url_for('home'))
+
+    return render_template(
+            'takequiz.html', question=quiz['questions'][session["current_index"]]
+    )
+
+@app.route('/submitanswer/<quiz_id>', methods=["POST"])
+def submitanswer(quiz_id):
+    """ Handles Submittion of question answers
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not "taking_quiz" in session:
+        flash("You are not taking a quiz")
+        return redirect(url_for('home'))
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        flash("Quiz not found")
+        return redirect(url_for('home'))
+
+    if session["current_index"] == 0 and session["previous_index"] != None:
+        flash("Quiz was temtered with")
+        return redirect(url_for('home'))
+
+    if session["current_index"] == 0:
+        session["previous_index"] = session["current_index"]
+        session["current_index"] = session["current_index"] + 1
+
+    if not isinstance(quiz["questions"], list):
+        raise TypeError("quiz['questions'] from db is not a list")
+
+
+    return ""
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
