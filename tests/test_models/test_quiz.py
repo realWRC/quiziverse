@@ -163,6 +163,45 @@ class TestQuizModel(unittest.TestCase):
         self.assertEqual(quizOne.questions, quizTwo.questions)
         self.assertIsNone(quizThree)
 
+    def test_db_quiz_data_types(self):
+        """ Tests the types for quizzes retried from database
+        """
+        questions = [
+            {
+                "question": self.question1,
+                "options": self.options1,
+                "answer": self.answer1,
+                "score": self.score1
+            },
+            {
+                "question": self.question2,
+                "options": self.options2,
+                "answer": self.answer2,
+                "score": self.score2
+            },
+        ]
+        user = User(
+            username = self.username,
+            email = self.email,
+            password =  self.password
+        )
+        quiz = Quiz(
+            title = self.title,
+            creator_id = user.returnID(),
+            time_limit = 10
+        )
+
+        quiz.addMultipleQuestions(questions)
+        quiz.save()
+
+        quiz_db = Quiz.get(quiz.quiz_id)
+        Quiz.delete(quiz.quiz_id)
+
+        assert quiz_db is not None
+        self.assertIsInstance(quiz_db['questions'], list)
+        self.assertIsInstance(quiz_db['questions'][0], dict)
+        self.assertIsInstance(quiz_db['questions'][0]['question'], str)
+        self.assertIsInstance(quiz_db['questions'][1]['options'], list)
 
 if __name__ == '__main__':
     unittest.main()
