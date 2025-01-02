@@ -271,8 +271,10 @@ def edit(quiz_id):
 
         try:
             Quiz.update(quiz_id, data)
+            flash("Quiz updated successfully")
         except KeyError as e:
             print(e)
+        return redirect(url_for('home'))
 
     return render_template("edit.html", title="Edit", year=year, data=quiz)
 
