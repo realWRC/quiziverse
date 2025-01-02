@@ -167,7 +167,11 @@ class Quiz():
     def delete(quiz_id):
         """ Deletes quiz by id
         """
-        return db.quizzes.delete_one({"quiz_id": quiz_id})
+        result = db.quizzes.delete_one({"quiz_id": quiz_id})
+        if result.acknowledged and result.deleted_count == 1:
+            pass
+        else:
+            raise KeyError("Quiz delete operation failed")
 
     @staticmethod
     def update(quiz_id, data):

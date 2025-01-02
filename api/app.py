@@ -274,9 +274,35 @@ def edit(quiz_id):
             flash("Quiz updated successfully")
         except KeyError as e:
             print(e)
+            flash("Quiz update failed")
         return redirect(url_for('home'))
 
     return render_template("edit.html", title="Edit", year=year, data=quiz)
+
+
+@app.route('/delete/<quiz_id>', methods=['GET'])
+def delete(quiz_id):
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('home'))
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        flash("Quiz not found")
+        return redirect(request.referrer)
+
+    if not quiz['creator_id'] == current_user.get_id():
+        flash("You are not authorized to delete this quiz")
+        return redirect(url_for('home'))
+
+    try:
+        Quiz.delete(quiz_id)
+        flash("Quiz deleted successfully")
+        return redirect(request.referrer)
+    except KeyError as e:
+        print(e)
+        flash("Quiz deletion failed")
+    return redirect(request.referrer)
 
 
 if __name__ == "__main__":
