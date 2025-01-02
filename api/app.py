@@ -7,6 +7,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
 from models.quiz import Quiz
 from urllib.parse import urlparse
+from uuid import uuid4
 from pprint import pprint
 
 year = date.today().strftime("%Y")
@@ -391,6 +392,120 @@ def takequiz(quiz_id):
         start_time=starttime
     )
 
+@app.route('/skip/<quiz_id>', methods=["POST"])
+def skip(quiz_id):
+    """ Skips a quiz question
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not "taking_quiz" in session:
+        flash("You are not taking a quiz")
+        return redirect(url_for('home'))
+
+    session["taking_quiz"]["current_time"] = datetime.now(timezone.utc)
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        del session["taking_quiz"]
+        flash("Quiz not found")
+        return redirect(url_for('home'))
+
+    if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
+        session["taking_quiz"]["timeout"] = True
+        flash("Time Ran Out")
+        return redirect(url_for('finishquiz'))
+
+    if session["taking_quiz"]["current_index"] == (len(quiz["questions"]) - 1):
+        session["taking_quiz"]["finished"] = True
+        return(url_for('finishquiz'))
+
+    payload = request.form.get('answer')
+    if not payload:
+        print("No data recied when submitting quiz")
+        return redirect(request.referrer)
+
+    try:
+        payload = json.loads(payload)
+    except json.JSONDecodeError:
+        del session["taking_quiz"]
+        flash("Invalid data submitted")
+        return redirect(request.referrer)
+
+    question_id, answer = list(payload['answer'].items())[0]
+    del payload
+    if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
+        del session["taking_quiz"]
+        flash("Tampering detected")
+        return redirect(url_for('home'))
+
+    answer = uuid4()
+    session["taking_quiz"]["answer"][question_id] = {
+        "question_id": question_id,
+        "answer": answer
+    }
+
+    session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"]
+    session["taking_quiz"]["current_index"] += 1
+    session.modified = True
+
+    return redirect(url_for('takequiz'))
+
+
+@app.route('/previous/<quiz_id>')
+def previous(quiz_id):
+    """ Handles going back ward in quiz
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not "taking_quiz" in session:
+        flash("You are not taking a quiz")
+        return redirect(url_for('home'))
+
+    session["taking_quiz"]["current_time"] = datetime.now(timezone.utc)
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        del session["taking_quiz"]
+        flash("Quiz not found")
+        return redirect(url_for('home'))
+
+    if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
+        session["taking_quiz"]["timeout"] = True
+        flash("Time Ran Out")
+        return redirect(url_for('finishquiz'))
+
+    payload = request.form.get('answer')
+    if not payload:
+        print("No data recied when submitting quiz")
+        return redirect(request.referrer)
+
+    try:
+        payload = json.loads(payload)
+    except json.JSONDecodeError:
+        del session["taking_quiz"]
+        flash("Invalid data submitted")
+        return redirect(request.referrer)
+
+    question_id, answer = list(payload['answer'].items())[0]
+    del payload
+    del answer
+    if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
+        del session["taking_quiz"]
+        flash("Tampering detected")
+        return redirect(url_for('home'))
+
+    if session["taking_quiz"]["current_index"] == 0:
+        flash("No previous question to do back to")
+        return redirect(url_for('takequiz'))
+
+    session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"] - 1
+    session["taking_quiz"]["current_index"] = session["taking_quiz"]["previous_index"]
+    session.modified = True
+    return redirect(url_for('takequiz'))
 
 @app.route('/submitanswer/<quiz_id>', methods=["POST"])
 def submitanswer(quiz_id):
@@ -426,17 +541,20 @@ def submitanswer(quiz_id):
         session["taking_quiz"]["finished"] = True
         return(url_for('finishquiz'))
 
-    session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"]
-    session["taking_quiz"]["current_index"] += 1
-
     payload = request.form.get('answer')
     if not payload:
         print("No data recied when submitting quiz")
         return redirect(request.referrer)
 
-    payload = json.loads(payload)
-    question_id, answer = list(payload['answer'].items())[0]
+    try:
+        payload = json.loads(payload)
+    except json.JSONDecodeError:
+        del session["taking_quiz"]
+        flash("Invalid data submitted")
+        return redirect(request.referrer)
 
+    question_id, answer = list(payload['answer'].items())[0]
+    del payload
     if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
         del session["taking_quiz"]
         flash("Tampering detected")
@@ -446,6 +564,8 @@ def submitanswer(quiz_id):
         "question_id": question_id,
         "answer": answer
     }
+    session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"]
+    session["taking_quiz"]["current_index"] += 1
     session.modified = True
 
     return redirect(url_for('takequiz'))
