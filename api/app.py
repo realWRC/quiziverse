@@ -360,17 +360,17 @@ def takequiz(quiz_id):
             "quiz_id": quiz_id,
             "current_index": 0,
             "previous_index": None,
-            "answers": {}
+            "answers": [],
+            "finished": False,
         }
 
+    # Potential Bug
     if session["taking_quiz"]["quiz_id"] != quiz_id:
         flash("Use interface to take the quiz")
         del session["taking_quiz"]
         return redirect(url_for('home'))
 
-    return render_template(
-            'takequiz.html', question=quiz['questions'][session["current_index"]]
-    )
+    return render_template('takequiz.html', question=quiz['questions'][session["current_index"]])
 
 @app.route('/submitanswer/<quiz_id>', methods=["POST"])
 def submitanswer(quiz_id):
@@ -389,21 +389,21 @@ def submitanswer(quiz_id):
         flash("Quiz not found")
         return redirect(url_for('home'))
 
-    if session["current_index"] == 0 and session["previous_index"] != None:
+    if session["taking_quiz"]["current_index"] == 0 and session["taking_quiz"]["previous_index"] != None:
         flash("Quiz was temtered with")
+        del session["taking_quiz"]
         return redirect(url_for('home'))
 
-    if session["current_index"] == 0:
-        session["previous_index"] = session["current_index"]
-        session["current_index"] = session["current_index"] + 1
+    if session["taking_quiz"]["current_index"] == (len(quiz["questions"]) - 1):
+        session["taking_quiz"]["finished"] = True
+        return(url_for('finish'))
 
-    if not isinstance(quiz["questions"], list):
-        raise TypeError("quiz['questions'] from db is not a list")
+    session["taking_quiz"]["previous_index"] = session["current_index"]
+    session["current_index"] = session["current_index"] + 1
 
+    return render_template('takequiz.html', question=quiz['questions']['current_index'])
 
-    return ""
-
-
+# @app.route('/skip/<quiz_id>'):
 
 
 if __name__ == "__main__":
