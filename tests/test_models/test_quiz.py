@@ -1,6 +1,7 @@
 import unittest
 from models.quiz import Quiz
 from models.user import User
+from pprint import pprint
 
 
 class TestQuizModel(unittest.TestCase):
@@ -193,6 +194,7 @@ class TestQuizModel(unittest.TestCase):
 
         quiz.addMultipleQuestions(questions)
         quiz.save()
+        pprint(quiz.__dict__)
 
         quiz_db = Quiz.get(quiz.quiz_id)
         Quiz.delete(quiz.quiz_id)
