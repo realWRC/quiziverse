@@ -6,9 +6,11 @@ from flask import flash, request, session, render_template, url_for, redirect
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
 from models.quiz import Quiz
+from urllib.parse import urlparse
 from pprint import pprint
 
 year = date.today().strftime("%Y")
+domain = "quiziverse.com"
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -229,6 +231,7 @@ def edit(quiz_id):
     if not current_user.is_authenticated:
         return redirect(url_for('index'))
 
+
     quiz = Quiz.get(quiz_id)
 
     if not quiz:
@@ -241,6 +244,8 @@ def edit(quiz_id):
 
     if request.method == "POST":
         data = request.form.get("quiz_json", '')
+
+        session['edit_quiz_data'] = data
 
         try:
             data = json.loads(data)
@@ -266,16 +271,29 @@ def edit(quiz_id):
             if validation[0]:
                 pass
             else:
+                session['edit_quiz_data'] = data
                 flash(validation[1])
                 return redirect(url_for('edit', quiz_id=quiz_id))
 
         try:
             Quiz.update(quiz_id, data)
+            del session['edit_quiz_data']
             flash("Quiz updated successfully")
         except KeyError as e:
             print(e)
             flash("Quiz update failed")
         return redirect(url_for('home'))
+
+    try:
+        data = session["edit_quiz_data"]
+    except KeyError:
+        data = None
+        pass
+    url = urlparse(request.referrer) 
+    if (url.netloc == '127.0.0.1:5000' or url.netloc == domain) and url.path == f'/edit/{quiz_id}' and data:
+        flash("Back in quiz bro")
+        data['quiz_id'] = quiz_id
+        return render_template("edit.html", title="Edit", year=year, data=data)
 
     return render_template("edit.html", title="Edit", year=year, data=quiz)
 
