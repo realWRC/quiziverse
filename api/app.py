@@ -341,7 +341,7 @@ def quizinfo(quiz_id):
         flash("Quiz not found")
         return redirect(request.referrer)
 
-    return render_template('quizinfo.html', title=quiz['quiz_id'], year=year, quiz=quiz)
+    return render_template('quizinfo.html', title=quiz['title'] , year=year, quiz=quiz)
 
 
 @app.route('/take/<quiz_id>', methods=['GET'])
@@ -353,13 +353,13 @@ def takequiz(quiz_id):
         return redirect(url_for('login'))
 
     quiz = Quiz.get(quiz_id)
-    if not quiz:
+    if quiz == None:
         flash("Quiz not found")
         return redirect(request.referrer)
 
     if not "taking_quiz" in session:
         start_time = datetime.now(timezone.utc)
-        finish_time = start_time + timedelta(minutes=quiz["time_limit"])
+        finish_time = start_time + timedelta(seconds=quiz["time_limit"])
         # This should cache without calling session.modified = True
         session["taking_quiz"] = {
             "quiz_id": quiz_id,
@@ -383,13 +383,18 @@ def takequiz(quiz_id):
         return redirect(url_for('home'))
 
     # Consider changing to redis for session storage to get faster access times by caching quiz in session
-    starttime = session['taking_quiz']['start_time']
+
+    print(f'Index of current question: {session["taking_quiz"]["current_index"]}')
+    start_time = session["taking_quiz"]["start_time"]
+    session["taking_quiz"]["duration"] = session["taking_quiz"]["finish_time"] - session["taking_quiz"]["current_time"]
+    session.modified = True
     return render_template(
         'takequiz.html',
         title=quiz["title"],
         year=year,
-        question=quiz['questions'][session["current_index"]],
-        start_time=starttime
+        question=quiz['questions'][session["taking_quiz"]["current_index"]],
+        start_time=start_time,
+        duration=int((session["taking_quiz"]["duration"]).total_seconds())
     )
 
 @app.route('/skip/<quiz_id>', methods=["POST"])
@@ -407,7 +412,7 @@ def skip(quiz_id):
     session["taking_quiz"]["current_time"] = datetime.now(timezone.utc)
 
     quiz = Quiz.get(quiz_id)
-    if not quiz:
+    if quiz == None:
         del session["taking_quiz"]
         flash("Quiz not found")
         return redirect(url_for('home'))
@@ -415,11 +420,11 @@ def skip(quiz_id):
     if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
         session["taking_quiz"]["timeout"] = True
         flash("Time Ran Out")
-        return redirect(url_for('finishquiz'))
+        return redirect(url_for('finishquiz', quiz_id=quiz_id))
 
     if session["taking_quiz"]["current_index"] == (len(quiz["questions"]) - 1):
         session["taking_quiz"]["finished"] = True
-        return(url_for('finishquiz'))
+        return redirect(url_for('finishquiz', quiz_id=quiz_id))
 
     payload = request.form.get('answer')
     if not payload:
@@ -441,19 +446,20 @@ def skip(quiz_id):
         return redirect(url_for('home'))
 
     answer = uuid4()
-    session["taking_quiz"]["answer"][question_id] = {
+    session["taking_quiz"]["answers"][question_id] = {
         "question_id": question_id,
         "answer": answer
     }
+    print(session["taking_quiz"]["answers"])
 
     session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"]
-    session["taking_quiz"]["current_index"] += 1
+    session["taking_quiz"]["current_index"] += 1 
     session.modified = True
 
-    return redirect(url_for('takequiz'))
+    return redirect(url_for('takequiz', quiz_id=quiz_id))
 
 
-@app.route('/previous/<quiz_id>')
+@app.route('/previous/<quiz_id>', methods=['POST'])
 def previous(quiz_id):
     """ Handles going back ward in quiz
     """
@@ -476,7 +482,7 @@ def previous(quiz_id):
     if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
         session["taking_quiz"]["timeout"] = True
         flash("Time Ran Out")
-        return redirect(url_for('finishquiz'))
+        return redirect(url_for('finishquiz', quiz_id=quiz_id))
 
     payload = request.form.get('answer')
     if not payload:
@@ -494,18 +500,21 @@ def previous(quiz_id):
     del payload
     del answer
     if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
+        print(f"js payload: {question_id}")
+        print(f'db question_id: {quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]}')
         del session["taking_quiz"]
         flash("Tampering detected")
         return redirect(url_for('home'))
 
+    # Store answer
     if session["taking_quiz"]["current_index"] == 0:
         flash("No previous question to do back to")
-        return redirect(url_for('takequiz'))
+        return redirect(url_for('takequiz', quiz_id=quiz_id))
 
     session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"] - 1
     session["taking_quiz"]["current_index"] = session["taking_quiz"]["previous_index"]
     session.modified = True
-    return redirect(url_for('takequiz'))
+    return redirect(url_for('takequiz', quiz_id=quiz_id))
 
 @app.route('/submitanswer/<quiz_id>', methods=["POST"])
 def submitanswer(quiz_id):
@@ -530,16 +539,12 @@ def submitanswer(quiz_id):
     if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
         session["taking_quiz"]["timeout"] = True
         flash("Time Ran Out")
-        return redirect(url_for('finishquiz'))
+        return redirect(url_for('finishquiz', quiz_id=quiz_id))
 
     # if session["taking_quiz"]["current_index"] == 0 and session["taking_quiz"]["previous_index"] != None:
     #     flash("Quiz was temtered with")
     #     del session["taking_quiz"]
     #     return redirect(url_for('home'))
-
-    if session["taking_quiz"]["current_index"] == (len(quiz["questions"]) - 1):
-        session["taking_quiz"]["finished"] = True
-        return(url_for('finishquiz'))
 
     payload = request.form.get('answer')
     if not payload:
@@ -560,15 +565,21 @@ def submitanswer(quiz_id):
         flash("Tampering detected")
         return redirect(url_for('home'))
 
-    session["taking_quiz"]["answer"][question_id] = {
+    # Store answer
+    session["taking_quiz"]["answers"][question_id] = {
         "question_id": question_id,
         "answer": answer
     }
+
+    if session["taking_quiz"]["current_index"] == (len(quiz["questions"]) - 1):
+        session["taking_quiz"]["finished"] = True
+        return redirect(url_for('finishquiz', quiz_id=quiz_id))
+
     session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"]
     session["taking_quiz"]["current_index"] += 1
     session.modified = True
 
-    return redirect(url_for('takequiz'))
+    return redirect(url_for('takequiz', quiz_id=quiz_id))
 
 @app.route('/finishquiz/<quiz_id>')
 def finishquiz(quiz_id):
@@ -589,15 +600,17 @@ def finishquiz(quiz_id):
         return redirect(url_for('home'))
 
     answers = session["taking_quiz"]["answers"]
+    print(f"from finish quiz:{answers}")
     user_scoce = 0
 
     for question in quiz["questions"]:
-        try:
-            if question["question_id"] == answers["question_id"]:
-                if question["answer"] == answers["answer"]:
-                    user_scoce += question["score"]
-        except KeyError:
-            pass
+        question_id = question["question_id"]
+        if question_id in answers.keys():
+            if question["answer"] == answers[question_id]["answer"]:
+                user_scoce += question["score"]
+
+
+    del session["taking_quiz"]
 
     return render_template('finishquiz.html', title=quiz['title'], year=year, user_score=user_scoce)
 

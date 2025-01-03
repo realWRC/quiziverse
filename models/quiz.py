@@ -177,12 +177,16 @@ class Quiz():
     def update(quiz_id, data):
         """ Updates a quiz object from storage
         """
-        temp = Quiz(
-            title = data["title"],
-            creator_id = "dummy id",
-            time_limit = data["time_limit"],
-        )
+        # temp = Quiz(
+        #     title = data["title"],
+        #     creator_id = "dummy id",
+        #     time_limit = data["time_limit"],
+        # )
+        # temp.addMultipleQuestions(data["questions"])
+        temp = Quiz.recreate(quiz_id)
+        assert temp is not None
         temp.addMultipleQuestions(data["questions"])
+
         result = db.quizzes.update_one(
             {"quiz_id": quiz_id },
             { "$set": {
