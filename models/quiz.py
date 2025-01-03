@@ -1,6 +1,5 @@
 import uuid
 from models import db
-from pprint import pprint
 
 class Quiz():
     """ Defines the datamodel for a quiz.
@@ -191,8 +190,6 @@ class Quiz():
                 "time_limit": data['time_limit']
             }}
         )
-        pprint(temp.__dict__)
-        pprint(Quiz.get(quiz_id))
         del temp
         if result.modified_count == 0:
             raise KeyError("Pymongo could not update the document due to an invalid quiz_id")

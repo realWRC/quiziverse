@@ -3,8 +3,12 @@
 {% block main %}
 
 <div class="quiz-container">
-  <h2>Quiz Finished!</h2>
+  <h2>{{ heading }}</h2>
   <p>Your total score is: <strong>{{ user_score }}</strong></p>
+  <p>Maximum score: <strong>{{ max_score }}</strong></p>
+  <p>Accuracy: <strong>{{ accuracy }}&#37</strong></p>
+  <p>Correct Questions: <strong>{{ correct_answers }}</strong></p>
+  <p>Questions Attempted: <strong>{{ questions_attempted }}</strong></p>
 </div>
 
 {% endblock main %}

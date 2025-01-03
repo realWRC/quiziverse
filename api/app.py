@@ -400,7 +400,6 @@ def takequiz(quiz_id):
 
     # Consider changing to redis for session storage to get faster access times by caching quiz in session
 
-    print(f'Index of current question: {session["taking_quiz"]["current_index"]}')
     start_time = session["taking_quiz"]["start_time"]
     session["taking_quiz"]["duration"] = session["taking_quiz"]["finish_time"] - session["taking_quiz"]["current_time"]
     session.modified = True
@@ -461,12 +460,12 @@ def skip(quiz_id):
         flash("Tampering detected")
         return redirect(url_for('home'))
 
-    answer = uuid4()
+    # answer = uuid4()
+    answer = None
     session["taking_quiz"]["answers"][question_id] = {
         "question_id": question_id,
         "answer": answer
     }
-    print(session["taking_quiz"]["answers"])
 
     session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"]
     session["taking_quiz"]["current_index"] += 1 
@@ -595,6 +594,7 @@ def submitanswer(quiz_id):
 
     return redirect(url_for('takequiz', quiz_id=quiz_id))
 
+
 @app.route('/finishquiz/<quiz_id>')
 def finishquiz(quiz_id):
     """ Finishes quiz
@@ -614,19 +614,43 @@ def finishquiz(quiz_id):
         return redirect(url_for('home'))
 
     answers = session["taking_quiz"]["answers"]
-    print(f"from finish quiz:{answers}")
-    user_scoce = 0
+    user_score = 0
+    correct_answers = 0
+    questions_attempted = 0
+    questions_skiped = 0
+    max_score = quiz["total_score"]
+    if session["taking_quiz"]["timeout"]:
+        heading = f"Quiz Timeout!"
+    else:
+        heading = f"Quiz Finished!"
 
     for question in quiz["questions"]:
         question_id = question["question_id"]
         if question_id in answers.keys():
+            if answers[question_id]["answer"] != None:
+                questions_attempted += 1
+            else:
+                questions_skiped += 1
             if question["answer"] == answers[question_id]["answer"]:
-                user_scoce += question["score"]
-
+                user_score += question["score"]
+                correct_answers += 1
+    try:
+        accuracy = (correct_answers/questions_attempted) * 100
+    except ZeroDivisionError:
+        accuracy = 0
+        pass
 
     del session["taking_quiz"]
 
-    return render_template('finishquiz.html', title=quiz['title'], year=year, user_score=user_scoce)
+    return render_template(
+        'finishquiz.html', title=quiz['title'],
+        heading=heading,
+        year=year, user_score=user_score,
+        correct_answers=correct_answers,
+        questions_attempted=questions_attempted,
+        max_score=max_score,
+        accuracy=accuracy
+    )
 
 
 if __name__ == "__main__":
