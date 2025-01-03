@@ -1,5 +1,6 @@
 import uuid
 from models import db
+from pprint import pprint
 
 class Quiz():
     """ Defines the datamodel for a quiz.
@@ -177,12 +178,6 @@ class Quiz():
     def update(quiz_id, data):
         """ Updates a quiz object from storage
         """
-        # temp = Quiz(
-        #     title = data["title"],
-        #     creator_id = "dummy id",
-        #     time_limit = data["time_limit"],
-        # )
-        # temp.addMultipleQuestions(data["questions"])
         temp = Quiz.recreate(quiz_id)
         assert temp is not None
         temp.addMultipleQuestions(data["questions"])
@@ -190,12 +185,14 @@ class Quiz():
         result = db.quizzes.update_one(
             {"quiz_id": quiz_id },
             { "$set": {
-                "title": temp.title,
+                "title": data['title'],
                 "questions": temp.questions,
                 "total_score": temp.total_score,
-                "time_limit": temp.time_limit,
+                "time_limit": data['time_limit']
             }}
         )
+        pprint(temp.__dict__)
+        pprint(Quiz.get(quiz_id))
         del temp
         if result.modified_count == 0:
             raise KeyError("Pymongo could not update the document due to an invalid quiz_id")

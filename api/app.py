@@ -296,7 +296,7 @@ def edit(quiz_id):
         pass
     url = urlparse(request.referrer) 
     if (url.netloc == '127.0.0.1:5000' or url.netloc == domain) and url.path == f'/edit/{quiz_id}' and data:
-        flash("Back in quiz bro")
+        # flash("Back in quiz bro")
         data['quiz_id'] = quiz_id
         return render_template("edit.html", title="Edit", year=year, data=data)
 

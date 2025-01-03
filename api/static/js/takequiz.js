@@ -89,4 +89,26 @@
     });
   }
 
+
+  let timeRemaining = duration;
+
+  if (duration > 0 && countdownElement) {
+    displayTime(countdownElement, timeRemaining);
+    const intervalId = setInterval(() => {
+      if (timeRemaining <= 0) {
+        clearInterval(intervalId);
+        displayTime(countdownElement, 0);
+        return;
+      }
+      timeRemaining--;
+      displayTime(countdownElement, timeRemaining);
+    }, 1000);
+  }
+
+  function displayTime(element, secondsLeft) {
+    const minutes = Math.floor(secondsLeft / 60);
+    const seconds = secondsLeft % 60;
+    element.textContent = `Time Left: ${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+  }
+
 })();
