@@ -2,7 +2,7 @@
 import json
 from api.config import app, login_manager
 from datetime import date, datetime, timezone, timedelta
-from flask import flash, request, session, render_template, url_for, redirect
+from flask import flash, request, session, render_template, url_for, redirect, jsonify
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
 from models.quiz import Quiz
@@ -301,6 +301,22 @@ def edit(quiz_id):
         return render_template("edit.html", title="Edit", year=year, data=data)
 
     return render_template("edit.html", title="Edit", year=year, data=quiz)
+
+
+@app.route('/get/<quiz_id>', methods=["GET"])
+def get(quiz_id):
+    """ Gets a quiz and returns it as json
+    """
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        return jsonify({
+            "message": "Quiz not found"
+        }), 400
+
+    del quiz["creator_id"]
+    del quiz["_id"]
+
+    return jsonify(quiz)
 
 
 @app.route('/delete/<quiz_id>', methods=['GET'])
