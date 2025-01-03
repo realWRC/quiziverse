@@ -1,5 +1,6 @@
 import uuid
 from models import db
+from pprint import pprint
 
 class Quiz():
     """ Defines the datamodel for a quiz.
@@ -152,7 +153,46 @@ class Quiz():
         return db.quizzes.find_one({"quiz_id": quiz_id})
 
     @staticmethod
+    def getAll():
+        """ Gets all quizzes from database
+        """
+        return db.quizzes.find()
+
+    @staticmethod
+    def getByFilter(criteria):
+        """ Returns quiz by a given field
+        """
+        return db.quizzes.find(criteria)
+
+    @staticmethod
     def delete(quiz_id):
         """ Deletes quiz by id
         """
-        return db.quizzes.delete_one({"quiz_id": quiz_id})
+        result = db.quizzes.delete_one({"quiz_id": quiz_id})
+        if result.acknowledged and result.deleted_count == 1:
+            pass
+        else:
+            raise KeyError("Quiz delete operation failed")
+
+    @staticmethod
+    def update(quiz_id, data):
+        """ Updates a quiz object from storage
+        """
+        temp = Quiz.recreate(quiz_id)
+        assert temp is not None
+        temp.addMultipleQuestions(data["questions"])
+
+        result = db.quizzes.update_one(
+            {"quiz_id": quiz_id },
+            { "$set": {
+                "title": data['title'],
+                "questions": temp.questions,
+                "total_score": temp.total_score,
+                "time_limit": data['time_limit']
+            }}
+        )
+        pprint(temp.__dict__)
+        pprint(Quiz.get(quiz_id))
+        del temp
+        if result.modified_count == 0:
+            raise KeyError("Pymongo could not update the document due to an invalid quiz_id")

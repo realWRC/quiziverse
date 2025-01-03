@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 import json
 from api.config import app, login_manager
-from datetime import date
+from datetime import date, datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect
 from flask_login import current_user, login_required, login_user, logout_user
 from models.user import User
 from models.quiz import Quiz
+from urllib.parse import urlparse
+from uuid import uuid4
 from pprint import pprint
 
 year = date.today().strftime("%Y")
+domain = "quiziverse.com"
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -29,9 +32,20 @@ def home():
     """ Renders the users home page
     """
     if not current_user.is_authenticated:
-        return redirect(url_for('index'))
+        flash("You must be logged in first.")
+        return redirect(url_for('login'))
 
-    return render_template("home.html", title="HOME", year=year)
+    quizzes = Quiz.getAll()
+
+    return render_template("home.html", title="HOME", year=year, quizzes=quizzes)
+
+@app.route("/myquizzes")
+def myquizzes():
+    """ Shows all quizes created by a given user.
+    """
+    my_quizzes = Quiz.getByFilter({"creator_id": current_user.get_id()})
+    my_quizzes = list(my_quizzes)
+    return render_template("myquizzes.html", quizzes=my_quizzes, title="My Quizzes", year=year)
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -46,6 +60,7 @@ def register():
     """ Registration route
     """
     if current_user.is_authenticated:
+        flash("You are already registed and logged in")
         return redirect(url_for('home'))
 
     if request.method == "POST":
@@ -131,11 +146,11 @@ def unregister():
         session.clear()
         User.deleteByID(temp_id)
         if User.getByID(temp_id):
-            # flash("Account deletion unsuccesful! Please contact Administrator.")
+            flash("Account deletion unsuccesful! Please contact Administrator.")
             return redirect(url_for("index"))
         else:
-            # flash("Successfully deleted account!")
-            return render_template("index.html"), 200
+            flash("Successfully deleted account!")
+            return redirect(url_for("index"))
     else:
         return redirect(url_for('index'))
 
@@ -147,6 +162,7 @@ def logout():
     if current_user.is_authenticated:
         logout_user()
         session.clear()
+        flash("Logout Successful!")
         return redirect(url_for("index"))
     else:
         flash("You are not logged in.")
@@ -158,7 +174,8 @@ def create():
     """ Route for creating quizzes
     """
     if not current_user.is_authenticated:
-        return redirect(url_for('index'))
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
 
     if request.method == "POST":
         data = request.form.get("quiz_json", '')
@@ -204,11 +221,396 @@ def create():
             time_limit = data['time_limit']
         )
         quiz.addMultipleQuestions(data['questions'])
-        pprint(quiz.__dict__)
+        # pprint(quiz.__dict__)
+        quiz.save()
         flash("Quiz created successfully")
         return redirect(url_for('home'))
 
     return render_template("create.html", title="Create", year=year)
+
+
+@app.route('/edit/<quiz_id>', methods=['GET', 'POST'])
+def edit(quiz_id):
+    """ Route for editing a users quiz if they are the creator
+    """
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+
+
+    quiz = Quiz.get(quiz_id)
+
+    if not quiz:
+        flash("Invalid quiz id")
+        return redirect(url_for('home'))
+
+    if not quiz['creator_id'] == current_user.get_id():
+        flash("Not authorized to edit this quiz")
+        return redirect(url_for('home'))
+
+    if request.method == "POST":
+        data = request.form.get("quiz_json", '')
+
+        session['edit_quiz_data'] = data
+
+        try:
+            data = json.loads(data)
+        except json.JSONDecodeError:
+            flash("Invalid quiz data")
+            return redirect(url_for('edit', quiz_id=quiz_id))
+
+        if data['time_limit'] is None:
+            data['time_limit'] = 0
+
+        validation = Quiz.validateFields(
+            title = data['title'],
+            time_limit = data['time_limit'],
+        )
+        if validation[0]:
+            pass
+        else:
+            flash(validation[1])
+            return redirect(url_for('edit', quiz_id=quiz_id))
+
+        for question in data["questions"]:
+            validation = Quiz.validateQuestion(question)
+            if validation[0]:
+                pass
+            else:
+                session['edit_quiz_data'] = data
+                flash(validation[1])
+                return redirect(url_for('edit', quiz_id=quiz_id))
+
+        try:
+            Quiz.update(quiz_id, data)
+            del session['edit_quiz_data']
+            flash("Quiz updated successfully")
+        except KeyError as e:
+            print(e)
+            flash("Quiz update failed")
+        return redirect(url_for('home'))
+
+    try:
+        data = session["edit_quiz_data"]
+    except KeyError:
+        data = None
+        pass
+    url = urlparse(request.referrer) 
+    if (url.netloc == '127.0.0.1:5000' or url.netloc == domain) and url.path == f'/edit/{quiz_id}' and data:
+        # flash("Back in quiz bro")
+        data['quiz_id'] = quiz_id
+        return render_template("edit.html", title="Edit", year=year, data=data)
+
+    return render_template("edit.html", title="Edit", year=year, data=quiz)
+
+
+@app.route('/delete/<quiz_id>', methods=['GET'])
+def delete(quiz_id):
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        flash("Quiz not found")
+        return redirect(request.referrer)
+
+    if not quiz['creator_id'] == current_user.get_id():
+        flash("You are not authorized to delete this quiz")
+        return redirect(url_for('home'))
+
+    try:
+        Quiz.delete(quiz_id)
+        flash("Quiz deleted successfully")
+        return redirect(request.referrer)
+    except KeyError as e:
+        print(e)
+        flash("Quiz deletion failed")
+    return redirect(request.referrer)
+
+
+@app.route('/quizinfo/<quiz_id>', methods=['GET'])
+def quizinfo(quiz_id):
+    """ Displays information about a quiz before it is taken
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        flash("Quiz not found")
+        return redirect(request.referrer)
+
+    return render_template('quizinfo.html', title=quiz['title'] , year=year, quiz=quiz)
+
+
+@app.route('/take/<quiz_id>', methods=['GET'])
+def takequiz(quiz_id):
+    """ Allows user to take a quiz from.
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    quiz = Quiz.get(quiz_id)
+    if quiz == None:
+        flash("Quiz not found")
+        return redirect(request.referrer)
+
+    if not "taking_quiz" in session:
+        start_time = datetime.now(timezone.utc)
+        finish_time = start_time + timedelta(seconds=quiz["time_limit"])
+        # This should cache without calling session.modified = True
+        session["taking_quiz"] = {
+            "quiz_id": quiz_id,
+            "current_index": 0,
+            "previous_index": None,
+            "answers": {},
+            "timeout": False,
+            "finished": False,
+            "start_time": start_time,
+            "current_time": start_time,
+            "finish_time": finish_time,
+            "duration": finish_time - start_time
+        }
+        del start_time
+        del finish_time
+
+    # Potentially Bugged or useless
+    if session["taking_quiz"]["quiz_id"] != quiz_id:
+        flash("Use interface to take the quiz")
+        del session["taking_quiz"]
+        return redirect(url_for('home'))
+
+    # Consider changing to redis for session storage to get faster access times by caching quiz in session
+
+    print(f'Index of current question: {session["taking_quiz"]["current_index"]}')
+    start_time = session["taking_quiz"]["start_time"]
+    session["taking_quiz"]["duration"] = session["taking_quiz"]["finish_time"] - session["taking_quiz"]["current_time"]
+    session.modified = True
+    return render_template(
+        'takequiz.html',
+        title=quiz["title"],
+        year=year,
+        question=quiz['questions'][session["taking_quiz"]["current_index"]],
+        start_time=start_time,
+        duration=int((session["taking_quiz"]["duration"]).total_seconds())
+    )
+
+@app.route('/skip/<quiz_id>', methods=["POST"])
+def skip(quiz_id):
+    """ Skips a quiz question
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not "taking_quiz" in session:
+        flash("You are not taking a quiz")
+        return redirect(url_for('home'))
+
+    session["taking_quiz"]["current_time"] = datetime.now(timezone.utc)
+
+    quiz = Quiz.get(quiz_id)
+    if quiz == None:
+        del session["taking_quiz"]
+        flash("Quiz not found")
+        return redirect(url_for('home'))
+
+    if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
+        session["taking_quiz"]["timeout"] = True
+        flash("Time Ran Out")
+        return redirect(url_for('finishquiz', quiz_id=quiz_id))
+
+    if session["taking_quiz"]["current_index"] == (len(quiz["questions"]) - 1):
+        session["taking_quiz"]["finished"] = True
+        return redirect(url_for('finishquiz', quiz_id=quiz_id))
+
+    payload = request.form.get('answer')
+    if not payload:
+        print("No data recied when submitting quiz")
+        return redirect(request.referrer)
+
+    try:
+        payload = json.loads(payload)
+    except json.JSONDecodeError:
+        del session["taking_quiz"]
+        flash("Invalid data submitted")
+        return redirect(request.referrer)
+
+    question_id, answer = list(payload['answer'].items())[0]
+    del payload
+    if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
+        del session["taking_quiz"]
+        flash("Tampering detected")
+        return redirect(url_for('home'))
+
+    answer = uuid4()
+    session["taking_quiz"]["answers"][question_id] = {
+        "question_id": question_id,
+        "answer": answer
+    }
+    print(session["taking_quiz"]["answers"])
+
+    session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"]
+    session["taking_quiz"]["current_index"] += 1 
+    session.modified = True
+
+    return redirect(url_for('takequiz', quiz_id=quiz_id))
+
+
+@app.route('/previous/<quiz_id>', methods=['POST'])
+def previous(quiz_id):
+    """ Handles going back ward in quiz
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not "taking_quiz" in session:
+        flash("You are not taking a quiz")
+        return redirect(url_for('home'))
+
+    session["taking_quiz"]["current_time"] = datetime.now(timezone.utc)
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        del session["taking_quiz"]
+        flash("Quiz not found")
+        return redirect(url_for('home'))
+
+    if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
+        session["taking_quiz"]["timeout"] = True
+        flash("Time Ran Out")
+        return redirect(url_for('finishquiz', quiz_id=quiz_id))
+
+    payload = request.form.get('answer')
+    if not payload:
+        print("No data recied when submitting quiz")
+        return redirect(request.referrer)
+
+    try:
+        payload = json.loads(payload)
+    except json.JSONDecodeError:
+        del session["taking_quiz"]
+        flash("Invalid data submitted")
+        return redirect(request.referrer)
+
+    question_id, answer = list(payload['answer'].items())[0]
+    del payload
+    del answer
+    if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
+        del session["taking_quiz"]
+        flash("Tampering detected")
+        return redirect(url_for('home'))
+
+    # Store answer
+    if session["taking_quiz"]["current_index"] == 0:
+        flash("No previous question to do back to")
+        return redirect(url_for('takequiz', quiz_id=quiz_id))
+
+    session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"] - 1
+    session["taking_quiz"]["current_index"] = session["taking_quiz"]["previous_index"]
+    session.modified = True
+    return redirect(url_for('takequiz', quiz_id=quiz_id))
+
+@app.route('/submitanswer/<quiz_id>', methods=["POST"])
+def submitanswer(quiz_id):
+    """ Handles Submittion of question answers
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not "taking_quiz" in session:
+        flash("You are not taking a quiz")
+        return redirect(url_for('home'))
+
+    session["taking_quiz"]["current_time"] = datetime.now(timezone.utc)
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        del session["taking_quiz"]
+        flash("Quiz not found")
+        return redirect(url_for('home'))
+
+    if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
+        session["taking_quiz"]["timeout"] = True
+        flash("Time Ran Out")
+        return redirect(url_for('finishquiz', quiz_id=quiz_id))
+
+    # if session["taking_quiz"]["current_index"] == 0 and session["taking_quiz"]["previous_index"] != None:
+    #     flash("Quiz was temtered with")
+    #     del session["taking_quiz"]
+    #     return redirect(url_for('home'))
+
+    payload = request.form.get('answer')
+    if not payload:
+        print("No data recied when submitting quiz")
+        return redirect(request.referrer)
+
+    try:
+        payload = json.loads(payload)
+    except json.JSONDecodeError:
+        del session["taking_quiz"]
+        flash("Invalid data submitted")
+        return redirect(request.referrer)
+
+    question_id, answer = list(payload['answer'].items())[0]
+    del payload
+    if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
+        del session["taking_quiz"]
+        flash("Tampering detected")
+        return redirect(url_for('home'))
+
+    # Store answer
+    session["taking_quiz"]["answers"][question_id] = {
+        "question_id": question_id,
+        "answer": answer
+    }
+
+    if session["taking_quiz"]["current_index"] == (len(quiz["questions"]) - 1):
+        session["taking_quiz"]["finished"] = True
+        return redirect(url_for('finishquiz', quiz_id=quiz_id))
+
+    session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"]
+    session["taking_quiz"]["current_index"] += 1
+    session.modified = True
+
+    return redirect(url_for('takequiz', quiz_id=quiz_id))
+
+@app.route('/finishquiz/<quiz_id>')
+def finishquiz(quiz_id):
+    """ Finishes quiz
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not "taking_quiz" in session:
+        flash("You are not taking a quiz")
+        return redirect(url_for('home'))
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        del session["taking_quiz"]
+        flash("Quiz not found")
+        return redirect(url_for('home'))
+
+    answers = session["taking_quiz"]["answers"]
+    print(f"from finish quiz:{answers}")
+    user_scoce = 0
+
+    for question in quiz["questions"]:
+        question_id = question["question_id"]
+        if question_id in answers.keys():
+            if question["answer"] == answers[question_id]["answer"]:
+                user_scoce += question["score"]
+
+
+    del session["taking_quiz"]
+
+    return render_template('finishquiz.html', title=quiz['title'], year=year, user_score=user_scoce)
 
 
 if __name__ == "__main__":

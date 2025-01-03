@@ -1,0 +1,52 @@
+{% extends 'home.html' %}
+
+{% block CSS %}
+{% endblock CSS %}
+
+{% block main %}
+<div class="quiz-container">
+
+  {% if duration > 0 %}
+    <div id="countdown" class="countdown-timer"></div>
+  {% else %}
+    <div class="countdown-timer" style="color: green;">No time limit</div>
+  {% endif %}
+
+  <h2 id="question-text">{{ question.question }}</h2>
+
+  <ul id="options-list">
+    {% for option in question.options %}
+      <li class="option-item" data-value="{{ option }}" data-question-id="{{ question.question_id }}">
+        <label>
+          <input class="option-input" type="radio" name="optionRadio" value="{{ option }}">
+          {{ option }}
+        </label>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <div class="quiz-navigation">
+    <button id="back-btn" type="button">Back</button>
+    <button id="skip-btn" type="button">Skip</button>
+    <button id="submit-btn" type="button" disabled>Submit</button>
+  </div>
+
+  <form id="answer-form" method="POST" style="display: none;">
+    <input type="hidden" name="answer" id="answerpayload">
+  </form>
+
+</div>
+
+<script>
+  const SETTINGS = {
+    startTime: "{{ start.isoformat() if start else '' }}",
+    duration: {{ duration if duration else 0 }},
+    currentQuestionId: "{{ question.question_id }}",
+    currentQuestionScore: {{ question.score if question.score else 0 }},
+    quizID: "{{ question.quiz_id }}"
+  };
+</script>
+
+<script src="{{ url_for('static', filename='js/takequiz.js') }}"></script>
+
+{% endblock main %}

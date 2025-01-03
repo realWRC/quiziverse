@@ -10,15 +10,25 @@
     {% block header %}
     <header>
       <nav>
+        <a href="{{ url_for('index') }}">QUIZIVERSE</a>
         <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('register')}}">Register</a>
         <a href="{{ url_for('login') }}">Login</a>
         <a href="{{ url_for('logout') }}">Logout</a>
-        <a href="{{ url_for('register')}} ">Register</a>
       </nav>
     </header>
     {% endblock header %}
     {% block main %}
     <main>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
       <div>
         <p>Start your Journey in to the <b>QUIZIVERSE</b></p>
         <a href="{{ url_for('login') }}"><button>Login</button></a>
