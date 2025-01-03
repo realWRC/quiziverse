@@ -500,8 +500,6 @@ def previous(quiz_id):
     del payload
     del answer
     if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
-        print(f"js payload: {question_id}")
-        print(f'db question_id: {quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]}')
         del session["taking_quiz"]
         flash("Tampering detected")
         return redirect(url_for('home'))
