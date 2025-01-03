@@ -594,6 +594,28 @@ def submitanswer(quiz_id):
 
     return redirect(url_for('takequiz', quiz_id=quiz_id))
 
+@app.route('/quit/quiz_id', methods=['POST'])
+def quit(quiz_id):
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not "taking_quiz" in session:
+        flash("You are not taking a quiz")
+        return redirect(url_for('home'))
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        del session["taking_quiz"]
+        flash("Quiz not found")
+        return redirect(url_for('home'))
+
+    if session["taking_quiz"]["quiz_id"] != quiz_id:
+        print("Wrong quit url")
+        return redirect(request.referrer)
+
+    return redirect(url_for('finishquiz'))
+
 
 @app.route('/finishquiz/<quiz_id>')
 def finishquiz(quiz_id):
