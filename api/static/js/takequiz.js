@@ -49,6 +49,7 @@
     });
   }
 
+
   function buildPayload(questionId, selected, scoreVal, skipVal, backVal) {
     return {
       "answer": { [questionId]: selected },
