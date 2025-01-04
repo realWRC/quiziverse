@@ -1,9 +1,8 @@
-{% extends "home.html" %}
+{% extends 'home.html' %}
 
 {% block main %}
 {% include "_verticalnav.html" %}
 <main>
-  <p>My Results</p>
   <div>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -16,19 +15,17 @@
   {% endwith %}
   </div>
   <div>
-  {% if results %}
-    {% for result in results %}
     <div>
         <h3>{{ result.title }}</h3>
         <p>Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
         <p>Score <strong>{{ result.user_score }}</strong></p>
         <p>Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
-        <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}">Details</a>
+        <p>Questions Attempted <strong>{{ result.questions_attempted }}</strong></p>
+        <p>Accuracy <strong>{{ result.accuracy }}</strong>&#37</p>
+        <a href="{{ url_for('myresults') }}">My Results</a>
+        <a href="{{ url_for('quizinfo', quiz_id=result.quiz_id) }}">Retake Take Quiz</a>
     </div>
-    {% endfor %}
-  {% else %}
-  <p>You Have not taken any quizzes</p>
-  {% endif %}
   </div>
 </main>
+
 {% endblock main %}

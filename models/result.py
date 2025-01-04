@@ -1,5 +1,6 @@
 from uuid import uuid4
 from models import db
+from pymongo.errors import PyMongoError
 
 
 class Result():
@@ -7,7 +8,7 @@ class Result():
     """
 
     def __init__(self, user_id, results=[]):
-        self.result_id = str(uuid4)
+        self.result_id = str(uuid4())
         self.user_id = user_id
         self.results = results
 
@@ -21,10 +22,7 @@ class Result():
         """ Checks if user with user_id has a results document
         return true if it does
         """
-        if db.results.find_one({"user_id": user_id}, {"_id": 1}):
-            return True
-        else:
-            return False
+        return db.results.find_one({"user_id": user_id}, {"_id": 1}) is not None
 
     @staticmethod
     def getQuizResult(user_id, quiz_id):
@@ -60,16 +58,22 @@ class Result():
 
     @staticmethod
     def update(user_id, quiz_id, results):
-        results["quiz_id"] = quiz_id
-
-        query = db.results.update_one(
-                {"user_id": user_id},
-                { "$push": {
-                    "results": {
-                        "$each": [results],
-                        "$position": 0
-                        }
-                    }}
+        
+        db.results.update_one(
+            {"user_id": user_id},
+            {"$pull": {
+                "results": {
+                    "quiz_id": quiz_id,
+                    }
+            }}
         )
-        if query.matched_count != 1 or query.modified_count != 1:
-            raise Exception("User does not have results collection")
+
+        db.results.update_one(
+            {"user_id": user_id},
+            { "$push": {
+                "results": {
+                    "$each": [results],
+                    "$position": 0
+                    }
+                }}
+        )

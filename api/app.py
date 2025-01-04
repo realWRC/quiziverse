@@ -687,9 +687,9 @@ def finishquiz(quiz_id):
         result_document.save()
         del result_document
 
-
     try:
         Result.update(current_user.get_id(), quiz_id, quiz_results)
+        print("Update Called")
     except Exception as e:
         print(e)
 
@@ -717,11 +717,11 @@ def resultinfo(quiz_id):
         flash("You must be logged in first")
         return redirect(url_for('login'))
 
-    if not Quiz.check(quiz_id):
+    if not Quiz.get(quiz_id):
         flash("The quiz does not exist")
         return redirect(url_for('index'))
 
-    if not Result.check(current_user.get_id()):
+    if not Result.getByUserID(current_user.get_id()):
         flash("You have not taken a quiz on this site.")
         return redirect(url_for('index'))
 
@@ -730,7 +730,7 @@ def resultinfo(quiz_id):
             quiz_id = quiz_id
     )
 
-    return render_template("resultinfo.html", results=result)
+    return render_template("resultinfo.html", result=result)
 
 
 
@@ -742,7 +742,7 @@ def myresults():
         flash("You must be logged in first")
         return redirect(url_for('login'))
 
-    if not Result.check(current_user.get_id()):
+    if not Result.getByUserID(current_user.get_id()):
         results = None
     else:
         results = Result.getByUserID(current_user.get_id())
