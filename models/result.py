@@ -27,6 +27,34 @@ class Result():
             return False
 
     @staticmethod
+    def getQuizResult(user_id, quiz_id):
+        """ Retrieves results for a quiz in user results collection
+        """
+        pipeline = [
+            {
+                "$match": {
+                    "user_id": user_id, 
+                }
+            },
+            { "$project": {
+                "_id": 0,
+                "match": {
+                    "$filter": {
+                        "input": "$results",
+                        "as": "result",
+                        "cond": {"$eq": ["$$result.quiz_id", quiz_id]}
+                        }
+                    }
+                }
+            }
+        ]
+        match = list(db.results.aggregate(pipeline))
+        if match and match[0]["match"]:
+            return match[0]["match"][0]
+        else:
+            return None
+
+    @staticmethod
     def getByUserID(user_id):
         return db.results.find_one({"user_id": user_id})
 
