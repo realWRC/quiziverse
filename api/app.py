@@ -717,6 +717,10 @@ def resultinfo(quiz_id):
         flash("You must be logged in first")
         return redirect(url_for('login'))
 
+    if not Quiz.check(quiz_id):
+        flash("The quiz does not exist")
+        return redirect(url_for('index'))
+
     if not Result.check(current_user.get_id()):
         flash("You have not taken a quiz on this site.")
         return redirect(url_for('index'))
