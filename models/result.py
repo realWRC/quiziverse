@@ -57,6 +57,17 @@ class Result():
         return db.results.find_one({"user_id": user_id})
 
     @staticmethod
+    def delete(user_id, quiz_id):
+        db.results.update_one(
+            {"user_id": user_id},
+            {"$pull": {
+                "results": {
+                    "quiz_id": quiz_id,
+                    }
+            }}
+        )
+
+    @staticmethod
     def update(user_id, quiz_id, results):
         
         db.results.update_one(
