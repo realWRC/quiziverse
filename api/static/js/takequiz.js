@@ -5,6 +5,7 @@
   const submitButton = document.getElementById("submit-btn");
   const skipButton = document.getElementById("skip-btn");
   const backButton = document.getElementById("back-btn");
+  const quitButton = document.getElementById("quit-btn");
   const answerForm = document.getElementById("answer-form");
   const answerInput = document.getElementById("answerpayload");
 
@@ -90,6 +91,14 @@
     });
   }
 
+  if (quitButton) {
+    quitButton.addEventListener("click", () => {
+      const payload = buildPayload(currentQID, "none", currentScore, false, true);
+      answerForm.setAttribute("action", `/quit/${currentQuizID}`);
+      answerInput.value = JSON.stringify(payload);
+      answerForm.submit();
+    });
+  }
 
   let timeRemaining = duration;
 

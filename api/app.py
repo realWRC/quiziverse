@@ -2,8 +2,9 @@
 import json
 from api.config import app, login_manager
 from datetime import date, datetime, timezone, timedelta
-from flask import flash, request, session, render_template, url_for, redirect
+from flask import flash, request, session, render_template, url_for, redirect, jsonify
 from flask_login import current_user, login_required, login_user, logout_user
+from models.result import Result
 from models.user import User
 from models.quiz import Quiz
 from urllib.parse import urlparse
@@ -108,7 +109,8 @@ def login():
     """ Login route
     """
     if current_user.is_authenticated:
-        return redirect(request.referrer)
+        flash("You are already logged in.")
+        return redirect(url_for('home'))
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -303,6 +305,22 @@ def edit(quiz_id):
     return render_template("edit.html", title="Edit", year=year, data=quiz)
 
 
+@app.route('/get/<quiz_id>', methods=["GET"])
+def get(quiz_id):
+    """ Gets a quiz and returns it as json
+    """
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        return jsonify({
+            "message": "Quiz not found"
+        }), 400
+
+    del quiz["creator_id"]
+    del quiz["_id"]
+
+    return jsonify(quiz)
+
+
 @app.route('/delete/<quiz_id>', methods=['GET'])
 def delete(quiz_id):
     if not current_user.is_authenticated:
@@ -384,7 +402,6 @@ def takequiz(quiz_id):
 
     # Consider changing to redis for session storage to get faster access times by caching quiz in session
 
-    print(f'Index of current question: {session["taking_quiz"]["current_index"]}')
     start_time = session["taking_quiz"]["start_time"]
     session["taking_quiz"]["duration"] = session["taking_quiz"]["finish_time"] - session["taking_quiz"]["current_time"]
     session.modified = True
@@ -445,12 +462,12 @@ def skip(quiz_id):
         flash("Tampering detected")
         return redirect(url_for('home'))
 
-    answer = uuid4()
+    # answer = uuid4()
+    answer = None
     session["taking_quiz"]["answers"][question_id] = {
         "question_id": question_id,
         "answer": answer
     }
-    print(session["taking_quiz"]["answers"])
 
     session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"]
     session["taking_quiz"]["current_index"] += 1 
@@ -579,6 +596,29 @@ def submitanswer(quiz_id):
 
     return redirect(url_for('takequiz', quiz_id=quiz_id))
 
+@app.route('/quit/<quiz_id>', methods=['POST'])
+def quit(quiz_id):
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not "taking_quiz" in session:
+        flash("You are not taking a quiz")
+        return redirect(url_for('home'))
+
+    quiz = Quiz.get(quiz_id)
+    if not quiz:
+        del session["taking_quiz"]
+        flash("Quiz not found")
+        return redirect(url_for('home'))
+
+    if session["taking_quiz"]["quiz_id"] != quiz_id:
+        print("Wrong quit url")
+        return redirect(url_for(request.referrer, quiz_id=quiz_id))
+
+    return redirect(url_for('finishquiz', quiz_id=quiz_id))
+
+
 @app.route('/finishquiz/<quiz_id>')
 def finishquiz(quiz_id):
     """ Finishes quiz
@@ -598,20 +638,119 @@ def finishquiz(quiz_id):
         return redirect(url_for('home'))
 
     answers = session["taking_quiz"]["answers"]
-    print(f"from finish quiz:{answers}")
-    user_scoce = 0
+    user_score = 0
+    correct_answers = 0
+    questions_attempted = 0
+    questions_skiped = 0
+    max_score = quiz["total_score"]
+    if session["taking_quiz"]["timeout"]:
+        heading = f"Quiz Timeout!"
+    else:
+        heading = f"Quiz Finished!"
 
     for question in quiz["questions"]:
         question_id = question["question_id"]
         if question_id in answers.keys():
+            if answers[question_id]["answer"] != None:
+                questions_attempted += 1
+            else:
+                questions_skiped += 1
             if question["answer"] == answers[question_id]["answer"]:
-                user_scoce += question["score"]
+                user_score += question["score"]
+                correct_answers += 1
+    # try:
+    #     accuracy = (correct_answers/questions_attempted) * 100
+    # except ZeroDivisionError:
+    #     accuracy = 0
+    #     pass
+    if correct_answers == 0 or questions_attempted == 0:
+        accuracy = 0
+    else:
+        accuracy = (correct_answers/questions_attempted) * 100
 
+    if max_score:
+        percentage_score = (user_score/max_score) * 100
+    else:
+        percentage_score = 0
+
+    quiz_results = {
+        "title": quiz["title"],
+        "quiz_id": quiz["quiz_id"],
+        "percentage_score": percentage_score,
+        "user_score": user_score,
+        "correct_answers": correct_answers,
+        "questions_attempted": questions_attempted,
+        "accuracy": accuracy
+    }
+
+    if not Result.check(current_user.get_id()):
+        result_document = Result(current_user.get_id())
+        result_document.save()
+        del result_document
+
+    try:
+        Result.update(current_user.get_id(), quiz_id, quiz_results)
+        print("Update Called")
+    except Exception as e:
+        print(e)
 
     del session["taking_quiz"]
 
-    return render_template('finishquiz.html', title=quiz['title'], year=year, user_score=user_scoce)
+    return render_template(
+        'finishquiz.html', year=year,
+        title=quiz['title'],
+        quiz_id=quiz["quiz_id"], 
+        heading=heading, 
+        percentage_score=percentage_score,
+        user_score=user_score,
+        correct_answers=correct_answers,
+        questions_attempted=questions_attempted,
+        max_score=max_score,
+        accuracy=accuracy
+    )
 
+
+@app.route('/resultinfo/<quiz_id>', methods=["GET"])
+def resultinfo(quiz_id):
+    """ Renders detailed results for a given quiz
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not Quiz.get(quiz_id):
+        flash("The quiz does not exist")
+        return redirect(url_for('index'))
+
+    if not Result.getByUserID(current_user.get_id()):
+        flash("You have not taken a quiz on this site.")
+        return redirect(url_for('index'))
+
+    result = Result.getQuizResult(
+            user_id = current_user.get_id(),
+            quiz_id = quiz_id
+    )
+
+    return render_template("resultinfo.html", result=result)
+
+
+
+@app.route('/myresults', methods=["GET"])
+def myresults():
+    """ Results page for all quizzes taken
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not Result.getByUserID(current_user.get_id()):
+        results = None
+    else:
+        results = Result.getByUserID(current_user.get_id())
+        if results:
+            results = results["results"]
+
+    return render_template("myresults.html", results=results)
 
 if __name__ == "__main__":
     app.run(debug=True)

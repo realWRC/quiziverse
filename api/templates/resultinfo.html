@@ -1,0 +1,31 @@
+{% extends 'home.html' %}
+
+{% block main %}
+{% include "_verticalnav.html" %}
+<main>
+  <div>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  </div>
+  <div>
+    <div>
+        <h3>{{ result.title }}</h3>
+        <p>Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
+        <p>Score <strong>{{ result.user_score }}</strong></p>
+        <p>Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
+        <p>Questions Attempted <strong>{{ result.questions_attempted }}</strong></p>
+        <p>Accuracy <strong>{{ result.accuracy }}</strong>&#37</p>
+        <a href="{{ url_for('myresults') }}">My Results</a>
+        <a href="{{ url_for('quizinfo', quiz_id=result.quiz_id) }}">Retake Take Quiz</a>
+    </div>
+  </div>
+</main>
+
+{% endblock main %}

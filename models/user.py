@@ -89,3 +89,4 @@ class User(UserMixin):
         """ Deletes user using ID
         """
         db.users.delete_one({"id": user_id})
+        db.results.delete_one({"user_id": user_id})
