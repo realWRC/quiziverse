@@ -4,6 +4,7 @@ from api.config import app, login_manager
 from datetime import date, datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect, jsonify
 from flask_login import current_user, login_required, login_user, logout_user
+from models.result import Result
 from models.user import User
 from models.quiz import Quiz
 from urllib.parse import urlparse
@@ -656,17 +657,44 @@ def finishquiz(quiz_id):
             if question["answer"] == answers[question_id]["answer"]:
                 user_score += question["score"]
                 correct_answers += 1
-    try:
-        accuracy = (correct_answers/questions_attempted) * 100
-    except ZeroDivisionError:
+    # try:
+    #     accuracy = (correct_answers/questions_attempted) * 100
+    # except ZeroDivisionError:
+    #     accuracy = 0
+    #     pass
+    if correct_answers == 0 or questions_attempted == 0:
         accuracy = 0
-        pass
+    else:
+        accuracy = (correct_answers/questions_attempted) * 100
+
+    if max_score:
+        percentage_score = (user_score/max_score) * 100
+    else:
+        percentage_score = 0
+
+    quiz_results = {
+        "percentage_score": percentage_score,
+        "user_score": user_score,
+        "correct_answers": correct_answers,
+        "questions_attempted": questions_attempted,
+        "accuracy": accuracy
+    }
+
+    if not Result.check(current_user.get_id()):
+        result_document = Result(current_user.get_id())
+        result_document.save()
+        del result_document
+
+    try:
+        Result.update(current_user.get_id(), quiz_id, quiz_results)
+    except Exception as e:
+        print(e)
 
     del session["taking_quiz"]
 
     return render_template(
         'finishquiz.html', title=quiz['title'],
-        heading=heading,
+        heading=heading, percentage_score=percentage_score,
         year=year, user_score=user_score,
         correct_answers=correct_answers,
         questions_attempted=questions_attempted,
