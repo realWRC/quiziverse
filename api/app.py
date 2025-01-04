@@ -109,7 +109,8 @@ def login():
     """ Login route
     """
     if current_user.is_authenticated:
-        return redirect(request.referrer)
+        flash("You are already logged in.")
+        return redirect(url_for('home'))
 
     if request.method == "POST":
         username = request.form.get("username")
