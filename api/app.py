@@ -685,6 +685,7 @@ def finishquiz(quiz_id):
         result_document.save()
         del result_document
 
+
     try:
         Result.update(current_user.get_id(), quiz_id, quiz_results)
     except Exception as e:
