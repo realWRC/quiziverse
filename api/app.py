@@ -673,6 +673,8 @@ def finishquiz(quiz_id):
         percentage_score = 0
 
     quiz_results = {
+        "title": quiz["title"],
+        "quiz_id": quiz["quiz_id"],
         "percentage_score": percentage_score,
         "user_score": user_score,
         "correct_answers": correct_answers,
@@ -694,15 +696,54 @@ def finishquiz(quiz_id):
     del session["taking_quiz"]
 
     return render_template(
-        'finishquiz.html', title=quiz['title'],
-        heading=heading, percentage_score=percentage_score,
-        year=year, user_score=user_score,
+        'finishquiz.html', year=year,
+        title=quiz['title'],
+        quiz_id=quiz["quiz_id"], 
+        heading=heading, 
+        percentage_score=percentage_score,
+        user_score=user_score,
         correct_answers=correct_answers,
         questions_attempted=questions_attempted,
         max_score=max_score,
         accuracy=accuracy
     )
 
+
+@app.route('/resultinfo/<quiz_id>', methods=["GET"])
+def resultinfo(quiz_id):
+    """ Renders detailed results for a given quiz
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not Result.check(current_user.get_id()):
+        results = None
+    else:
+        results = Result.getByUserID(current_user.get_id())
+        if results:
+            results = results["results"]
+
+    return render_template("resultinfo.html", results=results)
+
+
+
+@app.route('/myresults', methods=["GET"])
+def myresults():
+    """ Results page for all quizzes taken
+    """
+    if not current_user.is_authenticated:
+        flash("You must be logged in first")
+        return redirect(url_for('login'))
+
+    if not Result.check(current_user.get_id()):
+        results = None
+    else:
+        results = Result.getByUserID(current_user.get_id())
+        if results:
+            results = results["results"]
+
+    return render_template("myresults.html", results=results)
 
 if __name__ == "__main__":
     app.run(debug=True)
