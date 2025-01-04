@@ -23,7 +23,7 @@ questions = [
 user = User.getByUsername("Test")
 assert user is not None
 
-numb = 100
+numb = 200
 user_id = user.id
 
 for number in range (1, numb + 1):

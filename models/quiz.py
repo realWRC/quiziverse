@@ -1,11 +1,12 @@
 import uuid
 from models import db
+from datetime import datetime, timezone
 
 class Quiz():
     """ Defines the datamodel for a quiz.
     """
     
-    def __init__(self, title, creator_id, quiz_id=str(uuid.uuid4()), questions=[], time_limit=0, total_score=0):
+    def __init__(self, title, creator_id, quiz_id=str(uuid.uuid4()), questions=[], time_limit=0, total_score=0, **kwargs):
         """ Initialises the quiz datamodel
         """
         if isinstance(questions, list):
@@ -15,6 +16,8 @@ class Quiz():
             self.time_limit = time_limit
             self.total_score = total_score
             self.questions = questions
+            self.creatated_at = datetime.now(timezone.utc)
+            self.updated_at = datetime.now(timezone.utc)
 
     def addMultipleQuestions(self, questions):
         """ Adds a list of questions to the quiz at once
@@ -42,6 +45,7 @@ class Quiz():
                     print(validation[1])
             self.questions = questionSet
             self.total_score = final_score
+            self.updated_at = datetime.now(timezone.utc)
             return questionSet
         else:
             return []
@@ -67,6 +71,7 @@ class Quiz():
             }
             self.questions.append(question)
             self.total_score += score
+            self.updated_at = datetime.now(timezone.utc)
         else:
             print(validation[1])
 
@@ -111,6 +116,8 @@ class Quiz():
                 creator_id = quiz_dict["creator_id"],
                 time_limit = quiz_dict["time_limit"],
                 total_score = quiz_dict["total_score"],
+                creatated_at = quiz_dict["creatated_at"],
+                updated_at = quiz_dict["updated_at"],
                 questions = quiz_dict["questions"]
             )
             return quiz
@@ -196,7 +203,8 @@ class Quiz():
                 "title": data['title'],
                 "questions": temp.questions,
                 "total_score": temp.total_score,
-                "time_limit": data['time_limit']
+                "time_limit": data['time_limit'],
+                "updated_at": datetime.now(timezone.utc)
             }}
         )
         del temp

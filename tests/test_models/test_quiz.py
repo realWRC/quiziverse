@@ -194,7 +194,6 @@ class TestQuizModel(unittest.TestCase):
 
         quiz.addMultipleQuestions(questions)
         quiz.save()
-        pprint(quiz.__dict__)
 
         quiz_db = Quiz.get(quiz.quiz_id)
         Quiz.delete(quiz.quiz_id)
