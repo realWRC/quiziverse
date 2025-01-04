@@ -718,13 +718,15 @@ def resultinfo(quiz_id):
         return redirect(url_for('login'))
 
     if not Result.check(current_user.get_id()):
-        results = None
-    else:
-        results = Result.getByUserID(current_user.get_id())
-        if results:
-            results = results["results"]
+        flash("You have not taken a quiz on this site.")
+        return redirect(url_for('index'))
 
-    return render_template("resultinfo.html", results=results)
+    result = Result.getQuizResult(
+            user_id = current_user.get_id(),
+            quiz_id = quiz_id
+    )
+
+    return render_template("resultinfo.html", results=result)
 
 
 

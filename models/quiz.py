@@ -174,6 +174,15 @@ class Quiz():
             raise KeyError("Quiz delete operation failed")
 
     @staticmethod
+    def check(quiz_id):
+        """ Checks if a quiz_id is valid
+        """
+        if db.results.find_one({"user_id": quiz_id}, {"_id": 1}):
+            return True
+        else:
+            return False
+
+    @staticmethod
     def update(quiz_id, data):
         """ Updates a quiz object from storage
         """
