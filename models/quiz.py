@@ -6,13 +6,15 @@ class Quiz():
     """ Defines the datamodel for a quiz.
     """
     
-    def __init__(self, title, creator_id, quiz_id=str(uuid.uuid4()), questions=[], time_limit=0, total_score=0, **kwargs):
+    def __init__(self, title, creator_id, description, category="general", quiz_id=str(uuid.uuid4()), questions=[], time_limit=0, total_score=0, **kwargs):
         """ Initialises the quiz datamodel
         """
         if isinstance(questions, list):
             self.quiz_id = quiz_id
             self.title = title
             self.creator_id = creator_id
+            self.description = str(description).strip()
+            self.category = category
             self.time_limit = time_limit
             self.total_score = total_score
             self.questions = questions
@@ -88,7 +90,7 @@ class Quiz():
             question = {
                 "question_id": str(uuid.uuid4()),
                 "quiz_id": self.quiz_id,
-                "question": question,
+                "question": question.strip(),
                 "options": options,
                 "answer": answer, 
                 "score": score,
@@ -114,6 +116,8 @@ class Quiz():
                 title = quiz_dict["title"],
                 quiz_id = quiz_dict["quiz_id"],
                 creator_id = quiz_dict["creator_id"],
+                description = quiz_dict["description"],
+                category = quiz_dict["category"],
                 time_limit = quiz_dict["time_limit"],
                 total_score = quiz_dict["total_score"],
                 creatated_at = quiz_dict["creatated_at"],
@@ -133,6 +137,16 @@ class Quiz():
                 return (False, "A key is missing from the question dictionary.")
             if not isinstance(question['options'], list):
                 return (False, "Options must be an array or list of strings.")
+
+            # Strip of all empty spaces if strings
+            if isinstance(question["question"], str):
+                question["question"].strip() 
+            for option in question["options"]:
+                if isinstance(option, str):
+                    option.strip()
+            if isinstance(question["answer"], str):
+                question["answer"].strip()
+
             if not question['answer'] in question['options']:
                 return (False, "The answer must match one of the questions.")
             if not isinstance(question['score'], int) and not isinstance(question['score'], float):
