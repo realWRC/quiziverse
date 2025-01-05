@@ -12,10 +12,16 @@ class TestQuizModel(unittest.TestCase):
         """ Sets up some tests for the model.
         """
         self.title = "Capital Cities Quiz."
+        self.description = "This is lorem description"
 
         self.username = "test"
         self.email = "foo@bar.com"
         self.password = "password123"
+        self.longdescription = """Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem totam
+        officiis amet, velit tempore assumenda. Incidunt natus ex iusto
+        praesentium ab officiis numquam cumque doloribus ducimus odio suscipit
+        laboriosam tenetur at dignissimos dolore eveniet aliquam earum quam,
+        sequi, odit repudiandae."""
 
         self.question1 = "What is the Capital of Foo?"
         self.options1 = ["Lorem", "Foobar", "Bar", "Ipsum"]
@@ -38,6 +44,7 @@ class TestQuizModel(unittest.TestCase):
         quiz = Quiz(
             title = self.title,
             creator_id = user.returnID(),
+            description =  self.description
         )
         quiz.addQuestion(
             question = self.question1,
@@ -54,6 +61,8 @@ class TestQuizModel(unittest.TestCase):
         self.assertEqual(self.title, quiz.title)
         self.assertEqual(quiz.time_limit, 0)
         self.assertEqual(quiz.total_score, 2)
+        self.assertIsInstance(quiz.description, str)
+        self.assertIsInstance(quiz.category, str)
         self.assertIsInstance(quiz.questions, list)
         self.assertIsInstance(quiz.questions[0], dict)
         self.assertIsInstance(quiz.questions[0]["question"], str)
@@ -88,6 +97,7 @@ class TestQuizModel(unittest.TestCase):
         quiz = Quiz(
             title = self.title,
             creator_id = user.returnID(),
+            description = self.description,
             time_limit = 10
         )
 
@@ -104,6 +114,8 @@ class TestQuizModel(unittest.TestCase):
         self.assertEqual(self.title, quiz.title)
         self.assertEqual(quiz.time_limit, 10)
         self.assertEqual(quiz.total_score, 30)
+        self.assertIsInstance(quiz.description, str)
+        self.assertIsInstance(quiz.category, str)
         self.assertIsInstance(quiz.questions, list)
         self.assertIsInstance(quiz.questions[0], dict)
         self.assertIsInstance(quiz.questions[0]["question"], str)
@@ -126,6 +138,7 @@ class TestQuizModel(unittest.TestCase):
         quizOne = Quiz(
             title = self.title,
             creator_id = user.returnID(),
+            description = self.description,
             questions = questions
         )
 
@@ -159,6 +172,8 @@ class TestQuizModel(unittest.TestCase):
         self.assertEqual(quizOne.quiz_id, quizTwo.quiz_id)
         self.assertEqual(quizOne.creator_id, quizTwo.creator_id)
         self.assertEqual(quizOne.title, quizTwo.title)
+        self.assertEqual(quizOne.description, quizTwo.description)
+        self.assertEqual(quizOne.category, quizTwo.category)
         self.assertEqual(quizOne.time_limit, quizTwo.time_limit)
         self.assertEqual(quizOne.total_score, quizTwo.total_score)
         self.assertEqual(quizOne.questions, quizTwo.questions)
@@ -189,6 +204,7 @@ class TestQuizModel(unittest.TestCase):
         quiz = Quiz(
             title = self.title,
             creator_id = user.returnID(),
+            description = self.description,
             time_limit = 10
         )
 

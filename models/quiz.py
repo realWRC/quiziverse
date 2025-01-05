@@ -9,7 +9,8 @@ class Quiz():
     def __init__(self, title, creator_id, description, category="general", quiz_id=str(uuid.uuid4()), questions=[], time_limit=0, total_score=0, **kwargs):
         """ Initialises the quiz datamodel
         """
-        if isinstance(questions, list):
+        validation = Quiz.validateFields(title, description, category, time_limit)
+        if isinstance(questions, list) and validation[0]:
             self.quiz_id = quiz_id
             self.title = title
             self.creator_id = creator_id
@@ -20,6 +21,8 @@ class Quiz():
             self.questions = questions
             self.creatated_at = datetime.now(timezone.utc)
             self.updated_at = datetime.now(timezone.utc)
+        else:
+            return validation[1]
 
     def addMultipleQuestions(self, questions):
         """ Adds a list of questions to the quiz at once
@@ -137,10 +140,13 @@ class Quiz():
                 return (False, "A key is missing from the question dictionary.")
             if not isinstance(question['options'], list):
                 return (False, "Options must be an array or list of strings.")
+            if len(question["options"]) > 4:
+                return (False, "A question cannot have more that 4 options")
 
             # Strip of all empty spaces if strings
             if isinstance(question["question"], str):
-                question["question"].strip() 
+                question["question"].strip()
+
             for option in question["options"]:
                 if isinstance(option, str):
                     option.strip()
@@ -156,14 +162,23 @@ class Quiz():
             return (False, "Questions must be a dict.")
 
     @staticmethod
-    def validateFields(title, time_limit):
+    def validateFields(title, description, category, time_limit):
         """ Validates all external direct attributes of a Quiz object except creator_id
         and questions.
         """
-        if not isinstance(title, str):
+        if not isinstance(title, str) or title.isnumeric():
             return (False, "Title must be a string")
+        if not isinstance(description, str):
+            return (False, "Use words to fill the description")
+        if not isinstance(category, str):
+            return (False, "Category must be a string")
         if not isinstance(time_limit, int) and not isinstance(time_limit, float):
             return (False, "Time Limit must be an Integer or a Float")
+
+        title.strip()
+        description.strip()
+        category.strip()
+
         return (True, "Valid fields")
 
     @staticmethod
