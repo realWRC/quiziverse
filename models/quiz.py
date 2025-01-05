@@ -239,3 +239,19 @@ class Quiz():
         del temp
         if result.modified_count == 0:
             raise KeyError("Pymongo could not update the document due to an invalid quiz_id")
+
+    @staticmethod
+    def search(query):
+        """ Searches quiz database
+        """
+        result = db.quizzes.find(
+            {"title": {"$regex": query, "$options": "i"}}
+            ).sort([("title", 1), ("updated_at", 1)])
+
+        test = result.__copy__()
+        if len(list(test)):
+            del test
+            print("IN SEARCH RESULT FOUND")
+            return result
+        else:
+            return None

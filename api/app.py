@@ -36,9 +36,14 @@ def home():
         flash("You must be logged in first.")
         return redirect(url_for('login'))
 
-    quizzes = Quiz.getAll()
+    query = request.form.get('search', '')
 
-    return render_template("home.html", title="HOME", year=year, quizzes=quizzes)
+    if query:
+        quizzes = Quiz.search(query)
+        # present = True if len(list(quizzes)) else False
+    else:
+        quizzes = Quiz.getAll()
+    return render_template("home.html", title="HOME", year=year, query=query, quizzes=quizzes)
 
 @app.route("/myquizzes")
 def myquizzes():
