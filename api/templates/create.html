@@ -21,6 +21,8 @@
   {% if not data %}
   <form action="{{ url_for('create') }}" method="POST" id="createQuizForm">
     <label>Quiz Title: <input type="text" name="title" required></label><br><br>
+    <label>Description (30 words max): <textarea type="text" name="description"></label><br><br>
+    <label>Catergory (gerenal by default): <input type="text" name="catergory"></label><br><br>
     <label>Time Limit (seconds, optional): <input type="text" name="time_limit"></label><br><br>
 
     <div id="questions-container">
@@ -49,6 +51,8 @@
 
   <form action="{{ url_for('create') }}" method="POST" id="createQuizForm">
     <label>Quiz Title: <input type="text" name="title" value="{{ data.title }}" required></label><br><br>
+    <label>Description (30 words max): <textarea type="text" name="description" value="{{ data.description }}" required></label><br><br>
+    <label>Catergory (gerenal by default): <input type="text" name="catergory" value="{{ data.catergory }}"></label><br><br>
     <label>Time Limit (seconds, optional): <input type="text" name="time_limit" value="{{ data.time_limit }}"></label><br><br>
 
     <div id="questions-container">
