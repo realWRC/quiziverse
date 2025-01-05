@@ -189,9 +189,9 @@ class Quiz():
 
     @staticmethod
     def getAll():
-        """ Gets all quizzes from database
+        """ Gets all quizzes from database and orders them by title and date updated_at
         """
-        return db.quizzes.find()
+        return db.quizzes.find().sort([("title", 1), ("updated_at", 1)])
 
     @staticmethod
     def getByFilter(criteria):

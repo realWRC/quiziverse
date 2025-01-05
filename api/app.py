@@ -688,25 +688,28 @@ def finishquiz(quiz_id):
 
     quiz_results = {
         "title": quiz["title"],
-        "quiz_id": quiz["quiz_id"],
         "percentage_score": percentage_score,
         "user_score": user_score,
         "correct_answers": correct_answers,
         "questions_attempted": questions_attempted,
         "accuracy": accuracy,
-        "lastest_attempt": datetime.now(timezone.utc)
+        "latest_attempt": datetime.now(timezone.utc)
     }
 
-    if not Result.check(current_user.get_id()):
-        result_document = Result(current_user.get_id())
+    if not Result.check(current_user.get_id(), quiz_id):
+        result_document = Result(
+            current_user.get_id(),
+            quiz_id,
+            **quiz_results
+        )
         result_document.save()
         del result_document
-
-    try:
-        Result.update(current_user.get_id(), quiz_id, quiz_results)
-        print("Update Called")
-    except Exception as e:
-        print(e)
+    else:
+        try:
+            Result.update(current_user.get_id(), quiz_id, quiz_results)
+            print("Update Called")
+        except Exception as e:
+            print(e)
 
     del session["taking_quiz"]
 
@@ -736,20 +739,19 @@ def resultinfo(quiz_id):
         flash("The quiz does not exist")
         return redirect(url_for('index'))
 
-    if not Result.getByUserID(current_user.get_id()):
+    if not Result.check(current_user.get_id(), quiz_id):
         flash("You have not taken a quiz on this site.")
         return redirect(url_for('index'))
 
     result = Result.getQuizResult(
             user_id = current_user.get_id(),
-            quiz_id = quiz_id
     )
 
     return render_template("resultinfo.html", result=result)
 
 
 
-@app.route('/myresults', methods=["GET"])
+@app.route('/myresults', methods=["GET", "POST"])
 def myresults():
     """ Results page for all quizzes taken
     """
@@ -757,14 +759,15 @@ def myresults():
         flash("You must be logged in first")
         return redirect(url_for('login'))
 
-    if not Result.getByUserID(current_user.get_id()):
-        results = None
+    query = request.form.get('search', '')
+    if query:
+        results = Result.searchMyResults(current_user.get_id(), query=query)
     else:
-        results = Result.getByUserID(current_user.get_id())
-        if results:
-            results = results["results"]
-
-    return render_template("myresults.html", results=results)
+        results = Result.getQuizResult(current_user.get_id())
+        print(results)
+        results = list(results) if results else None
+    
+    return render_template("myresults.html", results=results, query=query)
 
 
 if __name__ == "__main__":

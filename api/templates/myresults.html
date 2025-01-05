@@ -4,6 +4,10 @@
 {% include "_verticalnav.html" %}
 <main>
   <p>My Results</p>
+  <form method="POST">
+    <input type="text" name="search" placeholder="Search by title...." value="{{ query }}">
+    <button type="submit">Search</button>
+  </form>
   <div>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -16,18 +20,34 @@
   {% endwith %}
   </div>
   <div>
-  {% if results %}
-    {% for result in results %}
-    <div>
-        <h3>{{ result.title }}</h3>
-        <p>Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
-        <p>Score <strong>{{ result.user_score }}</strong></p>
-        <p>Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
-        <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}">Details</a>
-    </div>
-    {% endfor %}
+  {% if query %}
+    {% if results %}
+      {% for result in results %}
+      <div>
+          <h3>{{ result['title'] }}</h3>
+          <p>Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
+          <p>Score <strong>{{ result.user_score }}</strong></p>
+          <p>Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
+          <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}">Details</a>
+      </div>
+      {% endfor %}
+    {% else %}
+    <p>Not found</p>
+    {% endif %}
   {% else %}
-  <p>You Have not taken any quizzes</p>
+    {% if results %}
+      {% for result in results %}
+      <div>
+          <h3>{{ result.title }}</h3>
+          <p>Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
+          <p>Score <strong>{{ result.user_score }}</strong></p>
+          <p>Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
+          <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}">Details</a>
+      </div>
+      {% endfor %}
+    {% else %}
+    <p>You Have not taken any quizzes</p>
+    {% endif %}
   {% endif %}
   </div>
 </main>
