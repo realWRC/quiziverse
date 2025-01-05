@@ -181,6 +181,7 @@ def create():
 
     if request.method == "POST":
         data = request.form.get("quiz_json", '')
+        pprint(data)
         data = json.loads(data)
 
         if data['time_limit'] is None:
@@ -188,7 +189,9 @@ def create():
 
         validation = Quiz.validateFields(
             title = data['title'],
+            description = data['description'],
             time_limit = data['time_limit'],
+            category = data['category']
         )
         if validation[0]:
             pass
@@ -220,10 +223,11 @@ def create():
         quiz = Quiz(
             title = data['title'],
             creator_id = current_user.get_id(),
+            description = data['description'],
             time_limit = data['time_limit']
         )
         quiz.addMultipleQuestions(data['questions'])
-        # pprint(quiz.__dict__)
+        pprint(quiz.__dict__)
         quiz.save()
         flash("Quiz created successfully")
         return redirect(url_for('home'))
@@ -240,6 +244,7 @@ def edit(quiz_id):
 
 
     quiz = Quiz.get(quiz_id)
+    pprint(quiz)
 
     if not quiz:
         flash("Invalid quiz id")
@@ -262,9 +267,12 @@ def edit(quiz_id):
 
         if data['time_limit'] is None:
             data['time_limit'] = 0
+        pprint(data)
 
         validation = Quiz.validateFields(
             title = data['title'],
+            description = data['description'],
+            category = data['category'],
             time_limit = data['time_limit'],
         )
         if validation[0]:

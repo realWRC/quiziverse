@@ -37,6 +37,8 @@ removeBtn.addEventListener('click', function() {
 const form = document.getElementById('createQuizForm');
 form.addEventListener('submit', function(e) {
     const title = form.querySelector('[name="title"]').value.trim();
+    const description = form.querySelector('[name="description"]').value.trim();
+    const category = form.querySelector('[name="category"]').value.trim();
     const time_limit_str = form.querySelector('[name="time_limit"]').value.trim();
     const time_limit = time_limit_str ? parseInt(time_limit_str, 10) : 0;
 
@@ -71,6 +73,8 @@ form.addEventListener('submit', function(e) {
 
     const quizJson = {
         "title": title,
+        "description": description,
+        "category": category,
         "time_limit": time_limit,
         "questions": questionsData
     };
