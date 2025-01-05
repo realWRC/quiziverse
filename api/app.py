@@ -689,7 +689,7 @@ def finishquiz(quiz_id):
         "correct_answers": correct_answers,
         "questions_attempted": questions_attempted,
         "accuracy": accuracy,
-        "last_attempt": uuid4()
+        "lastest_attempt": datetime.now(timezone.utc)
     }
 
     if not Result.check(current_user.get_id()):
