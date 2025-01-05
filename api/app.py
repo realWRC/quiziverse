@@ -49,9 +49,11 @@ def home():
 def myquizzes():
     """ Shows all quizes created by a given user.
     """
-    my_quizzes = Quiz.getByFilter({"creator_id": current_user.get_id()})
-    my_quizzes = list(my_quizzes)
-    return render_template("myquizzes.html", quizzes=my_quizzes, title="My Quizzes", year=year)
+    # my_quizzes = Quiz.getByFilter({"creator_id": current_user.get_id()})
+    # my_quizzes = list(my_quizzes)
+    quizzes = Quiz.getAllUserQuizzes(current_user.get_id())
+
+    return render_template("myquizzes.html", quizzes=quizzes, title="My Quizzes", year=year)
 
 
 @app.route("/profile", methods=["GET", "POST"])
