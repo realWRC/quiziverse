@@ -51,9 +51,13 @@ def myquizzes():
     """
     # my_quizzes = Quiz.getByFilter({"creator_id": current_user.get_id()})
     # my_quizzes = list(my_quizzes)
-    quizzes = Quiz.getAllUserQuizzes(current_user.get_id())
+    query = request.form.get('search', '')
+    if query:
+        quizzes = Quiz.searchUserQuizzes(current_user.get_id(),query)
+    else:
+        quizzes = Quiz.getAllUserQuizzes(current_user.get_id())
 
-    return render_template("myquizzes.html", quizzes=quizzes, title="My Quizzes", year=year)
+    return render_template("myquizzes.html", quizzes=quizzes, query=query, title="My Quizzes", year=year)
 
 
 @app.route("/profile", methods=["GET", "POST"])

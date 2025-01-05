@@ -261,3 +261,21 @@ class Quiz():
             return result
         else:
             return None
+
+    @staticmethod
+    def searchUserQuizzes(creator_id, query):
+        """ Searches all quizzes made by user with creator_id and querries the quizzes
+        by title.
+        """
+        cursor = db.quizzes.find(
+            {
+                "creator_id": creator_id,
+                "title": {"$regex": query, "$options": "i"}
+            }
+        ).sort([("title", 1), ("updated_at", 1)])
+
+        result = list(cursor)
+        if result:
+            return result
+        else:
+            return None
