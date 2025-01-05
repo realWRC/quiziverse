@@ -680,7 +680,8 @@ def finishquiz(quiz_id):
         "user_score": user_score,
         "correct_answers": correct_answers,
         "questions_attempted": questions_attempted,
-        "accuracy": accuracy
+        "accuracy": accuracy,
+        "last_attempt": uuid4()
     }
 
     if not Result.check(current_user.get_id()):
