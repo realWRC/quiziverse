@@ -189,9 +189,15 @@ class Quiz():
 
     @staticmethod
     def getAll():
-        """ Gets all quizzes from database
+        """ Gets all quizzes from database and orders them by title and date updated_at
         """
-        return db.quizzes.find()
+        return db.quizzes.find().sort([("title", 1), ("updated_at", 1)])
+
+    @staticmethod
+    def getAllUserQuizzes(creator_id):
+        """ Gets all quizzes created by the current user.
+        """
+        return db.quizzes.find({"creator_id": creator_id}).sort([("title", 1), ("updated_at", 1)])
 
     @staticmethod
     def getByFilter(criteria):
@@ -239,3 +245,37 @@ class Quiz():
         del temp
         if result.modified_count == 0:
             raise KeyError("Pymongo could not update the document due to an invalid quiz_id")
+
+    @staticmethod
+    def search(query):
+        """ Searches quiz database
+        """
+        result = db.quizzes.find(
+            {"title": {"$regex": query, "$options": "i"}}
+            ).sort([("title", 1), ("updated_at", 1)])
+
+        test = result.__copy__()
+        if len(list(test)):
+            del test
+            print("IN SEARCH RESULT FOUND")
+            return result
+        else:
+            return None
+
+    @staticmethod
+    def searchUserQuizzes(creator_id, query):
+        """ Searches all quizzes made by user with creator_id and querries the quizzes
+        by title.
+        """
+        cursor = db.quizzes.find(
+            {
+                "creator_id": creator_id,
+                "title": {"$regex": query, "$options": "i"}
+            }
+        ).sort([("title", 1), ("updated_at", 1)])
+
+        result = list(cursor)
+        if result:
+            return result
+        else:
+            return None

@@ -20,6 +20,10 @@
 {% include "_verticalnav.html" %}
 <main>
   <p>Welcome to Home</p>
+  <form method="POST">
+    <input type="text" name="search" placeholder="Search by title...." value="{{ query }}">
+    <button type="submit">Search</button>
+  </form>
   <div>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -32,6 +36,21 @@
   {% endwith %}
   </div>
   <div>
+    {% if query %}
+      {% if quizzes %}
+      {% for quiz in quizzes %}
+        <div>
+            <h3>{{ quiz.title }}</h3>
+            <p>Questions: {{ quiz.questions|length }}</p>
+            <p>Total Marks: {{ quiz.total_score }}</p>
+            <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
+            <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}">Take Quiz</a>
+        </div>
+      {% endfor %}
+      {% else %}
+        <h3>Not Found</h3>
+      {% endif %}
+    {% else %}
     {% for quiz in quizzes %}
     <div>
         <h3>{{ quiz.title }}</h3>
@@ -41,6 +60,7 @@
         <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}">Take Quiz</a>
     </div>
     {% endfor %}
+    {% endif %}
   </div>
 </main>
 {% endblock main %}
