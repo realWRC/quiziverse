@@ -45,7 +45,7 @@ def home():
         quizzes = Quiz.getAll()
     return render_template("home.html", title="HOME", year=year, query=query, quizzes=quizzes)
 
-@app.route("/myquizzes")
+@app.route("/myquizzes", methods=["GET", "POST"])
 def myquizzes():
     """ Shows all quizes created by a given user.
     """
