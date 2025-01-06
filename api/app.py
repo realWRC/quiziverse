@@ -48,7 +48,7 @@ def home():
     if per_page < 30:
         per_page = 30
 
-    skip = (page * per_page)
+    skip = (page - 1) * per_page
     query = request.args.get('search', '')
 
     def url_for_other_page(page):
@@ -66,6 +66,7 @@ def home():
             ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
         quizzes = list(cursor)
         pagination = {
+            'page': page,
             'total_pages': total_pages,
             'has_prev': page > 1,
             'has_next': page < total_pages,
@@ -75,8 +76,9 @@ def home():
     else:
         total = db.quizzes.count_documents({})
         total_pages = ceil(total / per_page) if total > 0 else 1
-        quizzes = Quiz.getAll().sort("updated_at", 1).limit(per_page)
+        quizzes = Quiz.getAll().skip(skip).sort("updated_at", 1).limit(per_page)
         pagination = {
+            'page': page,
             'total_pages': total_pages,
             'has_prev': page > 1,
             'has_next': page < total_pages,
@@ -90,15 +92,65 @@ def home():
 def myquizzes():
     """ Shows all quizes created by a given user.
     """
-    # my_quizzes = Quiz.getByFilter({"creator_id": current_user.get_id()})
-    # my_quizzes = list(my_quizzes)
-    query = request.form.get('search', '')
-    if query:
-        quizzes = Quiz.searchUserQuizzes(current_user.get_id(),query)
-    else:
-        quizzes = Quiz.getAllUserQuizzes(current_user.get_id())
+    if not current_user.is_authenticated:
+        flash("You must be logged in first.")
+        return redirect(url_for('login'))
 
-    return render_template("myquizzes.html", quizzes=quizzes, query=query, title="My Quizzes", year=year)
+    page = int(request.args.get('page', 1))
+    if page <= 0:
+        page = 1
+
+    per_page = 30
+    if per_page > 30:
+        per_page = 30
+    if per_page < 30:
+        per_page = 30
+
+    skip = (page - 1) * per_page
+    query = request.args.get('search', '')
+
+    def url_for_other_page(page):
+        args = request.args.copy()
+        args['page'] = page
+        return url_for('home', _external=False, **args)
+
+    if query:
+        total = db.quizzes.count_documents(
+            {
+                "creator_id": current_user.get_id(),
+                "title": {"$regex": query, "$options": "i"}}
+            )
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        cursor = db.quizzes.find(
+            {
+                "creator_id": current_user.get_id(),
+                "title": {"$regex": query, "$options": "i"}}
+            ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        quizzes = list(cursor)
+        # quizzes = Quiz.searchUserQuizzes(current_user.get_id(),query)
+        pagination = {
+            'page': page,
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
+    else:
+        total = db.quizzes.count_documents({"creator_id": current_user.get_id()})
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        # quizzes = db.quizzes.find({"creator_id": current_user.get_id()}).skip(skip).sort("updated_at", 1).limit(per_page)
+        quizzes = Quiz.getAllUserQuizzes(current_user.get_id()).skip(skip).sort("updated_at", 1).limit(per_page)
+        pagination = {
+            'page': page,
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
+
+    return render_template("myquizzes.html", quizzes=quizzes, query=query, title="My Quizzes", year=year, pagination=pagination)
 
 
 @app.route("/profile", methods=["GET", "POST"])

@@ -197,7 +197,7 @@ class Quiz():
     def getAllUserQuizzes(creator_id):
         """ Gets all quizzes created by the current user.
         """
-        return db.quizzes.find({"creator_id": creator_id}).sort([("title", 1), ("updated_at", 1)])
+        return db.quizzes.find({"creator_id": creator_id})
 
     @staticmethod
     def getByFilter(criteria):
