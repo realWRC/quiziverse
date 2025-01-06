@@ -85,7 +85,8 @@ def home():
     else:
         total = db.quizzes.count_documents({})
         total_pages = ceil(total / per_page) if total > 0 else 1
-        quizzes = Quiz.getAll().skip(skip).sort("updated_at", 1).limit(per_page)
+        cursor = Quiz.getAll().skip(skip).sort("updated_at", 1).limit(per_page)
+        quizzes = list(cursor)
         pagination = {
             'page': page,
             'total_pages': total_pages,
@@ -152,8 +153,8 @@ def myquizzes():
     else:
         total = db.quizzes.count_documents({"creator_id": current_user.get_id()})
         total_pages = ceil(total / per_page) if total > 0 else 1
-        # quizzes = db.quizzes.find({"creator_id": current_user.get_id()}).skip(skip).sort("updated_at", 1).limit(per_page)
-        quizzes = Quiz.getAllUserQuizzes(current_user.get_id()).skip(skip).sort("updated_at", 1).limit(per_page)
+        cursor = Quiz.getAllUserQuizzes(current_user.get_id()).skip(skip).sort("updated_at", 1).limit(per_page)
+        quizzes = list(cursor)
         pagination = {
             'page': page,
             'total_pages': total_pages,
