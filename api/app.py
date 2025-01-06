@@ -4,9 +4,11 @@ from api.config import app, login_manager
 from datetime import date, datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect, jsonify
 from flask_login import current_user, login_required, login_user, logout_user
+from math import ceil
 from models.result import Result
 from models.user import User
 from models.quiz import Quiz
+from models import db
 from urllib.parse import urlparse
 from uuid import uuid4
 from pprint import pprint
@@ -36,14 +38,53 @@ def home():
         flash("You must be logged in first.")
         return redirect(url_for('login'))
 
-    query = request.form.get('search', '')
+    page = int(request.args.get('page', 1))
+    if page <= 0:
+        page = 1
+
+    per_page = 30
+    if per_page > 30:
+        per_page = 30
+    if per_page < 30:
+        per_page = 30
+
+    skip = (page * per_page)
+    query = request.args.get('search', '')
+
+    def url_for_other_page(page):
+        args = request.args.copy()
+        args['page'] = page
+        return url_for('home', _external=False, **args)
 
     if query:
-        quizzes = Quiz.search(query)
-        # present = True if len(list(quizzes)) else False
+        total = db.quizzes.count_documents(
+            {"title": {"$regex": query, "$options": "i"}}
+            )
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        cursor = db.quizzes.find(
+            {"title": {"$regex": query, "$options": "i"}}
+            ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        quizzes = list(cursor)
+        pagination = {
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
     else:
-        quizzes = Quiz.getAll()
-    return render_template("home.html", title="HOME", year=year, query=query, quizzes=quizzes)
+        total = db.quizzes.count_documents({})
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        quizzes = Quiz.getAll().sort("updated_at", 1).limit(per_page)
+        pagination = {
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
+
+    return render_template("home.html", title="HOME", year=year, query=query, quizzes=quizzes, pagination=pagination)
 
 @app.route("/myquizzes", methods=["GET", "POST"])
 def myquizzes():

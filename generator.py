@@ -30,6 +30,7 @@ for number in range (1, numb + 1):
     title = f"Capital Cities {number}"
     quiz = Quiz(
         title = title,
+        description = "Testin quiz",
         creator_id = user_id,
         time_limit = 600
     )
