@@ -1,18 +1,23 @@
 #!/usr/bin/env python3
 import json
+import re
 from api.config import app, login_manager
 from datetime import date, datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect, jsonify
 from flask_login import current_user, login_required, login_user, logout_user
+from math import ceil
 from models.result import Result
 from models.user import User
 from models.quiz import Quiz
+from models import db
 from urllib.parse import urlparse
 from uuid import uuid4
 from pprint import pprint
 
+
 year = date.today().strftime("%Y")
 domain = "quiziverse.com"
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -36,28 +41,127 @@ def home():
         flash("You must be logged in first.")
         return redirect(url_for('login'))
 
-    query = request.form.get('search', '')
+    page = int(request.args.get('page', 1))
+    if page <= 0:
+        page = 1
+
+    per_page = 30
+    if per_page > 30:
+        per_page = 30
+    if per_page < 30:
+        per_page = 30
+
+    skip = (page - 1) * per_page
+    query = request.args.get('search', '')
+
+    pattern = re.compile(r'[^a-zA-Z0-9\s]')
+    if pattern.search(query):
+        query = re.escape(query)
+
+    def url_for_other_page(page):
+        args = request.args.copy()
+        args['page'] = page
+        return url_for('home', _external=False, **args)
 
     if query:
-        quizzes = Quiz.search(query)
-        # present = True if len(list(quizzes)) else False
+        total = db.quizzes.count_documents(
+            {"title": {"$regex": query, "$options": "i"}}
+            )
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        cursor = db.quizzes.find(
+            {"title": {"$regex": query, "$options": "i"}}
+            ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        quizzes = list(cursor)
+        pagination = {
+            'page': page,
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
     else:
-        quizzes = Quiz.getAll()
-    return render_template("home.html", title="HOME", year=year, query=query, quizzes=quizzes)
+        total = db.quizzes.count_documents({})
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        quizzes = Quiz.getAll().skip(skip).sort("updated_at", 1).limit(per_page)
+        pagination = {
+            'page': page,
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
+
+    return render_template("home.html", title="HOME", year=year, query=query, quizzes=quizzes, pagination=pagination)
 
 @app.route("/myquizzes", methods=["GET", "POST"])
 def myquizzes():
     """ Shows all quizes created by a given user.
     """
-    # my_quizzes = Quiz.getByFilter({"creator_id": current_user.get_id()})
-    # my_quizzes = list(my_quizzes)
-    query = request.form.get('search', '')
-    if query:
-        quizzes = Quiz.searchUserQuizzes(current_user.get_id(),query)
-    else:
-        quizzes = Quiz.getAllUserQuizzes(current_user.get_id())
+    if not current_user.is_authenticated:
+        flash("You must be logged in first.")
+        return redirect(url_for('login'))
 
-    return render_template("myquizzes.html", quizzes=quizzes, query=query, title="My Quizzes", year=year)
+    page = int(request.args.get('page', 1))
+    if page <= 0:
+        page = 1
+
+    per_page = 30
+    if per_page > 30:
+        per_page = 30
+    if per_page < 30:
+        per_page = 30
+
+    skip = (page - 1) * per_page
+    query = request.args.get('search', '')
+
+    pattern = re.compile(r'[^a-zA-Z0-9\s]')
+    if pattern.search(query):
+        query = re.escape(query)
+
+    def url_for_other_page(page):
+        args = request.args.copy()
+        args['page'] = page
+        return url_for('myquizzes', _external=False, **args)
+
+    if query:
+        total = db.quizzes.count_documents(
+            {
+                "creator_id": current_user.get_id(),
+                "title": {"$regex": query, "$options": "i"}}
+            )
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        cursor = db.quizzes.find(
+            {
+                "creator_id": current_user.get_id(),
+                "title": {"$regex": query, "$options": "i"}}
+            ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        quizzes = list(cursor)
+        # quizzes = Quiz.searchUserQuizzes(current_user.get_id(),query)
+        pagination = {
+            'page': page,
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
+    else:
+        total = db.quizzes.count_documents({"creator_id": current_user.get_id()})
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        # quizzes = db.quizzes.find({"creator_id": current_user.get_id()}).skip(skip).sort("updated_at", 1).limit(per_page)
+        quizzes = Quiz.getAllUserQuizzes(current_user.get_id()).skip(skip).sort("updated_at", 1).limit(per_page)
+        pagination = {
+            'page': page,
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
+
+    return render_template("myquizzes.html", quizzes=quizzes, query=query, title="My Quizzes", year=year, pagination=pagination)
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -324,18 +428,61 @@ def edit(quiz_id):
     return render_template("edit.html", title="Edit", year=year, data=quiz)
 
 
+@app.route('/get', methods=['GET'])
+def getAll():
+    """ Gets all quizzes from database
+    """
+    page = int(request.args.get('page', 1))
+    if page <= 0:
+        page = 1
+
+    per_page = int(request.args.get('per_page', 30))
+    if per_page > 100:
+        per_page = 100
+    if per_page <= 0:
+        per_page = 30
+
+    skip = (page - 1) * per_page
+    query = request.args.get('search', '')
+
+    pattern = re.compile(r'[^a-zA-Z0-9\s]')
+    if pattern.search(query):
+        query = re.escape(query)
+
+    if query:
+        total = db.quizzes.count_documents(
+            {"title": {"$regex": query, "$options": "i"}}
+            )
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        cursor = db.quizzes.find(
+            {"title": {"$regex": query, "$options": "i"}},
+            {"_id": False, "creator_id": False},
+            ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        quizzes = list(cursor)
+    else:
+        total = db.quizzes.count_documents({})
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        # cursor = Quiz.getAll().skip(skip).sort("updated_at", 1).limit(per_page)
+        cursor = db.quizzes.find({}, {'_id': False, 'creator_id': False}).skip(skip).sort("updated_at", 1).limit(per_page)
+        quizzes = list(cursor)
+
+    if quizzes:
+        return jsonify(quizzes)
+    else:
+        return jsonify({
+            "message": "Not found"
+        }), 500
+
+
 @app.route('/get/<quiz_id>', methods=["GET"])
 def get(quiz_id):
     """ Gets a quiz and returns it as json
     """
-    quiz = Quiz.get(quiz_id)
+    quiz = db.quizzes.find({"quiz_id": quiz_id}, {"_id": False, "creator_id": False})
     if not quiz:
         return jsonify({
             "message": "Quiz not found"
         }), 400
-
-    del quiz["creator_id"]
-    del quiz["_id"]
 
     return jsonify(quiz)
 
@@ -765,15 +912,69 @@ def myresults():
         flash("You must be logged in first")
         return redirect(url_for('login'))
 
-    query = request.form.get('search', '')
+    page = int(request.args.get('page', 1))
+    if page <= 0:
+        page = 1
+
+    per_page = 30
+    if per_page > 30:
+        per_page = 30
+    if per_page < 30:
+        per_page = 30
+
+    skip = (page - 1) * per_page
+    query = request.args.get('search', '')
+
+    pattern = re.compile(r'[^a-zA-Z0-9\s]')
+    if pattern.search(query):
+        query = re.escape(query)
+
+    def url_for_other_page(page):
+        args = request.args.copy()
+        args['page'] = page
+        return url_for('myresults', _external=False, **args)
+
     if query:
-        results = Result.searchMyResults(current_user.get_id(), query=query)
+        total = db.results.count_documents(
+            {
+                "user_id": current_user.get_id(),
+                "title": {"$regex": query, "$options": "i"}
+            }
+        )
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        cursor = db.results.find(
+            {
+                "user_id": current_user.get_id(),
+                "title": {"$regex": query, "$options": "i"}
+            }
+        ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        results = list(cursor)
+        # results = Result.searchMyResults(current_user.get_id(), query=query)
+        pagination = {
+            'page': page,
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
     else:
-        results = Result.getQuizResult(current_user.get_id())
-        print(results)
-        results = list(results) if results else None
+        total = db.results.count_documents({"user_id": current_user.get_id()})
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        # results = Result.getQuizResult(current_user.get_id())
+        # results = list(results) if results else None
+        cursor = db.results.find({"user_id": current_user.get_id()})
+        results = list(cursor) if cursor else None
+        pagination = {
+            'page': page,
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
     
-    return render_template("myresults.html", results=results, query=query)
+    return render_template("myresults.html", results=results, query=query, pagination=pagination, year=year)
 
 
 if __name__ == "__main__":
