@@ -858,15 +858,65 @@ def myresults():
         flash("You must be logged in first")
         return redirect(url_for('login'))
 
-    query = request.form.get('search', '')
+    page = int(request.args.get('page', 1))
+    if page <= 0:
+        page = 1
+
+    per_page = 30
+    if per_page > 30:
+        per_page = 30
+    if per_page < 30:
+        per_page = 30
+
+    skip = (page - 1) * per_page
+    query = request.args.get('search', '')
+
+    def url_for_other_page(page):
+        args = request.args.copy()
+        args['page'] = page
+        return url_for('home', _external=False, **args)
+
     if query:
-        results = Result.searchMyResults(current_user.get_id(), query=query)
+        total = db.results.count_documents(
+            {
+                "user_id": current_user.get_id(),
+                "title": {"$regex": query, "$options": "i"}
+            }
+        )
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        cursor = db.results.find(
+            {
+                "user_id": current_user.get_id(),
+                "title": {"$regex": query, "$options": "i"}
+            }
+        ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        results = list(cursor)
+        # results = Result.searchMyResults(current_user.get_id(), query=query)
+        pagination = {
+            'page': page,
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
     else:
-        results = Result.getQuizResult(current_user.get_id())
-        print(results)
-        results = list(results) if results else None
+        total = db.results.count_documents({"user_id": current_user.get_id()})
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        # results = Result.getQuizResult(current_user.get_id())
+        # results = list(results) if results else None
+        cursor = db.results.find({"user_id": current_user.get_id()})
+        results = list(cursor) if cursor else None
+        pagination = {
+            'page': page,
+            'total_pages': total_pages,
+            'has_prev': page > 1,
+            'has_next': page < total_pages,
+            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        }
     
-    return render_template("myresults.html", results=results, query=query)
+    return render_template("myresults.html", results=results, query=query, pagination=pagination, year=year)
 
 
 if __name__ == "__main__":
