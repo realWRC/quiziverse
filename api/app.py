@@ -112,7 +112,7 @@ def myquizzes():
     def url_for_other_page(page):
         args = request.args.copy()
         args['page'] = page
-        return url_for('home', _external=False, **args)
+        return url_for('myquizzes', _external=False, **args)
 
     if query:
         total = db.quizzes.count_documents(
@@ -417,18 +417,72 @@ def edit(quiz_id):
     return render_template("edit.html", title="Edit", year=year, data=quiz)
 
 
+@app.route('/get', methods=['GET'])
+def getAll():
+    """ Gets all quizzes from database
+    """
+    page = int(request.args.get('page', 1))
+    if page <= 0:
+        page = 1
+
+    per_page = int(request.args.get('per_page', 30))
+    if per_page > 100:
+        per_page = 100
+    if per_page <= 0:
+        per_page = 30
+
+    skip = (page - 1) * per_page
+    query = request.args.get('search', '')
+
+    def url_for_other_page(page):
+        args = request.args.copy()
+        args['page'] = page
+        return url_for('get', _external=False, **args)
+
+    if query:
+        total = db.quizzes.count_documents(
+            {"title": {"$regex": query, "$options": "i"}}
+            )
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        cursor = db.quizzes.find(
+            {"title": {"$regex": query, "$options": "i"}},
+            {"_id": False, "creator_id": False},
+            ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        quizzes = list(cursor)
+        # pagination = {
+        #     'page': page,
+        #     'total_pages': total_pages,
+        #     'has_prev': page > 1,
+        #     'has_next': page < total_pages,
+        #     'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+        #     'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        # }
+    else:
+        total = db.quizzes.count_documents({})
+        total_pages = ceil(total / per_page) if total > 0 else 1
+        # cursor = Quiz.getAll().skip(skip).sort("updated_at", 1).limit(per_page)
+        cursor = db.quizzes.find({}, {'_id': False, 'creator_id': False}).skip(skip).sort("updated_at", 1).limit(per_page)
+        quizzes = list(cursor)
+        # pagination = {
+        #     'page': page,
+        #     'total_pages': total_pages,
+        #     'has_prev': page > 1,
+        #     'has_next': page < total_pages,
+        #     'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+        #     'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+        # }
+    return jsonify(quizzes)
+
+
 @app.route('/get/<quiz_id>', methods=["GET"])
 def get(quiz_id):
     """ Gets a quiz and returns it as json
     """
-    quiz = Quiz.get(quiz_id)
+    quiz = db.quizzes.find({"quiz_id": quiz_id}, {"_id": False, "creator_id": False})
     if not quiz:
         return jsonify({
             "message": "Quiz not found"
         }), 400
-
-    del quiz["creator_id"]
-    del quiz["_id"]
 
     return jsonify(quiz)
 
@@ -874,7 +928,7 @@ def myresults():
     def url_for_other_page(page):
         args = request.args.copy()
         args['page'] = page
-        return url_for('home', _external=False, **args)
+        return url_for('myresults', _external=False, **args)
 
     if query:
         total = db.results.count_documents(
