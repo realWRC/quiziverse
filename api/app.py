@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import json
 import re
+
+from pymongo import results
 from api.config import app, login_manager
 from datetime import date, datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect, jsonify
@@ -896,9 +898,11 @@ def resultinfo(quiz_id):
         flash("You have not taken a quiz on this site.")
         return redirect(url_for('index'))
 
-    result = Result.getQuizResult(
-            user_id = current_user.get_id(),
-    )
+    # result = Result.getQuizResult(
+    #         user_id = current_user.get_id(),
+    # )
+    # print(result)
+    result = db.results.find_one({"user_id": current_user.get_id(), "quiz_id": quiz_id})
 
     return render_template("resultinfo.html", result=result)
 
@@ -973,6 +977,7 @@ def myresults():
             'prev_url': url_for_other_page(page - 1) if page > 1 else None,
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
+    print(results)
     
     return render_template("myresults.html", results=results, query=query, pagination=pagination, year=year)
 

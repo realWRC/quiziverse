@@ -6,9 +6,13 @@ class Quiz():
     """ Defines the datamodel for a quiz.
     """
     
-    def __init__(self, title, creator_id, description, category="general", quiz_id=str(uuid.uuid4()), questions=[], time_limit=0, total_score=0, **kwargs):
+    def __init__(self, title, creator_id, description, category="general", quiz_id=None, questions=None, time_limit=0, total_score=0, **kwargs):
         """ Initialises the quiz datamodel
         """
+        if quiz_id is None:
+            quiz_id = str(uuid.uuid4())
+        if questions is None:
+            questions = []
         validation = Quiz.validateFields(title, description, category, time_limit)
         if isinstance(questions, list) and validation[0]:
             self.quiz_id = quiz_id
