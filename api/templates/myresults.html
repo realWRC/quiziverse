@@ -4,10 +4,28 @@
 {% include "_verticalnav.html" %}
 <main>
   <p>My Results</p>
-  <form method="GET">
-    <input type="text" name="search" placeholder="Search by title...." value="{{ query }}">
-    <button type="submit">Search</button>
-  </form>
+    <div class="filter">
+      <form method="GET" action="{{ url_for('myresults') }}">
+        <!-- Preserve Page Number if Filtering -->
+        {% if selected_category %}
+            <input type="hidden" name="page" value="1">
+        {% endif %}
+
+        <label for="category">Order By:</label>
+        <select name="category" id="category">
+            <option value="">Default (Title)</option>
+            {% for category in categories %}
+                <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="search">Search:</label>
+        <input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}">
+
+        <button type="submit" name="action" value="filter">Filter</button>
+        <button type="submit" name="action" value="search">Search</button>
+      </form>
+  </div>
   <div>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -28,6 +46,7 @@
           <p>Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
           <p>Score <strong>{{ result.user_score }}</strong></p>
           <p>Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
+          <p><em>Lastest attempt on: {{ result.latest_attempt.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
           <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}">Details</a>
         </div>
       {% endfor %}
@@ -57,6 +76,7 @@
           <p>Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
           <p>Score <strong>{{ result.user_score }}</strong></p>
           <p>Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
+          <p><em>Lastest attempt on: {{ result.latest_attempt.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
           <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}">Details</a>
       </div>
       {% endfor %}
