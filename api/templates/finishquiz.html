@@ -1,6 +1,7 @@
 {% extends 'home.html' %}
 
 {% block main %}
+{% include "_verticalnav.html" %}
 <div>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
@@ -15,7 +16,7 @@
 <div class="quiz-container">
   <h2>{{ title }} Results</h2>
   <p>Your total score is: <strong>{{ user_score }}</strong></p>
-  <p>Percentage: <strong>{{ percetage_score }}&#37</strong></p>
+  <p>Percentage: <strong>{{ percentage_score }}&#37</strong></p>
   <p>Maximum score: <strong>{{ max_score }}</strong></p>
   <p>Accuracy: <strong>{{ accuracy }}&#37</strong></p>
   <p>Correct Questions: <strong>{{ correct_answers }}</strong></p>

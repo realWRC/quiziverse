@@ -9,11 +9,13 @@ class User(UserMixin):
     """
 
     def __init__(
-        self, username, email, password, user_id=str(uuid.uuid4()),
+        self, username, email, password, user_id=None,
         other={"registed_at": datetime.now(timezone.utc)}
     ):
         """ Initialises User object
         """
+        if user_id is None:
+            user_id = str(uuid.uuid4())
         self.id = user_id
         self.username = username
         self.email = email

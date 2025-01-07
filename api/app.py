@@ -11,12 +11,16 @@ from models.user import User
 from models.quiz import Quiz
 from models import db
 from urllib.parse import urlparse
-from uuid import uuid4
 from pprint import pprint
+from pymongo import ASCENDING
 
 
 year = date.today().strftime("%Y")
 domain = "quiziverse.com"
+
+db.quizzes.create_index([("created_at", ASCENDING)], name="created_at_idx")
+db.quizzes.create_index([("updated_at", ASCENDING)], name="updated_at_idx")
+db.quizzes.create_index([("title", ASCENDING)], name="title_idx")
 
 
 @login_manager.user_loader
@@ -54,6 +58,16 @@ def home():
     skip = (page - 1) * per_page
     query = request.args.get('search', '')
 
+    category = request.args.get('category', '')
+    if category.lower() == "default" or category.lower() == '':
+        category = None
+    categories = ["title", "updated_at", "created_at"]
+    valid_categories = ["title", "updated_at", "created_at", "default", None]
+    if category not in valid_categories:
+        flash("Invalid Sort Order")
+        return redirect(url_for('home', category=None))
+    # categories = db.quizzes.distinct("category")
+
     pattern = re.compile(r'[^a-zA-Z0-9\s]')
     if pattern.search(query):
         query = re.escape(query)
@@ -68,9 +82,14 @@ def home():
             {"title": {"$regex": query, "$options": "i"}}
             )
         total_pages = ceil(total / per_page) if total > 0 else 1
-        cursor = db.quizzes.find(
-            {"title": {"$regex": query, "$options": "i"}}
-            ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        if category:
+            cursor = db.quizzes.find(
+                {"title": {"$regex": query, "$options": "i"}}
+                ).sort([(category, -1), ("updated_at", -1)]).skip(skip).limit(per_page)
+        else:
+            cursor = db.quizzes.find(
+                {"title": {"$regex": query, "$options": "i"}}
+                ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
         quizzes = list(cursor)
         pagination = {
             'page': page,
@@ -83,7 +102,13 @@ def home():
     else:
         total = db.quizzes.count_documents({})
         total_pages = ceil(total / per_page) if total > 0 else 1
-        quizzes = Quiz.getAll().skip(skip).sort("updated_at", 1).limit(per_page)
+        if category:
+            # cursor = Quiz.getAll().skip(skip).sort([(category, 1), ("updated_at", 1)]).limit(per_page)
+            cursor = Quiz.getAll().sort(category, -1).skip(skip).limit(per_page)
+        else:
+            cursor = Quiz.getAll().sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
+        quizzes = list(cursor)
+        pprint(quizzes)
         pagination = {
             'page': page,
             'total_pages': total_pages,
@@ -93,7 +118,13 @@ def home():
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
 
-    return render_template("home.html", title="HOME", year=year, query=query, quizzes=quizzes, pagination=pagination)
+    return render_template(
+        "home.html", title="HOME",
+        year=year, query=query,
+        quizzes=quizzes, categories=categories,
+        selected_category = category,
+        pagination=pagination
+    )
 
 @app.route("/myquizzes", methods=["GET", "POST"])
 def myquizzes():
@@ -116,6 +147,15 @@ def myquizzes():
     skip = (page - 1) * per_page
     query = request.args.get('search', '')
 
+    category = request.args.get('category', '')
+    if category.lower() == "default" or category.lower() == '':
+        category = None
+    categories = ["title", "updated_at", "created_at"]
+    valid_categories = ["title", "updated_at", "created_at", "default", None]
+    if category not in valid_categories:
+        flash("Invalid Sort Order")
+        return redirect(url_for('home', category=None))
+
     pattern = re.compile(r'[^a-zA-Z0-9\s]')
     if pattern.search(query):
         query = re.escape(query)
@@ -132,11 +172,18 @@ def myquizzes():
                 "title": {"$regex": query, "$options": "i"}}
             )
         total_pages = ceil(total / per_page) if total > 0 else 1
-        cursor = db.quizzes.find(
-            {
-                "creator_id": current_user.get_id(),
-                "title": {"$regex": query, "$options": "i"}}
-            ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        if category:
+            cursor = db.quizzes.find(
+                {
+                    "creator_id": current_user.get_id(),
+                    "title": {"$regex": query, "$options": "i"}}
+                ).sort([(category, -1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        else:
+            cursor = db.quizzes.find(
+                {
+                    "creator_id": current_user.get_id(),
+                    "title": {"$regex": query, "$options": "i"}}
+                ).sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
         quizzes = list(cursor)
         # quizzes = Quiz.searchUserQuizzes(current_user.get_id(),query)
         pagination = {
@@ -150,8 +197,11 @@ def myquizzes():
     else:
         total = db.quizzes.count_documents({"creator_id": current_user.get_id()})
         total_pages = ceil(total / per_page) if total > 0 else 1
-        # quizzes = db.quizzes.find({"creator_id": current_user.get_id()}).skip(skip).sort("updated_at", 1).limit(per_page)
-        quizzes = Quiz.getAllUserQuizzes(current_user.get_id()).skip(skip).sort("updated_at", 1).limit(per_page)
+        if category:
+            cursor = Quiz.getAllUserQuizzes(current_user.get_id()).sort(category, -1).skip(skip).limit(per_page)
+        else:
+            cursor = Quiz.getAllUserQuizzes(current_user.get_id()).skip(skip).sort("title", -1).limit(per_page)
+        quizzes = list(cursor)
         pagination = {
             'page': page,
             'total_pages': total_pages,
@@ -161,7 +211,16 @@ def myquizzes():
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
 
-    return render_template("myquizzes.html", quizzes=quizzes, query=query, title="My Quizzes", year=year, pagination=pagination)
+    return render_template(
+        "myquizzes.html",
+        quizzes=quizzes,
+        query=query,
+        title="My Quizzes",
+        year=year,
+        categories=categories,
+        selected_category = category,
+        pagination=pagination
+    )
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -359,7 +418,6 @@ def edit(quiz_id):
 
 
     quiz = Quiz.get(quiz_id)
-    pprint(quiz)
 
     if not quiz:
         flash("Invalid quiz id")
@@ -896,9 +954,11 @@ def resultinfo(quiz_id):
         flash("You have not taken a quiz on this site.")
         return redirect(url_for('index'))
 
-    result = Result.getQuizResult(
-            user_id = current_user.get_id(),
-    )
+    # result = Result.getQuizResult(
+    #         user_id = current_user.get_id(),
+    # )
+    # print(result)
+    result = db.results.find_one({"user_id": current_user.get_id(), "quiz_id": quiz_id})
 
     return render_template("resultinfo.html", result=result)
 
@@ -929,6 +989,15 @@ def myresults():
     if pattern.search(query):
         query = re.escape(query)
 
+    category = request.args.get('category', '')
+    if category.lower() == "default" or category.lower() == '':
+        category = None
+    categories = ["title", "latest_attempt"]
+    valid_categories = ["title", "latest_attempt", "default", None]
+    if category not in valid_categories:
+        flash("Invalid Sort Order")
+        return redirect(url_for('home', category=None))
+
     def url_for_other_page(page):
         args = request.args.copy()
         args['page'] = page
@@ -942,12 +1011,20 @@ def myresults():
             }
         )
         total_pages = ceil(total / per_page) if total > 0 else 1
-        cursor = db.results.find(
-            {
-                "user_id": current_user.get_id(),
-                "title": {"$regex": query, "$options": "i"}
-            }
-        ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+        if category:
+            cursor = db.results.find(
+                {
+                    "user_id": current_user.get_id(),
+                    "title": {"$regex": query, "$options": "i"}
+                }
+            ).sort([(category, -1), ("updated_at", -1)]).skip(skip).limit(per_page)
+        else:
+            cursor = db.results.find(
+                {
+                    "user_id": current_user.get_id(),
+                    "title": {"$regex": query, "$options": "i"}
+                }
+            ).sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
         results = list(cursor)
         # results = Result.searchMyResults(current_user.get_id(), query=query)
         pagination = {
@@ -963,7 +1040,10 @@ def myresults():
         total_pages = ceil(total / per_page) if total > 0 else 1
         # results = Result.getQuizResult(current_user.get_id())
         # results = list(results) if results else None
-        cursor = db.results.find({"user_id": current_user.get_id()})
+        if category:
+            cursor = db.results.find({"user_id": current_user.get_id()}).sort(category, -1).skip(skip).limit(per_page)
+        else:
+            cursor = db.results.find({"user_id": current_user.get_id()}).sort("title", -1).skip(skip).limit(per_page)
         results = list(cursor) if cursor else None
         pagination = {
             'page': page,
@@ -974,7 +1054,15 @@ def myresults():
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
     
-    return render_template("myresults.html", results=results, query=query, pagination=pagination, year=year)
+    return render_template(
+        "myresults.html",
+        results=results,
+        query=query,
+        categories=categories,
+        selected_category = category,
+        pagination=pagination,
+        year=year
+    )
 
 
 if __name__ == "__main__":

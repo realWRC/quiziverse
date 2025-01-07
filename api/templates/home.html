@@ -20,10 +20,28 @@
 {% include "_verticalnav.html" %}
 <main>
   <p>Welcome to Home</p>
-  <form method="GET">
-    <input type="text" name="search" placeholder="Search by title...." value="{{ query }}">
-    <button type="submit">Search</button>
-  </form>
+    <div class="filter">
+      <form method="GET" action="{{ url_for('home') }}">
+        <!-- Preserve Page Number if Filtering -->
+        {% if selected_category %}
+            <input type="hidden" name="page" value="1">
+        {% endif %}
+
+        <label for="category">Order By:</label>
+        <select name="category" id="category">
+            <option value="">Default (Title)</option>
+            {% for category in categories %}
+                <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="search">Search:</label>
+        <input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}">
+
+        <button type="submit" name="action" value="filter">Filter</button>
+        <button type="submit" name="action" value="search">Search</button>
+      </form>
+  </div>
   <div>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -44,6 +62,8 @@
             <p>Questions: {{ quiz.questions|length }}</p>
             <p>Total Marks: {{ quiz.total_score }}</p>
             <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
+            <p><em>Added on: {{ quiz.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+            <p><em>Updated on: {{ quiz.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
             <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}">Take Quiz</a>
         </div>
       {% endfor %}
@@ -66,30 +86,36 @@
         <h3>Not Found</h3>
       {% endif %}
     {% else %}
-    {% for quiz in quizzes %}
-      <div>
-          <h3>{{ quiz.title }}</h3>
-          <p>Questions: {{ quiz.questions|length }}</p>
-          <p>Total Marks: {{ quiz.total_score }}</p>
-          <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
-          <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}">Take Quiz</a>
-      </div>
-    {% endfor %}
-      <div class="pagination">
-          {% if pagination.has_prev %}
-              <a href="{{ pagination.prev_url }}">&laquo; Previous</a>
-          {% else %}
-              <span class="disabled">&laquo; Previous</span>
-          {% endif %}
-          
-          <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
-          
-          {% if pagination.has_next %}
-              <a href="{{ pagination.next_url }}">Next &raquo;</a>
-          {% else %}
-              <span class="disabled">Next &raquo;</span>
-          {% endif %}
-      </div>
+      {% if quizzes %}
+        {% for quiz in quizzes %}
+          <div>
+              <h3>{{ quiz.title }}</h3>
+              <p>Questions: {{ quiz.questions|length }}</p>
+              <p>Total Marks: {{ quiz.total_score }}</p>
+              <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
+              <p><em>Added on: {{ quiz.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+              <p><em>Updated on: {{ quiz.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+              <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}">Take Quiz</a>
+          </div>
+        {% endfor %}
+          <div class="pagination">
+              {% if pagination.has_prev %}
+                  <a href="{{ pagination.prev_url }}">&laquo; Previous</a>
+              {% else %}
+                  <span class="disabled">&laquo; Previous</span>
+              {% endif %}
+              
+              <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
+              
+              {% if pagination.has_next %}
+                  <a href="{{ pagination.next_url }}">Next &raquo;</a>
+              {% else %}
+                  <span class="disabled">Next &raquo;</span>
+              {% endif %}
+          </div>
+      {% else %}
+        <p>We have no quizzes at the moment</p>
+      {% endif %}
     {% endif %}
   </div>
 </main>

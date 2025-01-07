@@ -36,7 +36,7 @@ class Result():
         """
         match = db.results.find({"user_id": user_id})
         if match:
-            return match
+            return list(match)
         else:
             return None
 
