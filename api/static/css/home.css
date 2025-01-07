@@ -1,0 +1,61 @@
+body {
+  background-color: #000000;
+  color: white;
+}
+
+header {
+  background-color: #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+header .logo {
+  color: #FFD700;
+  font-size: 24px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+nav a:hover {
+    color: #FFD700;
+}
+
+.page-container {
+  display: flex;
+}
+
+.vertical-menu {
+  display: flex;
+  color: white;
+  justify-content: top;
+  flex-direction: column;
+  width: 10%;
+}
+
+main {
+  background-color: #fff;
+  color: black;
+  width: 90%;
+}
+
+.filter {
+  display: flex;
+  justify-content: center;
+}
+
+.quiz-card-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.quiz-card {
+  width: 300px;
+}
