@@ -141,10 +141,12 @@ for user_id in user_list[:2]:
         quiz = Quiz(
             title = title,
             description = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic ut voluptate temporibus aliquam nihil tenetur quibusdam ipsam optio odio ex.",
+            category = "Geography",
             creator_id = user_id,
             time_limit = 600
         )
         quiz.addMultipleQuestions(questions_1)
+        quiz.save()
         quiz_list.append(quiz.quiz_id)
         quiz_titles[quiz.quiz_id] = quiz.title
 
@@ -155,10 +157,12 @@ for user_id in user_list[2:4]:
         quiz = Quiz(
             title = title,
             description = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic ut voluptate temporibus aliquam nihil tenetur quibusdam ipsam optio odio ex.",
+            category = "Foods",
             creator_id = user_id,
             time_limit = 600
         )
         quiz.addMultipleQuestions(questions_2)
+        quiz.save()
         quiz_list.append(quiz.quiz_id)
         quiz_titles[quiz.quiz_id] = quiz.title
 
@@ -169,6 +173,7 @@ for user_id in user_list[4:]:
         quiz = Quiz(
             title = title,
             description = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic ut voluptate temporibus aliquam nihil tenetur quibusdam ipsam optio odio ex.",
+            category = "General",
             creator_id = user_id,
             time_limit = 600
         )

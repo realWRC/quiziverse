@@ -23,7 +23,7 @@ class Quiz():
             self.time_limit = time_limit
             self.total_score = total_score
             self.questions = questions
-            self.creatated_at = datetime.now(timezone.utc)
+            self.created_at = datetime.now(timezone.utc)
             self.updated_at = datetime.now(timezone.utc)
         else:
             return validation[1]
@@ -127,7 +127,7 @@ class Quiz():
                 category = quiz_dict["category"],
                 time_limit = quiz_dict["time_limit"],
                 total_score = quiz_dict["total_score"],
-                creatated_at = quiz_dict["creatated_at"],
+                creatated_at = quiz_dict["created_at"],
                 updated_at = quiz_dict["updated_at"],
                 questions = quiz_dict["questions"]
             )
