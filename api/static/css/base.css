@@ -3,6 +3,9 @@ body {
   color: white;
   background-color: #000000;
 }
+main {
+  margin-bottom: 100px;
+}
 
 header {
   background-color: #000;
@@ -48,7 +51,8 @@ nav a:hover {
 
 .get-started-btn {
   color: #FFD700;
-  background-color: #000;
+  /* background-color: #000; */
+  background-color: #111;
   font-weight: 10px;
   height: 50px;
   width: 150px;
