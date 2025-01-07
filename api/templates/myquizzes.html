@@ -4,10 +4,28 @@
 {% include "_verticalnav.html" %}
 <main>
   <h1>My Quizzes</h1>
-  <form method="GET">
-    <input type="text" name="search" placeholder="Search by title...." value="{{ query }}">
-    <button type="submit">Search</button>
-  </form>
+    <div class="filter">
+      <form method="GET" action="{{ url_for('myquizzes') }}">
+        <!-- Preserve Page Number if Filtering -->
+        {% if selected_category %}
+            <input type="hidden" name="page" value="1">
+        {% endif %}
+
+        <label for="category">Order By:</label>
+        <select name="category" id="category">
+            <option value="">Default (Title)</option>
+            {% for category in categories %}
+                <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="search">Search:</label>
+        <input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}">
+
+        <button type="submit" name="action" value="filter">Filter</button>
+        <button type="submit" name="action" value="search">Search</button>
+      </form>
+  </div>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       <ul>
@@ -22,8 +40,11 @@
       {% for quiz in quizzes %}
         <div style="border:1px solid #ccc; padding:10px; margin:10px;">
           <h3>{{ quiz.title }}</h3>
+          <p>Questions: {{ quiz.questions|length }}</p>
           <p>Total Marks: {{ quiz.total_score }}</p>
           <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else "No Limit" }}</p>
+          <p><em>Added on: {{ quiz.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+          <p><em>Updated on: {{ quiz.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
           <a href="{{ url_for('edit', quiz_id=quiz.quiz_id) }}">Edit</a>
           <a href="{{ url_for('delete', quiz_id=quiz.quiz_id) }}">Delete</a>
         </div>
@@ -51,8 +72,11 @@
       {% for quiz in quizzes %}
       <div style="border:1px solid #ccc; padding:10px; margin:10px;">
         <h3>{{ quiz.title }}</h3>
+        <p>Questions: {{ quiz.questions|length }}</p>
         <p>Total Marks: {{ quiz.total_score }}</p>
         <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else "No Limit" }}</p>
+        <p><em>Added on: {{ quiz.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+        <p><em>Updated on: {{ quiz.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
         <a href="{{ url_for('edit', quiz_id=quiz.quiz_id) }}">Edit</a>
         <a href="{{ url_for('delete', quiz_id=quiz.quiz_id) }}">Delete</a>
       </div>

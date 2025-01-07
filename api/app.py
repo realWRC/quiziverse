@@ -85,11 +85,11 @@ def home():
         if category:
             cursor = db.quizzes.find(
                 {"title": {"$regex": query, "$options": "i"}}
-                ).sort([(category, -1), ("updated_at", 1)]).skip(skip).limit(per_page)
+                ).sort([(category, -1), ("updated_at", -1)]).skip(skip).limit(per_page)
         else:
             cursor = db.quizzes.find(
                 {"title": {"$regex": query, "$options": "i"}}
-                ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+                ).sort([("title", -1), ("updated_at", -1)]).skip(skip).limit(per_page)
         quizzes = list(cursor)
         pagination = {
             'page': page,
@@ -106,7 +106,7 @@ def home():
             # cursor = Quiz.getAll().skip(skip).sort([(category, 1), ("updated_at", 1)]).limit(per_page)
             cursor = Quiz.getAll().sort(category, -1).skip(skip).limit(per_page)
         else:
-            cursor = Quiz.getAll().sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+            cursor = Quiz.getAll().sort([("title", -1), ("updated_at", -1)]).skip(skip).limit(per_page)
         quizzes = list(cursor)
         pprint(quizzes)
         pagination = {
@@ -177,13 +177,13 @@ def myquizzes():
                 {
                     "creator_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}}
-                ).sort([(category, 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+                ).sort([(category, -1), ("updated_at", 1)]).skip(skip).limit(per_page)
         else:
             cursor = db.quizzes.find(
                 {
                     "creator_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}}
-                ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+                ).sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
         quizzes = list(cursor)
         # quizzes = Quiz.searchUserQuizzes(current_user.get_id(),query)
         pagination = {
@@ -198,9 +198,9 @@ def myquizzes():
         total = db.quizzes.count_documents({"creator_id": current_user.get_id()})
         total_pages = ceil(total / per_page) if total > 0 else 1
         if category:
-            cursor = Quiz.getAllUserQuizzes(current_user.get_id()).skip(skip).sort("updated_at", 1).limit(per_page)
+            cursor = Quiz.getAllUserQuizzes(current_user.get_id()).sort(category, -1).skip(skip).limit(per_page)
         else:
-            cursor = Quiz.getAllUserQuizzes(current_user.get_id()).skip(skip).sort("updated_at", 1).limit(per_page)
+            cursor = Quiz.getAllUserQuizzes(current_user.get_id()).skip(skip).sort("title", -1).limit(per_page)
         quizzes = list(cursor)
         pagination = {
             'page': page,
