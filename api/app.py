@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 import json
 import re
-
-from pymongo import results
 from api.config import app, login_manager
 from datetime import date, datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect, jsonify
