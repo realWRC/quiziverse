@@ -86,7 +86,8 @@ nav a:hover {
 }
 
 .features p {
-    color: #fff;
+  color: #fff;
+  margin-bottom: 35px;
 }
 
 /* footer */

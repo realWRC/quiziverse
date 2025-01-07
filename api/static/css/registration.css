@@ -1,14 +1,14 @@
-.login-section {
+.registration-section {
   display: flex;
-  background-color: #000;
   justify-content: center;
+  background-color: #000;
   align-items: center;
-  padding: 80px;
+  padding: 10px;
   border-color: black;
-  margin-bottom: 80px;
+  margin-bottom: 5px;
 }
 
-.login-card {
+.registration-card {
   background-color: #111;
   border-color: #FFD700;
   border-width: 2px;
@@ -21,40 +21,40 @@
   padding-right: 60px;
 }
 
-.login-card h1 {
+.registration-card h1 {
   text-align: center;
   margin-bottom: 20px;
   color: #FFD700;
 }
 
-.login-card form {
+.registration-card form {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.login-card form label {
+.registration-card form label {
   display: block;
   margin-bottom: 5px;
   color: #fff;
 }
 
-.login-card form label input {
+.registration-card form label input {
   width: 100%;
   padding: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   border: 1px solid #333;
   border-radius: 4px;
   background-color: #222;
   color: #fff;
 }
 
-.login-card form label input:focus {
+.registration-card form label input:focus {
   border-color: #FFD700;
   outline: none;
 }
 
-.login-card form button {
+.registration-card form button {
   width: 105%;
   padding: 15px;
   background-color: #FFD700;
@@ -66,27 +66,27 @@
   font-weight: bold;
 }
 
-.login-card form button:hover {
+.registration-card form button:hover {
   background-color: #8f7901;
   color: #FFD700;
 }
 
-.login-card .registration-link {
+.registration-card .login-link {
   /* text-align: center; */
   margin-top: 15px;
 }
 
-.login-card form p {
+.registration-card form p {
   align-self: center;
 }
 
-.login-card form p a {
+.registration-card form p a {
   color: #FFD700;
   text-decoration: none;
   font-weight: bold;
 }
 
-.login-card form p a:hover {
+.registration-card form p a:hover {
   color: #fff;
   text-decoration: underline;
   font-weight: bold;
