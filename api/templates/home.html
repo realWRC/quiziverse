@@ -15,27 +15,32 @@
 {% block main %}
 <section class="page-container">
 {% include "_verticalnav.html" %}
-<main>
-  <p>Welcome to Home</p>
+<main class="main-section">
 
-    <div class="filter">
+  <section class="filter-section">
+    <div class="filter-search-bar">
       <form method="GET" action="{{ url_for('home') }}">
-        {% if selected_category %}
-          <input type="hidden" name="page" value="1">
-        {% endif %}
-        <label for="category">Order By:</label>
-        <select name="category" id="category">
-          <option value="">Default (Title)</option>
-          {% for category in categories %}
-            <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
-          {% endfor %}
-        </select>
-        <label for="search">Search:</label>
-        <input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}">
-        <button type="submit" name="action" value="filter">Filter</button>
-        <button type="submit" name="action" value="search">Search</button>
+        <div class="filter">
+          {% if selected_category %}
+            <input type="hidden" name="page" value="1">
+          {% endif %}
+          <label for="category">Order By:</label>
+          <select name="category" id="category">
+            <option value="">Default (Title)</option>
+            {% for category in categories %}
+              <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="search">
+          <label for="search">Search:</label>
+          <input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}">
+          <button type="submit" name="action" value="filter">Filter</button>
+          <button type="submit" name="action" value="search">Search</button>
+        </div>
       </form>
     </div>
+  </section>
     <div>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -52,16 +57,15 @@
         {% if quizzes %}
         {% for quiz in quizzes %}
           <div class="quiz-card">
-              <h3>{{ quiz.title }}</h3>
-              <p>Description</p>
-              <p>{{ quiz.description }}</p>
-              <p>Questions: {{ quiz.questions|length }}</p>
-              <p>Total Marks: {{ quiz.total_score }}</p>
-              <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
-              <p><em>Added on: {{ quiz.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
-              <p><em>Updated on: {{ quiz.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
-              <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}">Take Quiz</a>
-          </div>
+            <h3 class="quiz-title">{{ quiz.title }}</h3>
+            <p class="quiz-description">{{ quiz.description }}</p>
+            <p class="quiz-meta">Questions: {{ quiz.questions|length }}</p>
+            <p class="quiz-meta">Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
+            <div class="card-footing">
+              <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Take Quiz</button></a>
+              <a href=""><button class="copy-id-btn" data-quizid={{ quiz.quiz_id }}>Copy ID</button></a>
+            </div>
+        </div>
         {% endfor %}
         {% else %}
           <h3>Not Found</h3>
@@ -69,16 +73,15 @@
       {% else %}
         {% if quizzes %}
           {% for quiz in quizzes %}
-            <div>
-                <h3>{{ quiz.title }}</h3>
-                <p>Description</p>
-                <p>{{ quiz.description }}</p>
-                <p>Questions: {{ quiz.questions|length }}</p>
-                <p>Total Marks: {{ quiz.total_score }}</p>
-                <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
-                <p><em>Added on: {{ quiz.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
-                <p><em>Updated on: {{ quiz.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
-                <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}">Take Quiz</a>
+            <div class="quiz-card">
+              <h3 class="quiz-title">{{ quiz.title }}</h3>
+              <p class="quiz-description">{{ quiz.description }}</p>
+              <p class="quiz-meta">Questions: {{ quiz.questions|length }}</p>
+              <p class="quiz-meta">Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
+              <div class="card-footing">
+                <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Take Quiz</button></a>
+                <a href=""><button class="copy-id-btn" data-quizid={{ quiz.quiz_id }}>Copy ID</button></a>
+              </div>
             </div>
           {% endfor %}
         {% else %}
@@ -87,20 +90,21 @@
       {% endif %}
     </div>
       <div class="pagination">
-          {% if pagination.has_prev %}
-              <a href="{{ pagination.prev_url }}">&laquo; Previous</a>
-          {% else %}
-              <span class="disabled">&laquo; Previous</span>
-          {% endif %}
-          
-          <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
-          
-          {% if pagination.has_next %}
-              <a href="{{ pagination.next_url }}">Next &raquo;</a>
-          {% else %}
-              <span class="disabled">Next &raquo;</span>
-          {% endif %}
+        {% if pagination.has_prev %}
+          <a href="{{ pagination.prev_url }}"><button>&laquo; Previous</button></a>
+        {% else %}
+          <span class="disabled">&laquo; Previous</span>
+        {% endif %}
+        
+        <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
+        
+        {% if pagination.has_next %}
+          <a href="{{ pagination.next_url }}"><button>Next &raquo;</button></a>
+        {% else %}
+          <span class="disabled">Next &raquo;</span>
+        {% endif %}
       </div>
 </main>
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
 </section>
 {% endblock main %}
