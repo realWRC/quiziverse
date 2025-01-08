@@ -36,8 +36,15 @@ nav a:hover {
   display: flex;
   color: white;
   justify-content: top;
+  align-items: center;
   flex-direction: column;
   width: 10%;
+}
+
+.vertical-menu a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 20px;
 }
 
 main {
@@ -53,9 +60,16 @@ main {
 
 .quiz-card-container {
   display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
 }
 
 .quiz-card {
-  width: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 10%;
+  /* max-width: 100px; */
+  margin: 10px;
 }
+
+

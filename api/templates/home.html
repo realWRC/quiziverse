@@ -53,6 +53,8 @@
         {% for quiz in quizzes %}
           <div class="quiz-card">
               <h3>{{ quiz.title }}</h3>
+              <p>Description</p>
+              <p>{{ quiz.description }}</p>
               <p>Questions: {{ quiz.questions|length }}</p>
               <p>Total Marks: {{ quiz.total_score }}</p>
               <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
@@ -61,21 +63,6 @@
               <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}">Take Quiz</a>
           </div>
         {% endfor %}
-          <div class="pagination">
-              {% if pagination.has_prev %}
-                  <a href="{{ pagination.prev_url }}">&laquo; Previous</a>
-              {% else %}
-                  <span class="disabled">&laquo; Previous</span>
-              {% endif %}
-              
-              <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
-              
-              {% if pagination.has_next %}
-                  <a href="{{ pagination.next_url }}">Next &raquo;</a>
-              {% else %}
-                  <span class="disabled">Next &raquo;</span>
-              {% endif %}
-          </div>
         {% else %}
           <h3>Not Found</h3>
         {% endif %}
@@ -84,6 +71,8 @@
           {% for quiz in quizzes %}
             <div>
                 <h3>{{ quiz.title }}</h3>
+                <p>Description</p>
+                <p>{{ quiz.description }}</p>
                 <p>Questions: {{ quiz.questions|length }}</p>
                 <p>Total Marks: {{ quiz.total_score }}</p>
                 <p>Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
@@ -92,26 +81,26 @@
                 <a href="{{ url_for('quizinfo', quiz_id=quiz.quiz_id) }}">Take Quiz</a>
             </div>
           {% endfor %}
-            <div class="pagination">
-                {% if pagination.has_prev %}
-                    <a href="{{ pagination.prev_url }}">&laquo; Previous</a>
-                {% else %}
-                    <span class="disabled">&laquo; Previous</span>
-                {% endif %}
-                
-                <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
-                
-                {% if pagination.has_next %}
-                    <a href="{{ pagination.next_url }}">Next &raquo;</a>
-                {% else %}
-                    <span class="disabled">Next &raquo;</span>
-                {% endif %}
-            </div>
         {% else %}
           <p>We have no quizzes at the moment</p>
         {% endif %}
       {% endif %}
     </div>
+      <div class="pagination">
+          {% if pagination.has_prev %}
+              <a href="{{ pagination.prev_url }}">&laquo; Previous</a>
+          {% else %}
+              <span class="disabled">&laquo; Previous</span>
+          {% endif %}
+          
+          <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
+          
+          {% if pagination.has_next %}
+              <a href="{{ pagination.next_url }}">Next &raquo;</a>
+          {% else %}
+              <span class="disabled">Next &raquo;</span>
+          {% endif %}
+      </div>
 </main>
 </section>
 {% endblock main %}
