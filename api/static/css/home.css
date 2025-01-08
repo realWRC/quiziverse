@@ -59,7 +59,13 @@ nav a:hover {
   justify-content: flex-start;
 }
 
-.vertical-menu button {
+.vertical-menu a {
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.vertical-menu a button {
   background-color: #111;
   color: #FFD700;
   border: 2px solid #FFD700;
@@ -70,6 +76,7 @@ nav a:hover {
   font-weight: bold;
   text-align: left;
   align-content: center;
+  width: 200px;
 }
 
 .vertical-menu button:hover {
