@@ -1,8 +1,16 @@
-{% extends 'home.html' %}
+{% extends "base.html" %}
 
+{% block CSS %}
+ <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 {% block childcss %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/myquizzes.css') }}">
 {% endblock childcss %}
+{% endblock CSS %}
+
+{% block header %}
+<header>
+  {% include "_topnavigation.html" %}
+</header>
+{% endblock header %}
 
 {% block main %}
 <section class="page-container">
@@ -12,7 +20,6 @@
   <section class="filter-section">
     <div class="filter-search-bar">
       <form method="GET" action="{{ url_for('myquizzes') }}">
-
         <div class="filter">
           {% if selected_category %}
             <input type="hidden" name="page" value="1">
@@ -25,7 +32,6 @@
             {% endfor %}
           </select>
         </div>
-
         <div class="search">
           <label for="search">Search:</label>
           <input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}">
@@ -35,20 +41,20 @@
       </form>
     </div>
   </section>
-  <div>
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul>
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-  </div>
-  <div class="quiz-card-container">
-    {% if query %}
-      {% if quizzes %}
+    <div>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    </div>
+    <div class="quiz-card-container">
+      {% if query %}
+        {% if quizzes %}
         {% for quiz in quizzes %}
           <div class="quiz-card">
             <h3 class="quiz-title">{{ quiz.title }}</h3>
@@ -57,48 +63,49 @@
             <p class="quiz-meta">Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
             <div class="card-footing">
               <a href="{{ url_for('edit', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Edit</button></a>
+              <a href=""><button class="copy-id-btn" data-quizid={{ quiz.quiz_id }}>Copy ID</button></a>
               <a href="{{ url_for('delete', quiz_id=quiz.quiz_id) }}"><button class="copy-id-btn">Delete</button></a>
             </div>
-          </div>
+        </div>
         {% endfor %}
+        {% else %}
+          <h3>Not Found</h3>
+        {% endif %}
       {% else %}
-        <p>Not found.</p>
-      {% endif %}
-    {% else %}
-      {% if quizzes %}
-        {% for quiz in quizzes %}
-          <div class="quiz-card">
-            <h3 class="quiz-title">{{ quiz.title }}</h3>
-            <p class="quiz-description">{{ quiz.description }}</p>
-            <p class="quiz-meta">Questions: {{ quiz.questions|length }}</p>
-            <p class="quiz-meta">Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
-            <div class="card-footing">
-              <a href="{{ url_for('edit', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Edit</button></a>
-              <a href="{{ url_for('delete', quiz_id=quiz.quiz_id) }}"><button class="copy-id-btn">Delete</button></a>
+        {% if quizzes %}
+          {% for quiz in quizzes %}
+            <div class="quiz-card">
+              <h3 class="quiz-title">{{ quiz.title }}</h3>
+              <p class="quiz-description">{{ quiz.description }}</p>
+              <p class="quiz-meta">Questions: {{ quiz.questions|length }}</p>
+              <p class="quiz-meta">Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
+              <div class="card-footing">
+                <a href="{{ url_for('edit', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Edit</button></a>
+                <a href=""><button class="copy-id-btn" data-quizid={{ quiz.quiz_id }}>Copy ID</button></a>
+                <a href="{{ url_for('delete', quiz_id=quiz.quiz_id) }}"><button class="copy-id-btn">Delete</button></a>
+              </div>
             </div>
-        {% endfor %}
-      {% else %}
-        <p>You have not created any quizzes yet.</p>
+          {% endfor %}
+        {% else %}
+          <p>You have not created any quizzes yet.</p>
+        {% endif %}
       {% endif %}
-    {% endif %}
-  </div>
-
-  <div class="pagination">
-    {% if pagination.has_prev %}
-      <a href="{{ pagination.prev_url }}">&laquo; Previous</a>
-    {% else %}
-      <span class="disabled">&laquo; Previous</span>
-    {% endif %}
-    
-    <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
-    
-    {% if pagination.has_next %}
-      <a href="{{ pagination.next_url }}">Next &raquo;</a>
-    {% else %}
-      <span class="disabled">Next &raquo;</span>
-    {% endif %}
-  </div>
-
+    </div>
+      <div class="pagination">
+        {% if pagination.has_prev %}
+          <a href="{{ pagination.prev_url }}"><button>&laquo; Previous</button></a>
+        {% else %}
+          <span class="disabled">&laquo; Previous</span>
+        {% endif %}
+        
+        <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
+        
+        {% if pagination.has_next %}
+          <a href="{{ pagination.next_url }}"><button>Next &raquo;</button></a>
+        {% else %}
+          <span class="disabled">Next &raquo;</span>
+        {% endif %}
+      </div>
 </main>
 <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 </section>
