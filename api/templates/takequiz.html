@@ -1,39 +1,45 @@
 {% extends 'home.html' %}
 
+{% block childCSS %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/takequiz.css') }}">
+{% endblock childCSS %}
+
 {% block main %}
-<div class="quiz-container">
+<main class="main-section">
+  <div class="quiz-container">
 
-  {% if duration > 0 %}
-    <div id="countdown" class="countdown-timer"></div>
-  {% else %}
-    <div class="countdown-timer" style="color: green;">No time limit</div>
-  {% endif %}
+    {% if duration > 0 %}
+      <div id="countdown" class="countdown-timer"></div>
+    {% else %}
+      <div class="countdown-timer" style="color: green;">No time limit</div>
+    {% endif %}
 
-  <h2 id="question-text">{{ question.question }}</h2>
+    <h2 id="question-text">{{ question.question }}</h2>
 
-  <ul id="options-list">
-    {% for option in question.options %}
-      <li class="option-item" data-value="{{ option }}" data-question-id="{{ question.question_id }}">
-        <label>
-          <input class="option-input" type="radio" name="optionRadio" value="{{ option }}">
-          {{ option }}
-        </label>
-      </li>
-    {% endfor %}
-  </ul>
+    <ul id="options-list">
+      {% for option in question.options %}
+        <li class="option-item" data-value="{{ option }}" data-question-id="{{ question.question_id }}">
+          <label>
+            <input class="option-input" type="radio" name="optionRadio" value="{{ option }}">
+            {{ option }}
+          </label>
+        </li>
+      {% endfor %}
+    </ul>
 
-  <div class="quiz-navigation">
-    <button id="back-btn" type="button">Back</button>
-    <button id="skip-btn" type="button">Skip</button>
-    <button id="submit-btn" type="button" disabled>Submit</button>
-    <button id="quit-btn" type="button">Quit</button>
+    <div class="quiz-navigation">
+      <button id="back-btn" type="button">Back</button>
+      <button id="skip-btn" type="button">Skip</button>
+      <button id="submit-btn" type="button" disabled>Submit</button>
+      <button id="quit-btn" type="button">Quit</button>
+    </div>
+
+    <form id="answer-form" method="POST" style="display: none;">
+      <input type="hidden" name="answer" id="answerpayload">
+    </form>
+
   </div>
-
-  <form id="answer-form" method="POST" style="display: none;">
-    <input type="hidden" name="answer" id="answerpayload">
-  </form>
-
-</div>
+</main>
 
 <script>
   const SETTINGS = {
