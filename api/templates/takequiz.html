@@ -1,10 +1,11 @@
 {% extends 'home.html' %}
 
-{% block childCSS %}
+{% block childcss %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/takequiz.css') }}">
-{% endblock childCSS %}
+{% endblock childcss %}
 
 {% block main %}
+<section class="page-container">
 <main class="main-section">
   <div class="quiz-container">
 
@@ -40,6 +41,7 @@
 
   </div>
 </main>
+</section>
 
 <script>
   const SETTINGS = {

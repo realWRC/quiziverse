@@ -602,6 +602,7 @@ def takequiz(quiz_id):
         start_time = datetime.now(timezone.utc)
         finish_time = start_time + timedelta(seconds=quiz["time_limit"])
         # This should cache without calling session.modified = True
+        print("IN HERE")
         session["taking_quiz"] = {
             "quiz_id": quiz_id,
             "current_index": 0,
