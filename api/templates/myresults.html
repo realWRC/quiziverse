@@ -1,30 +1,40 @@
 {% extends "home.html" %}
 
+{% block childcss %}
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/myresults.css') }}">
+{% endblock childcss %}
+
 {% block main %}
+<section class="page-container">
 {% include "_verticalnav.html" %}
-<main>
-  <p>My Results</p>
-    <div class="filter">
+<main class="main-section">
+
+  <section class="filter-section">
+    <div class="filter-search-bar">
       <form method="GET" action="{{ url_for('myresults') }}">
-        {% if selected_category %}
-            <input type="hidden" name="page" value="1">
-        {% endif %}
+        <div class="filter">
+          {% if selected_category %}
+              <input type="hidden" name="page" value="1">
+          {% endif %}
 
-        <label for="category">Order By:</label>
-        <select name="category" id="category">
-            <option value="">Default (Title)</option>
-            {% for category in categories %}
-                <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
-            {% endfor %}
-        </select>
+          <label for="category">Order By:</label>
+          <select name="category" id="category">
+              <option value="">Default (Title)</option>
+              {% for category in categories %}
+                  <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+              {% endfor %}
+          </select>
+        </div>
 
-        <label for="search">Search:</label>
-        <input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}">
-
-        <button type="submit" name="action" value="filter">Filter</button>
-        <button type="submit" name="action" value="search">Search</button>
+        <div class="search">
+          <label for="search">Search:</label>
+          <input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}">
+          <button type="submit" name="action" value="filter">Filter</button>
+          <button type="submit" name="action" value="search">Search</button>
+        </div>
       </form>
-  </div>
+    </div>
+  </section>
   <div>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -36,68 +46,58 @@
     {% endif %}
   {% endwith %}
   </div>
-  <div>
+  <div class="quiz-card-container">
   {% if query %}
     {% if results %}
       {% for result in results %}
-        <div>
-          <h3>{{ result['title'] }}</h3>
-          <p>Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
-          <p>Score <strong>{{ result.user_score }}</strong></p>
-          <p>Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
-          <p><em>Lastest attempt on: {{ result.latest_attempt.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
-          <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}">Details</a>
+        <div class="result-card">
+          <h3 class="quiz-title">{{ result['title'] }}</h3>
+          <p class="quiz-description">Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
+          <p class="quiz-meta">Score <strong>{{ result.user_score }}</strong></p>
+          <p class="quiz-meta">Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
+          <div class="card-footing">
+            <p><em>Lastest attempt on: {{ result.latest_attempt.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+            <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}"><button class="take-quiz-btn">Details</button></a>
+          </div>
         </div>
       {% endfor %}
-        <div class="pagination">
-          {% if pagination.has_prev %}
-            <a href="{{ pagination.prev_url }}">&laquo; Previous</a>
-          {% else %}
-            <span class="disabled">&laquo; Previous</span>
-          {% endif %}
-          
-          <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
-          
-          {% if pagination.has_next %}
-            <a href="{{ pagination.next_url }}">Next &raquo;</a>
-          {% else %}
-            <span class="disabled">Next &raquo;</span>
-          {% endif %}
-        </div>
     {% else %}
     <p>Not found</p>
     {% endif %}
   {% else %}
     {% if results %}
       {% for result in results %}
-      <div>
-          <h3>{{ result.title }}</h3>
-          <p>Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
-          <p>Score <strong>{{ result.user_score }}</strong></p>
-          <p>Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
-          <p><em>Lastest attempt on: {{ result.latest_attempt.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
-          <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}">Details</a>
-      </div>
-      {% endfor %}
-        <div class="pagination">
-          {% if pagination.has_prev %}
-            <a href="{{ pagination.prev_url }}">&laquo; Previous</a>
-          {% else %}
-            <span class="disabled">&laquo; Previous</span>
-          {% endif %}
-          
-          <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
-          
-          {% if pagination.has_next %}
-            <a href="{{ pagination.next_url }}">Next &raquo;</a>
-          {% else %}
-            <span class="disabled">Next &raquo;</span>
-          {% endif %}
+        <div class="result-card">
+          <h3 class="quiz-title">{{ result['title'] }}</h3>
+          <p class="quiz-description">Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
+          <p class="quiz-meta">Score <strong>{{ result.user_score }}</strong></p>
+          <p class="quiz-meta">Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
+          <div class="card-footing">
+            <p><em>Lastest attempt on: {{ result.latest_attempt.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+            <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}"><button class="take-quiz-btn">Details</button></a>
+          </div>
         </div>
+      {% endfor %}
     {% else %}
       <p>You Have not taken any quizzes</p>
     {% endif %}
   {% endif %}
   </div>
+    <div class="pagination">
+      {% if pagination.has_prev %}
+        <a href="{{ pagination.prev_url }}"><button>&laquo; Previous</button></a>
+      {% else %}
+        <span class="disabled">&laquo; Previous</span>
+      {% endif %}
+      
+      <span>Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
+      
+      {% if pagination.has_next %}
+        <a href="{{ pagination.next_url }}"><button>Next &raquo;</button></a>
+      {% else %}
+        <span class="disabled">Next &raquo;</span>
+      {% endif %}
+    </div>
 </main>
+</section>
 {% endblock main %}

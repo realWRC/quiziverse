@@ -976,11 +976,11 @@ def myresults():
     if page <= 0:
         page = 1
 
-    per_page = 30
-    if per_page > 30:
-        per_page = 30
-    if per_page < 30:
-        per_page = 30
+    per_page = 24
+    # if per_page > 30:
+    #     per_page = 30
+    # if per_page < 30:
+    #     per_page = 30
 
     skip = (page - 1) * per_page
     query = request.args.get('search', '')
