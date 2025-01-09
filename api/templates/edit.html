@@ -1,28 +1,21 @@
 {% extends "home.html" %}
 
 {% block childcss %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/create.css') }}">
 {% endblock childcss %}
 
 {% block main %}
-<main>
+<section class="page-container">
+<main class="main-section">
 
-  {% include "_verticalnav.html" %}
-  <h1>Create a New Quiz</h1>
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
+  <form action="{{ url_for('create') }}" method="POST" id="createQuizForm">
 
-  <form action="{{ url_for('edit', quiz_id=data['quiz_id']) }}" method="POST" id="createQuizForm">
-    <label>Quiz Title: <input type="text" name="title" value="{{ data['title'] }}" required></label><br><br>
-    <label>Description (30 words max): <textarea type="text" name="description" value="{{ data['description'] }}" required>{{ data['description'] }}</textarea></label><br><br>
-    <label>Category (gerenal by default): <input type="text" name="category" value="{{ data['category'] }}"></label><br><br>
-    <label>Time Limit (seconds, optional): <input type="text" name="time_limit" value="{{ data['time_limit'] }}"></label><br><br>
+    <div class="form-group">
+      <label>Quiz Title: <input type="text" name="title" value="{{ data.title }}" required></label><br><br>
+      <label>Description (30 words max): <textarea type="text" name="description" value="{{ data.description }}" required>{{ data['description'] }}</textarea></label><br><br>
+      <label>Category (gerenal by default): <input type="text" name="category" value="{{ data.catergory }}"></label><br><br>
+      <label>Time Limit (seconds, optional): <input type="text" name="time_limit" value="{{ data.time_limit }}"></label><br><br>
+    </div>
 
     <div id="questions-container">
       {% for question in data['questions']%}
@@ -39,11 +32,14 @@
     </div>
 
     <input type="hidden" name="quiz_json" id="quiz_json" value="">
-    <button type="button" id="add-question-btn">Add Another Question</button>
-    <button type="button" id="remove-question-btn">Remove Last Question</button><br>
 
-    <button type="submit">Complete Edit</button>
-    <a href="{{ url_for('home') }}"><button type="button">Cancel</button></a>
+    <div class="button-group">
+      <button type="button" id="add-question-btn">Add Another Question</button>
+      <button type="button" id="remove-question-btn">Remove Last Question</button><br>
+      <button type="submit" class="submit-btn">Create Quiz</button>
+      <a href="{{ url_for('home') }}" class="cancel-link"><button type="button">Cancel</button></a>
+    </div>
+
   </form>
 
   <script> let questionIndex = {{ data['questions']|length }} </script>
@@ -51,4 +47,5 @@
   <script src="{{ url_for('static', filename='js/create_quiz.js') }}"></script>
 
 </main>
+</section>
 {% endblock main %}
