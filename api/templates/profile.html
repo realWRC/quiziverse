@@ -3,9 +3,9 @@
 {% block main %}
 <main>
   <div>
-    <a href="{{ url_for('unregister') }}">
-      <button>Delete Account</button>
-    </a>
+    <p>Welcome {{ user.name }}</p>
+    <p>Change Username: </p>
+    <a href="{{ url_for('unregister') }}"><button>Delete Account</button></a>
   </div>
 </main>
 {% endblock main %}
