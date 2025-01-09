@@ -8,6 +8,8 @@
 <section class="page-container">
 <main class="main-section">
 
+  {% include "_verticalnav.html" %}
+
   <form action="{{ url_for('edit', quiz_id=data['quiz_id']) }}" method="POST" id="createQuizForm">
 
     <div class="form-group">
