@@ -108,7 +108,6 @@ def home():
         else:
             cursor = Quiz.getAll().sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
         quizzes = list(cursor)
-        pprint(quizzes)
         pagination = {
             'page': page,
             'total_pages': total_pages,
