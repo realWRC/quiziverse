@@ -6,7 +6,6 @@
   <p>My Results</p>
     <div class="filter">
       <form method="GET" action="{{ url_for('myresults') }}">
-        <!-- Preserve Page Number if Filtering -->
         {% if selected_category %}
             <input type="hidden" name="page" value="1">
         {% endif %}

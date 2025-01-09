@@ -64,7 +64,7 @@
             <div class="card-footing">
               <a href="{{ url_for('edit', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Edit</button></a>
               <a href=""><button class="copy-id-btn" data-quizid={{ quiz.quiz_id }}>Copy ID</button></a>
-              <a href="{{ url_for('delete', quiz_id=quiz.quiz_id) }}"><button class="copy-id-btn">Delete</button></a>
+              <a href="{{ url_for('delete', quiz_id=quiz.quiz_id) }}"><button class="delete-btn">Delete</button></a>
             </div>
         </div>
         {% endfor %}
@@ -82,7 +82,7 @@
               <div class="card-footing">
                 <a href="{{ url_for('edit', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Edit</button></a>
                 <a href=""><button class="copy-id-btn" data-quizid={{ quiz.quiz_id }}>Copy ID</button></a>
-                <a href="{{ url_for('delete', quiz_id=quiz.quiz_id) }}"><button class="copy-id-btn">Delete</button></a>
+                <a href="{{ url_for('delete', quiz_id=quiz.quiz_id) }}"><button class="delete-btn">Delete</button></a>
               </div>
             </div>
           {% endfor %}
