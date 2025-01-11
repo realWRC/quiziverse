@@ -226,7 +226,13 @@ def myquizzes():
 def profile():
     """ Renders the users profile
     """
-    return render_template("profile.html", title="PROFILE", year=year)
+    if not current_user.is_authenticated:
+        flash("You are are not logged in")
+        return redirect(url_for('home'))
+
+    user = User.getByID(current_user.get_id())
+
+    return render_template("profile.html", title="PROFILE", year=year, user=user)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -364,7 +370,7 @@ def create():
             title = data['title'],
             description = data['description'],
             time_limit = data['time_limit'],
-            category = data['category']
+            category = data['category'],
         )
         if validation[0]:
             pass
