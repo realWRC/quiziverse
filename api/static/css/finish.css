@@ -64,6 +64,11 @@
   /* transform: translateY(-2px); */
 }
 
+footer {
+  margin-left: 0;
+  width: auto;
+}
+
 @media (max-width: 600px) {
   .quiz-results-container {
     padding: 20px;
