@@ -1,8 +1,3 @@
-// {% if not data %}
-// let questionIndex = 1;
-// {% else %}
-// let questionIndex = {{ data['questions']|length }}
-// {% endif %}
 const addBtn = document.getElementById('add-question-btn');
 const removeBtn = document.getElementById('remove-question-btn');
 const container = document.getElementById('questions-container');

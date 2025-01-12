@@ -49,11 +49,11 @@ def home():
     if page <= 0:
         page = 1
 
-    per_page = 30
-    if per_page > 30:
-        per_page = 30
-    if per_page < 30:
-        per_page = 30
+    per_page = 24
+    # if per_page > 30:
+    #     per_page = 30
+    # if per_page < 30:
+    #     per_page = 30
 
     skip = (page - 1) * per_page
     query = request.args.get('search', '')
@@ -108,7 +108,6 @@ def home():
         else:
             cursor = Quiz.getAll().sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
         quizzes = list(cursor)
-        pprint(quizzes)
         pagination = {
             'page': page,
             'total_pages': total_pages,
@@ -138,11 +137,11 @@ def myquizzes():
     if page <= 0:
         page = 1
 
-    per_page = 30
-    if per_page > 30:
-        per_page = 30
-    if per_page < 30:
-        per_page = 30
+    per_page = 24
+    # if per_page > 30:
+    #     per_page = 30
+    # if per_page < 30:
+    #     per_page = 30
 
     skip = (page - 1) * per_page
     query = request.args.get('search', '')
@@ -227,7 +226,13 @@ def myquizzes():
 def profile():
     """ Renders the users profile
     """
-    return render_template("profile.html", title="PROFILE", year=year)
+    if not current_user.is_authenticated:
+        flash("You are are not logged in")
+        return redirect(url_for('home'))
+
+    user = User.getByID(current_user.get_id())
+
+    return render_template("profile.html", title="PROFILE", year=year, user=user)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -365,7 +370,7 @@ def create():
             title = data['title'],
             description = data['description'],
             time_limit = data['time_limit'],
-            category = data['category']
+            category = data['category'],
         )
         if validation[0]:
             pass
@@ -603,6 +608,7 @@ def takequiz(quiz_id):
         start_time = datetime.now(timezone.utc)
         finish_time = start_time + timedelta(seconds=quiz["time_limit"])
         # This should cache without calling session.modified = True
+        print("IN HERE")
         session["taking_quiz"] = {
             "quiz_id": quiz_id,
             "current_index": 0,
@@ -976,11 +982,11 @@ def myresults():
     if page <= 0:
         page = 1
 
-    per_page = 30
-    if per_page > 30:
-        per_page = 30
-    if per_page < 30:
-        per_page = 30
+    per_page = 24
+    # if per_page > 30:
+    #     per_page = 30
+    # if per_page < 30:
+    #     per_page = 30
 
     skip = (page - 1) * per_page
     query = request.args.get('search', '')

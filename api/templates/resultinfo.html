@@ -1,29 +1,36 @@
 {% extends 'home.html' %}
 
+{% block childcss %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/finish.css') }}">
+{% endblock childcss %}
+
 {% block main %}
 {% include "_verticalnav.html" %}
-<main>
-  <div>
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-  </div>
-  <div>
-    <div>
-        <h3>{{ result.title }}</h3>
-        <p>Percentage <strong>{{ result.percentage_score }}</strong>&#37</p>
-        <p>Score <strong>{{ result.user_score }}</strong></p>
-        <p>Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
-        <p>Questions Attempted <strong>{{ result.questions_attempted }}</strong></p>
-        <p>Accuracy <strong>{{ result.accuracy }}</strong>&#37</p>
-        <a href="{{ url_for('myresults') }}">My Results</a>
-        <a href="{{ url_for('quizinfo', quiz_id=result.quiz_id) }}">Retake Take Quiz</a>
+<div>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+<main class="page-container">
+  <div class="quiz-results-container">
+    <h2 class="results-title">{{ title }} Results</h2>
+    
+    <div class="results-summary">
+      <p>Percentage: <strong>{{ result.percentage_score }}&#37;</strong></p>
+      <p>Your total score is: <strong>{{ result.user_score }}</strong></p>
+      <p>Accuracy: <strong>{{ result.accuracy }}&#37;</strong></p>
+      <p>Correct Questions: <strong>{{ result.correct_answers }}</strong></p>
+      <p>Questions Attempted: <strong>{{ result.questions_attempted }}</strong></p>
+    </div>
+    
+    <div class="results-actions">
+      <a href="{{ url_for('myresults') }}" class="button return-home">Return</a>
+      <a href="{{ url_for('quizinfo', quiz_id=quiz_id) }}" class="button retry-quiz">Retry</a>
     </div>
   </div>
 </main>

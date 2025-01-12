@@ -1,13 +1,13 @@
 {% extends "home.html" %}
 
 {% block childcss %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/quizinfo.css') }}">
 {% endblock childcss %}
 
 {% block main %}
-<main>
+<main class="main-section">
 
   {% include "_verticalnav.html" %}
-  <h1>Answer {{ quiz['title'] }}</h1>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       <ul>
@@ -17,13 +17,24 @@
       </ul>
     {% endif %}
   {% endwith %}
-
-  <h3>{{ quiz['title'] }}</h3>
-  <p>Questions: {{ quiz['questions']|length }}</p>
-  <p>Total Marks: {{ quiz['total_score'] }}</p>
-  <p>Time Limit: {{ quiz['time_limit'] if quiz['time_limit'] > 0 else 'No Time Limit' }}</p>
-  <a href="{{ url_for('takequiz', quiz_id=quiz['quiz_id']) }}">Start</a>
-  <a href="{{ url_for('home') }}">Back Home</a>
+  <div class="quiz-card">
+    <h1 class="quiz-title">Answer {{ quiz['title'] }}</h1>
+    <p class="quiz-meta">Description:</p>
+    <p class="quiz-description">{{ quiz.description }}</p>
+    <p class="quiz-meta">Questions: {{ quiz['questions']|length }}</p>
+    <p class="quiz-meta">Total Marks: {{ quiz['total_score'] }}</p>
+    <p class="quiz-meta">Time Limit: {{ quiz['time_limit'] if quiz['time_limit'] > 0 else 'No Time Limit' }}</p>
+    <p class="quiz-meta"><em>Added on: {{ quiz.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+    <p class="quiz-meta"><em>Updated on: {{ quiz.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+    <div class="card-footing">
+      <a href="{{ url_for('takequiz', quiz_id=quiz['quiz_id']) }}"><button class="take-quiz-btn">Start</button></a>
+      <a href="{{ url_for('home') }}"><button class="copy-id-btn">Back Home</button></a>
+      <a href=""><button class="copy-id-btn" data-quizid={{ quiz['quiz_id'] }}>Copy ID</button></a>
+    </div>
+  </div>
 
 </main>
+
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+
 {% endblock main %}

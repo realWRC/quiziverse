@@ -1,5 +1,9 @@
 {% extends 'home.html' %}
 
+{% block childcss %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/finish.css') }}">
+{% endblock childcss %}
+
 {% block main %}
 {% include "_verticalnav.html" %}
 <div>
@@ -12,17 +16,24 @@
     </ul>
   {% endif %}
 {% endwith %}
-</div>
-<div class="quiz-container">
-  <h2>{{ title }} Results</h2>
-  <p>Your total score is: <strong>{{ user_score }}</strong></p>
-  <p>Percentage: <strong>{{ percentage_score }}&#37</strong></p>
-  <p>Maximum score: <strong>{{ max_score }}</strong></p>
-  <p>Accuracy: <strong>{{ accuracy }}&#37</strong></p>
-  <p>Correct Questions: <strong>{{ correct_answers }}</strong></p>
-  <p>Questions Attempted: <strong>{{ questions_attempted }}</strong></p>
-  <a href="{{ url_for('home') }}">Return Home</a>
-  <a href="{{ url_for('quizinfo', quiz_id=quiz_id) }}">Retry</a>
-</div>
+<main class="page-container">
+  <div class="quiz-results-container">
+    <h2 class="results-title">{{ title }} Results</h2>
+    
+    <div class="results-summary">
+      <p>Your total score is: <strong>{{ user_score }}</strong></p>
+      <p>Percentage: <strong>{{ percentage_score }}&#37;</strong></p>
+      <p>Maximum score: <strong>{{ max_score }}</strong></p>
+      <p>Accuracy: <strong>{{ accuracy }}&#37;</strong></p>
+      <p>Correct Questions: <strong>{{ correct_answers }}</strong></p>
+      <p>Questions Attempted: <strong>{{ questions_attempted }}</strong></p>
+    </div>
+    
+    <div class="results-actions">
+      <a href="{{ url_for('home') }}" class="button return-home">Return Home</a>
+      <a href="{{ url_for('quizinfo', quiz_id=quiz_id) }}" class="button retry-quiz">Retry</a>
+    </div>
+  </div>
+</main>
 
 {% endblock main %}
