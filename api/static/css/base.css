@@ -1,21 +1,25 @@
-body {
+html, body {
   font-family: Poppins, Verdana, Geneva, Tahoma, sans-serif;
   color: white;
   background-color: #000000;
-}
-main {
-  margin-bottom: 100px;
+  height: 100%;
 }
 
-header {
+.base-header {
   background-color: #000;
   display: flex;
   justify-content: space-between;
+  height: 40px;
+  max-height: 10%;
   align-items: center;
   padding: 20px;
 }
 
-header .logo {
+.base-main {
+  min-height: 80%;
+}
+
+.logo {
   color: #FFD700;
   font-size: 24px;
   text-decoration: none;
@@ -32,13 +36,13 @@ nav a:hover {
     color: #FFD700;
 }
 
-/* Start Card */
 .hero {
   background-color: #FFD700;
   color: #000;
-  padding: 80px 20px;
+  padding: 100px 20px;
   text-align: center;
   font-size: 20px;
+  min-height: 40%;
 }
 
 .hero h1 {
@@ -51,7 +55,6 @@ nav a:hover {
 
 .get-started-btn {
   color: #FFD700;
-  /* background-color: #000; */
   background-color: #111;
   font-weight: 10px;
   height: 50px;
@@ -71,7 +74,10 @@ nav a:hover {
   display: flex;
   background-color: #000;
   justify-content: space-between;
+  align-content: center;
   width: 100%;
+  min-height: 40%;
+  gap: 5px;
 }
 
 .feature {
@@ -90,11 +96,64 @@ nav a:hover {
   margin-bottom: 35px;
 }
 
-/* footer */
 footer {
-  max-height: 30px;
+  display: flex;
+  height: 50px;
+  max-height: 10%;
   background-color: #000;
   color: #fff;
   padding: 20px;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 912px) {
+  body {
+    border: 2px solid green;
+  }
+  .base-header {
+    height: 30px;
+    padding: 10px;
+    font-size: 12px;
+    max-height: 5%;
+  }
+  .base-main {
+    border: 2px solid white;
+    min-height: 90%;
+  }
+  .logo {
+    font-size: 18px;
+  }
+  .hero {
+    font-size: 12px;
+  }
+  .hero h1 {
+    font-size: 30px;
+  }
+  .get-started-btn {
+    font-weight: 10px;
+    height: 30px;
+    width: 100px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+  .features {
+    font-size: 12px;
+    padding-top: 20px;
+    min-height: 40%;
+  }
+  .features h2 {
+    font-size: 16px;
+  }
+  .features p {
+    font-size: 11px;
+  }
+  footer {
+    font-size: 12px;
+    height: 20px;
+    max-height: 5%;
+    padding: 10px;
+    border: 2px solid yellow;
+    align-content: center;
+  }
 }

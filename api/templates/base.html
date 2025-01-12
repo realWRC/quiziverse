@@ -14,7 +14,7 @@
   </head>
   <body>
     {% block header %}
-    <header>
+    <header class="base-header">
       <a href="{{ url_for('index') }}" class="logo">QUIZIVERSE</a>
       <nav>
         <a href="{{ url_for('home') }}">Home</a>
@@ -24,7 +24,7 @@
     </header>
     {% endblock header %}
     {% block main %}
-    <main>
+    <main class="base-main">
       {% with messages = get_flashed_messages() %}
         {% if messages %}
           <ul>
@@ -45,11 +45,11 @@
           <p>We offer a feature set that allows users to create and edit quizzes seamlessly.</p>
         </div>
         <div class="feature">
-          <h2>Smooth User Experience</h2>
+          <h2>Streamlined UI</h2>
           <p>Our UI offers a user experience that makes it easy to answer quizzes and view your results.</p>
         </div>
         <div class="feature">
-          <h2>Reusable Quizzes</h2>
+          <h2>Quiz API</h2>
           <p>All quizzes on quiziverse are exposed through a RESTful API for you to use in your own applications.</p>
         </div>
       </section>
