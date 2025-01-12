@@ -9,8 +9,8 @@ html, body {
   background-color: #000;
   display: flex;
   justify-content: space-between;
-  height: 40px;
-  max-height: 10%;
+  height: 10%;
+  /* max-height: 10%; */
   align-items: center;
   padding: 20px;
 }
@@ -98,7 +98,7 @@ nav a:hover {
 
 footer {
   display: flex;
-  height: 50px;
+  height: 10%;
   max-height: 10%;
   background-color: #000;
   color: #fff;
@@ -108,17 +108,12 @@ footer {
 }
 
 @media (max-width: 912px) {
-  body {
-    border: 2px solid green;
-  }
   .base-header {
-    height: 30px;
     padding: 10px;
     font-size: 12px;
-    max-height: 5%;
+    height: 5%;
   }
   .base-main {
-    border: 2px solid white;
     min-height: 90%;
   }
   .logo {
@@ -126,6 +121,8 @@ footer {
   }
   .hero {
     font-size: 12px;
+    padding-top: 200px;
+    padding-bottom: 200px;
   }
   .hero h1 {
     font-size: 30px;
@@ -140,7 +137,6 @@ footer {
   .features {
     font-size: 12px;
     padding-top: 20px;
-    min-height: 40%;
   }
   .features h2 {
     font-size: 16px;
@@ -150,10 +146,54 @@ footer {
   }
   footer {
     font-size: 12px;
-    height: 20px;
-    max-height: 5%;
+    height: 5%;
     padding: 10px;
-    border: 2px solid yellow;
+    align-content: center;
+  }
+}
+
+@media (max-width: 412px) {
+  .base-header {
+    height: 30px;
+    padding: 5px;
+    font-size: 10px;
+    height: 5%;
+  }
+  .base-main {
+    height: 90%;
+  }
+  .logo {
+    font-size: 16px;
+  }
+  .hero {
+    font-size: 10px;
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+  .hero h1 {
+    font-size: 20px;
+  }
+  .get-started-btn {
+    font-weight: 10px;
+    height: 30px;
+    width: 100px;
+    border-radius: 12px;
+    font-size: 10px;
+  }
+  .features {
+    font-size: 10px;
+    padding-top: 20px;
+  }
+  .features h2 {
+    font-size: 12px;
+  }
+  .features p {
+    font-size: 11px;
+  }
+  footer {
+    font-size: 12px;
+    height: 5%;
+    padding: 10px;
     align-content: center;
   }
 }
