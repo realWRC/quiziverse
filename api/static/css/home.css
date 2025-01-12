@@ -1,26 +1,26 @@
 body {
   background-color: #000000;
   color: white;
+  height: auto;
 }
 
-header {
+.home-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
-  z-index: 1000; /* Ensure the nav stays above scrolling content */
-
+  height: 10%;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  background-color: #000; /* Black */
-  color: #fff;           /* White text */
+  background-color: #000;
+  color: #fff;
   padding: 0 20px;
+  width: auto;
 }
 
-header .logo {
+.home-header .logo {
   color: #FFD700;
   font-size: 24px;
   text-decoration: none;
@@ -40,19 +40,20 @@ nav a:hover {
 .page-container {
   display: flex;
   margin-bottom: 0px;
+  width: 100%;
 }
 
 .vertical-menu {
   position: fixed;
-  top: 60px; /* Below the top nav */
+  top: 12%;
   left: 0;
-  bottom: 0px; /* Above the footer */
-  width: 200px;
-  background-color: #000; /* Black */
+  bottom: 0px;
+  width: 12%;
+  background-color: #000;
   color: #fff;
-  padding: 20px;
+  padding: 5px;
+  margin-left: 20px;
   box-sizing: border-box;
-
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -87,13 +88,12 @@ nav a:hover {
 .main-section {
   background-color: #fff;
   color: black;
-  width: 90%;
-  margin-top: 60px;    /* Same height as top nav */
-  margin-left: 220px;  /* Same width as side nav */
+  width: 85%;
+  margin-top: 5%;
+  margin-left: 15%;
   margin-bottom: 10px;
-  padding: 10px;
+  padding: 15px;
   box-sizing: border-box;
-  /* height: calc(100vh - 60px - 60px); */
   display: flex;
   flex-direction: column;
 }
@@ -142,7 +142,7 @@ nav a:hover {
   margin-bottom: 20px;
   padding-right: 10px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 cards per row */
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
@@ -257,11 +257,9 @@ nav a:hover {
 }
 
 footer {
-  bottom: 100px;
-  left: 0;
-  right: 0;
-  height: 100px;
+  height: 10%;
   text-align: center;
   padding-bottom: 30px;
-  width: 115%;
+  margin-left: 13%;
+  width: auto
 }
