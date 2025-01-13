@@ -2,6 +2,7 @@ body {
   background-color: #000000;
   color: white;
   height: auto;
+  font-size: 16px;
 }
 
 .home-header {
@@ -9,7 +10,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 10%;
+  height: 100px;
   z-index: 1000;
   display: flex;
   justify-content: space-between;
@@ -22,7 +23,7 @@ body {
 
 .home-header .logo {
   color: #FFD700;
-  font-size: 24px;
+  font-size: 1.5rem;
   text-decoration: none;
   font-weight: 500;
 }
@@ -31,6 +32,7 @@ nav a {
   color: #fff;
   text-decoration: none;
   margin-left: 20px;
+  font-size: 1rem;
 }
 
 nav a:hover {
@@ -41,18 +43,18 @@ nav a:hover {
   display: flex;
   margin-bottom: 0px;
   width: 100%;
+  min-height: 90%;
 }
 
 .vertical-menu {
   position: fixed;
-  top: 12%;
+  top: 100px;
   left: 0;
   bottom: 0px;
-  width: 12%;
+  width: 200px;
   background-color: #000;
   color: #fff;
   padding: 5px;
-  margin-left: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -64,6 +66,8 @@ nav a:hover {
   display: flex;
   justify-content: center;
   text-decoration: none;
+  align-items: center;
+  align-content: center;
 }
 
 .vertical-menu a button {
@@ -75,9 +79,9 @@ nav a:hover {
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
+  font-size: 1rem;
   text-align: left;
-  align-content: center;
-  width: 200px;
+  width: 150px;
 }
 
 .vertical-menu button:hover {
@@ -88,9 +92,9 @@ nav a:hover {
 .main-section {
   background-color: #fff;
   color: black;
-  width: 85%;
-  margin-top: 5%;
-  margin-left: 15%;
+  width: auto;
+  margin-top: 100px;
+  margin-left: 200px;
   margin-bottom: 10px;
   padding: 15px;
   box-sizing: border-box;
@@ -257,9 +261,70 @@ nav a:hover {
 }
 
 footer {
-  height: 10%;
+  height: 100px;
   text-align: center;
   padding-bottom: 30px;
-  margin-left: 13%;
+  margin-left: 200px;
   width: auto
+}
+
+@media (max-width: 1400px) {
+
+  .quiz-card-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1100px) {
+
+  .quiz-card-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 912px) {
+  html {
+    font-size: 12px;
+  }
+  .filter-search-bar form {
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+  .filter {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 750px) {
+
+  .quiz-card-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .vertical-menu {
+    width: 60px;
+    gap: 15px;
+  }
+  .vertical-menu a button {
+    width: 40px;
+    writing-mode: vertical-rl;
+    padding: 10px;
+    margin: 0px;
+  }
+  .main-section {
+    margin-left: 60px;
+  }
+  footer {
+    margin-left: 50px;
+  }
+}
+
+@media (max-width: 560px) {
+
+  .quiz-card-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
