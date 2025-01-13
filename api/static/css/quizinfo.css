@@ -80,3 +80,20 @@
   padding: 8px 12px;
   border-radius: 4px;
 }
+
+.main-section .quiz-card .card-footing .delete-btn {
+  background-color: #000;
+  color: #FFD700;
+  border: 2px solid #FFD700;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.main-section .quiz-card .card-footing .delete-btn:hover {
+  background-color: #FFD700;
+  color: #000;
+  border: 2px solid #000;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
