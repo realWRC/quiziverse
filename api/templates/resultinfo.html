@@ -16,9 +16,9 @@
     </ul>
   {% endif %}
 {% endwith %}
-<main class="page-container">
+<main class="main-section">
   <div class="quiz-results-container">
-    <h2 class="results-title">{{ title }} Results</h2>
+    <h2 class="results-title">{{ result.title }} Results</h2>
     
     <div class="results-summary">
       <p>Percentage: <strong>{{ result.percentage_score }}&#37;</strong></p>
@@ -30,7 +30,7 @@
     
     <div class="results-actions">
       <a href="{{ url_for('myresults') }}" class="button return-home">Return</a>
-      <a href="{{ url_for('quizinfo', quiz_id=quiz_id) }}" class="button retry-quiz">Retry</a>
+      <a href="{{ url_for('quizinfo', quiz_id=result.quiz_id) }}" class="button retry-quiz">Retry</a>
     </div>
   </div>
 </main>
