@@ -1,3 +1,10 @@
+.main-section {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .main-section .quiz-card {
   background-color: #fafafa;
   border: 1px solid #ddd;
@@ -8,7 +15,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-self: center;
-  width: 80%;
+  width: 60%;
   height: auto;
 }
 
@@ -98,7 +105,7 @@
   border-radius: 4px;
 }
 
-@media (max-width: 412px) {
+@media (max-width: 512px) {
 
   .main-section .quiz-card .card-footing .take-quiz-btn {
     padding: 4px 6px;
