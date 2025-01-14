@@ -93,6 +93,8 @@ nav a:hover {
   background-color: #fff;
   color: black;
   width: auto;
+  min-height: 80vh;
+  min-width: 70vw;
   margin-top: 100px;
   margin-left: 200px;
   margin-bottom: 10px;
@@ -161,6 +163,8 @@ nav a:hover {
 }
 
 .quiz-card-container .quiz-card {
+  max-width: 400px;
+  max-height: 400px;
   background-color: #fafafa;
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -283,6 +287,9 @@ footer {
   .quiz-card-container {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+  }
+  .main-section {
+    min-width: 70%;
   }
 }
 

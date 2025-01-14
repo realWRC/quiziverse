@@ -57,7 +57,7 @@
           <p class="quiz-meta">Score <strong>{{ result.user_score }}</strong></p>
           <p class="quiz-meta">Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
           <div class="card-footing">
-            <p><em>Lastest attempt on: {{ result.latest_attempt.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+            <p><em>Lastest attemp: {{ result.latest_attempt.strftime('%Y/%m/%d %H:%M') }}</em></p>
             <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}"><button class="take-quiz-btn">Details</button></a>
           </div>
         </div>
@@ -74,7 +74,7 @@
           <p class="quiz-meta">Score <strong>{{ result.user_score }}</strong></p>
           <p class="quiz-meta">Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
           <div class="card-footing">
-            <p><em>Lastest attempt on: {{ result.latest_attempt.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+            <p><em>Lastest attempt: {{ result.latest_attempt.strftime('%Y/%m/%d %H:%M') }}</em></p>
             <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}"><button class="take-quiz-btn">Details</button></a>
           </div>
         </div>
