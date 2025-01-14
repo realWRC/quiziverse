@@ -30,3 +30,14 @@
   border-radius: 4px;
   font-weight: bold;
 }
+
+@media (max-width: 512px) {
+
+  .quiz-card-container .result-card .card-footing em {
+    font-size: 0.9rem;
+  }
+  .quiz-card-container .card-footing .take-quiz-btn {
+    padding: 4px 6px;
+    margin-top: 20px;
+  }
+}
