@@ -27,10 +27,11 @@
         </div>
 
         <div class="search">
-          <label for="search">Search:</label>
-          <input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}">
-          <button type="submit" name="action" value="filter">Filter</button>
-          <button type="submit" name="action" value="search">Search</button>
+          <label for="search">Search:<input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}"></label>
+          <div class="filter-search-btns">
+            <button type="submit" name="action" value="filter">Filter</button>
+            <button type="submit" name="action" value="search">Search</button>
+          </div>
         </div>
       </form>
     </div>

@@ -133,10 +133,20 @@ nav a:hover {
   border-radius: 4px;
 }
 
+.search {
+  display: flex;
+}
+
 .search input {
   padding: 5px;
+  margin-left: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  /* width: 300px; */
+}
+
+.filter-search-btns button {
+  margin-left: 10px;
 }
 
 .quiz-card-container {
@@ -326,5 +336,15 @@ footer {
 
   .quiz-card-container {
     grid-template-columns: repeat(1, 1fr);
+  }
+  .search {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .filter-search-btns {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
   }
 }
