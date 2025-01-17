@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block CSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock CSS %}
+
+{% block main %}
+  <main class="main-section">
+    <section class="about-container">
+      <h1>About Me</h1>
+      <div class="about-content">
+        <div class="profile-image">
+          <img src="{{ url_for('static', filename='images/profile_picture.png') }}" alt="Developer Photo">
+        </div>
+        <div class="about-text">
+          <p>Hello! I’m Wongani Chulu, developer behind Quiziverse. I created this quiz application to empower users with the ability to create, edit, and take quizzes seamlessly. My passion for technology and education inspired me to build an interactive platform that makes learning fun and engaging.</p>
+          <p>Quiziverse allows you to design your own quizzes, modify them later if needed, answer quizzes at your own pace or with timelimits depending on the quizzes creator, and view the results of the quizzes. The application is built with simplicity, reusability, and a user-friendly experience in mind.</p>
+          <p>Feel free to connect with me on social media to stay updated on new features and future projects:</p>
+          <div class="social-links">
+            <a href="https://github.com/realWRC" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+            <a href="https://www.linkedin.com/in/wongani-chulu-30339915a/" target="_blank"><i class="fab fa-linkedin"> LinkedIn</i></a>
+            <a href="https://x.com/realWRC7" target="_blank"><i class="fab fa-twitter"> Twitter</i></a>
+            <a href="mailto:wonganichulu@gmail.com" target="_blank" id="sublink"><i class="fas fa-envelope"> Email</i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock main %}

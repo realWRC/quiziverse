@@ -37,6 +37,13 @@ def index():
     return render_template("index.html", title="QUIZIVERSE", year=year)
 
 
+@app.route("/about", methods=["GET"])
+def about():
+    """ About page
+    """
+    return render_template("about.html", title="ABOUT", year=year)
+
+
 @app.route("/home", methods=["GET", "POST"])
 def home():
     """ Renders the users home page
