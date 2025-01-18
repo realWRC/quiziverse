@@ -2,6 +2,7 @@
 import json
 import re
 from api.config import app, login_manager, year, domain
+from api.blueprints.information import info_bp
 from datetime import datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect, jsonify
 from flask_login import current_user, login_required, login_user, logout_user
@@ -22,6 +23,8 @@ from pprint import pprint
 # quizzesCollection.create_index([("updated_at", ASCENDING)], name="updated_at_idx")
 # quizzesCollection.create_index([("title", ASCENDING)], name="title_idx")
 
+app.register_blueprint(info_bp)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -37,11 +40,11 @@ def index():
     return render_template("index.html", title="QUIZIVERSE", year=year)
 
 
-@app.route("/about", methods=["GET"])
-def about():
-    """ About page
-    """
-    return render_template("about.html", title="ABOUT", year=year)
+# @app.route("/about", methods=["GET"])
+# def about():
+#     """ About page
+#     """
+#     return render_template("about.html", title="ABOUT", year=year)
 
 
 @app.route("/home", methods=["GET", "POST"])
