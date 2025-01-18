@@ -6,6 +6,7 @@ from api.config import app, login_manager, year, domain
 from api.blueprints.information import info_bp
 from api.blueprints.authentication import auth_bp
 from api.blueprints.dashboard import dash_bp
+from api.blueprints.quiz_routes import quiz_bp
 
 from datetime import datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect, jsonify
@@ -22,6 +23,7 @@ from pprint import pprint
 app.register_blueprint(auth_bp)
 app.register_blueprint(info_bp)
 app.register_blueprint(dash_bp)
+app.register_blueprint(quiz_bp)
 
 
 @login_manager.user_loader
@@ -29,84 +31,6 @@ def load_user(user_id):
     """ Flask login user loader
     """
     return User.getByID(user_id)
-
-
-# @app.route("/logout", methods=["GET", "POST"])
-# def logout():
-#     """ Logout route
-#     """
-#     if current_user.is_authenticated:
-#         logout_user()
-#         session.clear()
-#         flash("Logout Successful!")
-#         return redirect(url_for("info.index"))
-#     else:
-#         flash("You are not logged in.")
-#         return redirect(url_for('auth.login'))
-
-
-@app.route("/create", methods=["GET", "POST"])
-def create():
-    """ Route for creating quizzes
-    """
-    if not current_user.is_authenticated:
-        flash("You must be logged in first")
-        return redirect(url_for('auth.login'))
-
-    if request.method == "POST":
-        data = request.form.get("quiz_json", '')
-        pprint(data)
-        data = json.loads(data)
-
-        if data['time_limit'] is None:
-            data['time_limit'] = 0
-
-        validation = Quiz.validateFields(
-            title = data['title'],
-            description = data['description'],
-            time_limit = data['time_limit'],
-            category = data['category'],
-        )
-        if validation[0]:
-            pass
-        else:
-            flash(validation[1])
-            return render_template("create.html", title="Create", year=year, data=data)
-
-        # i = 0
-        # pprint(data["questions"])
-        # print(f"length of questions list {len(data['questions'])}")
-        for question in data["questions"]:
-            validation = Quiz.validateQuestion(question)
-            # print(f"index {i} = {question}")
-            if validation[0]:
-                # print(f"index {i} = {quest}")
-                # quiz.addQuestion(
-                #     question = quest["question"],
-                #     options = quest["options"],
-                #     answer = quest["answer"],
-                #     score = quest["score"],
-                # )
-                # pprint(quiz.__dict__)
-                # i += 1
-                pass
-            else:
-                flash(validation[1])
-                return render_template("create.html", title="Create", year=year, data=data)
-
-        quiz = Quiz(
-            title = data['title'],
-            creator_id = current_user.get_id(),
-            description = data['description'],
-            time_limit = data['time_limit']
-        )
-        quiz.addMultipleQuestions(data['questions'])
-        pprint(quiz.__dict__)
-        quiz.save()
-        flash("Quiz created successfully")
-        return redirect(url_for('dash.home'))
-
-    return render_template("create.html", title="Create", year=year)
 
 
 @app.route('/edit/<quiz_id>', methods=['GET', 'POST'])
