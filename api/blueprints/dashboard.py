@@ -58,11 +58,15 @@ def home():
         if category:
             cursor = quizzesCollection.find(
                 {"title": {"$regex": query, "$options": "i"}}
-                ).sort([(category, -1), ("updated_at", -1)]).skip(skip).limit(per_page)
+                ).sort(
+                    [(category, -1), ("updated_at", -1)]
+                ).skip(skip).limit(per_page)
         else:
             cursor = quizzesCollection.find(
                 {"title": {"$regex": query, "$options": "i"}}
-                ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+                ).sort(
+                    [("title", 1), ("updated_at", 1)]
+                ).skip(skip).limit(per_page)
         quizzes = list(cursor)
         pagination = {
             'page': page,
@@ -76,10 +80,12 @@ def home():
         total = quizzesCollection.count_documents({})
         total_pages = ceil(total / per_page) if total > 0 else 1
         if category:
-            # cursor = Quiz.getAll().skip(skip).sort([(category, 1), ("updated_at", 1)]).limit(per_page)
-            cursor = Quiz.getAll().sort(category, -1).skip(skip).limit(per_page)
+            cursor = Quiz.getAll().sort(category, -1)\
+                    .skip(skip).limit(per_page)
         else:
-            cursor = Quiz.getAll().sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
+            cursor = Quiz.getAll().sort(
+                [("title", 1), ("updated_at", -1)]
+            ).skip(skip).limit(per_page)
         quizzes = list(cursor)
         pagination = {
             'page': page,
@@ -94,7 +100,7 @@ def home():
         "home.html", title='dash.home',
         year=year, query=query,
         quizzes=quizzes, categories=categories,
-        selected_category = category,
+        selected_category=category,
         pagination=pagination
     )
 
@@ -150,13 +156,17 @@ def myquizzes():
                 {
                     "creator_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}}
-                ).sort([(category, -1), ("updated_at", 1)]).skip(skip).limit(per_page)
+                ).sort(
+                    [(category, -1), ("updated_at", 1)]
+                ).skip(skip).limit(per_page)
         else:
             cursor = quizzesCollection.find(
                 {
                     "creator_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}}
-                ).sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
+                ).sort(
+                    [("title", 1), ("updated_at", -1)]
+                ).skip(skip).limit(per_page)
         quizzes = list(cursor)
         # quizzes = Quiz.searchUserQuizzes(current_user.get_id(),query)
         pagination = {
@@ -168,12 +178,18 @@ def myquizzes():
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
     else:
-        total = quizzesCollection.count_documents({"creator_id": current_user.get_id()})
+        total = quizzesCollection.count_documents({
+            "creator_id": current_user.get_id()
+        })
         total_pages = ceil(total / per_page) if total > 0 else 1
         if category:
-            cursor = Quiz.getAllUserQuizzes(current_user.get_id()).sort(category, -1).skip(skip).limit(per_page)
+            cursor = Quiz.getAllUserQuizzes(
+                current_user.get_id()
+            ).sort(category, -1).skip(skip).limit(per_page)
         else:
-            cursor = Quiz.getAllUserQuizzes(current_user.get_id()).skip(skip).sort("title", -1).limit(per_page)
+            cursor = Quiz.getAllUserQuizzes(
+                current_user.get_id()
+            ).skip(skip).sort("title", -1).limit(per_page)
         quizzes = list(cursor)
         pagination = {
             'page': page,
@@ -191,7 +207,7 @@ def myquizzes():
         title="My Quizzes",
         year=year,
         categories=categories,
-        selected_category = category,
+        selected_category=category,
         pagination=pagination
     )
 
@@ -256,7 +272,9 @@ def myresults():
                     "user_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}
                 }
-            ).sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
+            ).sort(
+                [("title", 1), ("updated_at", -1)]
+            ).skip(skip).limit(per_page)
         results = list(cursor)
         # results = Result.searchMyResults(current_user.get_id(), query=query)
         pagination = {
@@ -268,14 +286,20 @@ def myresults():
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
     else:
-        total = resultsCollection.count_documents({"user_id": current_user.get_id()})
+        total = resultsCollection.count_documents({
+            "user_id": current_user.get_id()
+        })
         total_pages = ceil(total / per_page) if total > 0 else 1
         # results = Result.getQuizResult(current_user.get_id())
         # results = list(results) if results else None
         if category:
-            cursor = resultsCollection.find({"user_id": current_user.get_id()}).sort(category, -1).skip(skip).limit(per_page)
+            cursor = resultsCollection.find(
+                {"user_id": current_user.get_id()}
+            ).sort(category, -1).skip(skip).limit(per_page)
         else:
-            cursor = resultsCollection.find({"user_id": current_user.get_id()}).sort("title", -1).skip(skip).limit(per_page)
+            cursor = resultsCollection.find({
+                    "user_id": current_user.get_id()
+            }).sort("title", -1).skip(skip).limit(per_page)
         results = list(cursor) if cursor else None
         pagination = {
             'page': page,
@@ -285,13 +309,13 @@ def myresults():
             'prev_url': url_for_other_page(page - 1) if page > 1 else None,
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
-    
+
     return render_template(
         "myresults.html",
         results=results,
         query=query,
         categories=categories,
-        selected_category = category,
+        selected_category=category,
         pagination=pagination,
         year=year
     )
