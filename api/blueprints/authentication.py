@@ -1,5 +1,5 @@
-from api.config import year, domain
-from flask import flash, Blueprint, request, session, render_template, url_for, redirect, jsonify
+from api.config import year
+from flask import flash, Blueprint, request, session, render_template, url_for, redirect
 from models.user import User
 from flask_login import current_user, login_required, login_user, logout_user
 
@@ -119,4 +119,3 @@ def unregister():
             return redirect(url_for("info.index"))
     else:
         return redirect(url_for('index'))
-

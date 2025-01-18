@@ -1,18 +1,8 @@
-import json
 import re
-from api.config import login_manager, year, domain
-from api.blueprints.information import info_bp
-from api.blueprints.authentication import auth_bp
-from datetime import datetime, timezone, timedelta
-from flask import Blueprint, flash, request, session, render_template, url_for, redirect, jsonify
-from flask_login import current_user, login_required, login_user, logout_user
+from flask import Blueprint, request, jsonify
 from math import ceil
-from models.result import Result
-from models.user import User
-from models.quiz import Quiz
-from models import quizzesCollection, resultsCollection
-from urllib.parse import urlparse
-from pprint import pprint
+from models import quizzesCollection
+
 
 api_db = Blueprint('api_db', __name__)
 
@@ -51,7 +41,6 @@ def getAll():
     else:
         total = quizzesCollection.count_documents({})
         total_pages = ceil(total / per_page) if total > 0 else 1
-        # cursor = Quiz.getAll().skip(skip).sort("updated_at", 1).limit(per_page)
         cursor = quizzesCollection.find({}, {'_id': False, 'creator_id': False}).skip(skip).sort("updated_at", 1).limit(per_page)
         quizzes = list(cursor)
 

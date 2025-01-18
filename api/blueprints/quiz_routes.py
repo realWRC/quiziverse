@@ -1,19 +1,8 @@
 import json
-import re
-from api.config import login_manager, year, domain
-
-from api.blueprints.information import info_bp
-from api.blueprints.authentication import auth_bp
-from api.blueprints.dashboard import dash_bp
-
-from datetime import datetime, timezone, timedelta
-from flask import Blueprint, flash, request, session, render_template, url_for, redirect, jsonify
-from flask_login import current_user, login_required, login_user, logout_user
-from math import ceil
-from models.result import Result
-from models.user import User
+from api.config import year, domain
+from flask import Blueprint, flash, request, session, render_template, url_for, redirect
+from flask_login import current_user
 from models.quiz import Quiz
-from models import quizzesCollection, resultsCollection
 from urllib.parse import urlparse
 from pprint import pprint
 
@@ -49,22 +38,9 @@ def create():
             flash(validation[1])
             return render_template("create.html", title='quiz.create', year=year, data=data)
 
-        # i = 0
-        # pprint(data["questions"])
-        # print(f"length of questions list {len(data['questions'])}")
         for question in data["questions"]:
             validation = Quiz.validateQuestion(question)
-            # print(f"index {i} = {question}")
             if validation[0]:
-                # print(f"index {i} = {quest}")
-                # quiz.addQuestion(
-                #     question = quest["question"],
-                #     options = quest["options"],
-                #     answer = quest["answer"],
-                #     score = quest["score"],
-                # )
-                # pprint(quiz.__dict__)
-                # i += 1
                 pass
             else:
                 flash(validation[1])
@@ -155,7 +131,6 @@ def edit(quiz_id):
         pass
     url = urlparse(request.referrer) 
     if (url.netloc == '127.0.0.1:5000' or url.netloc == domain) and url.path == f'/edit/{quiz_id}' and data:
-        # flash("Back in quiz bro")
         data['quiz_id'] = quiz_id
         return render_template("edit.html", title='quiz.edit', year=year, data=data)
 

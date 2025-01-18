@@ -1,23 +1,14 @@
 import json
-import re
-from api.config import login_manager, year, domain
-
-from api.blueprints.information import info_bp
-from api.blueprints.authentication import auth_bp
-from api.blueprints.dashboard import dash_bp
-
+from api.config import year
 from datetime import datetime, timezone, timedelta
-from flask import Blueprint, flash, request, session, render_template, url_for, redirect, jsonify
-from flask_login import current_user, login_required, login_user, logout_user
-from math import ceil
+from flask import Blueprint, flash, request, session, render_template, url_for, redirect
+from flask_login import current_user
 from models.result import Result
-from models.user import User
 from models.quiz import Quiz
-from models import quizzesCollection, resultsCollection
-from urllib.parse import urlparse
-from pprint import pprint
+
 
 taking_bp = Blueprint('taking', __name__)
+
 
 @taking_bp.route('/quizinfo/<quiz_id>', methods=['GET'])
 def quizinfo(quiz_id):
@@ -389,4 +380,3 @@ def finishquiz(quiz_id):
         max_score=max_score,
         accuracy=accuracy
     )
-
