@@ -35,6 +35,15 @@
         {% endif %}
       {% endwith %}
       <div class="hero">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul>
+              {% for message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
         <h1>Welcome to QUIZIVERSE</h1>
         <p>Start your journey into a universe of quizzes.</b></p>
         <a href="{{ url_for('auth.login') }}"><button class="get-started-btn">Get Started</button></a>

@@ -89,6 +89,20 @@ def register():
         return render_template('register.html', title="Registration", year=year)
 
 
+@auth_bp.route("/logout", methods=["GET", "POST"])
+def logout():
+    """ Logout route
+    """
+    if current_user.is_authenticated:
+        logout_user()
+        session.clear()
+        flash("Logout Successful!")
+        return redirect(url_for("info.index"))
+    else:
+        flash("You are not logged in.")
+        return redirect(url_for('auth.login'))
+
+
 @login_required
 @auth_bp.route("/unregister", methods=["GET", "POST"])
 def unregister():

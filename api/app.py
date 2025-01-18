@@ -31,18 +31,18 @@ def load_user(user_id):
     return User.getByID(user_id)
 
 
-@app.route("/logout", methods=["GET", "POST"])
-def logout():
-    """ Logout route
-    """
-    if current_user.is_authenticated:
-        logout_user()
-        session.clear()
-        flash("Logout Successful!")
-        return redirect(url_for("info.index"))
-    else:
-        flash("You are not logged in.")
-        return redirect(url_for('auth.login'))
+# @app.route("/logout", methods=["GET", "POST"])
+# def logout():
+#     """ Logout route
+#     """
+#     if current_user.is_authenticated:
+#         logout_user()
+#         session.clear()
+#         flash("Logout Successful!")
+#         return redirect(url_for("info.index"))
+#     else:
+#         flash("You are not logged in.")
+#         return redirect(url_for('auth.login'))
 
 
 @app.route("/create", methods=["GET", "POST"])
