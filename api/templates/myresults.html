@@ -11,7 +11,7 @@
 
   <section class="filter-section">
     <div class="filter-search-bar">
-      <form method="GET" action="{{ url_for('myresults') }}">
+      <form method="GET" action="{{ url_for('dash.myresults') }}">
         <div class="filter">
           {% if selected_category %}
               <input type="hidden" name="page" value="1">
@@ -58,7 +58,7 @@
           <p class="quiz-meta">Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
           <div class="card-footing">
             <p><em>Lastest attemp: {{ result.latest_attempt.strftime('%Y/%m/%d %H:%M') }}</em></p>
-            <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}"><button class="take-quiz-btn">Details</button></a>
+            <a href="{{ url_for('results_bp.resultinfo', quiz_id=result.quiz_id) }}"><button class="take-quiz-btn">Details</button></a>
           </div>
         </div>
       {% endfor %}
@@ -75,7 +75,7 @@
           <p class="quiz-meta">Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
           <div class="card-footing">
             <p><em>Lastest attempt: {{ result.latest_attempt.strftime('%Y/%m/%d %H:%M') }}</em></p>
-            <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}"><button class="take-quiz-btn">Details</button></a>
+            <a href="{{ url_for('results_bp.resultinfo', quiz_id=result.quiz_id) }}"><button class="take-quiz-btn">Details</button></a>
           </div>
         </div>
       {% endfor %}
