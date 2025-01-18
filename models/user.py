@@ -1,7 +1,7 @@
 import bcrypt
 import uuid
 from datetime import datetime, timezone
-from models import db
+from models import usersCollection, resultsCollection
 from flask_login import UserMixin
 
 class User(UserMixin):
@@ -28,12 +28,12 @@ class User(UserMixin):
     def save(self):
         """ Commits user to database
         """
-        db.users.insert_one(self.__dict__)
+        usersCollection.insert_one(self.__dict__)
 
     def delete(self):
         """ Deletes self from storage.
         """
-        db.users.delete_one({"id": self.id})
+        usersCollection.delete_one({"id": self.id})
 
     def checkpwd(self, password):
         """ Checks if given password matches stored password.
@@ -49,7 +49,7 @@ class User(UserMixin):
     def getByID(user_id):
         """ Gets user
         """
-        data = db.users.find_one({"id": user_id})
+        data = usersCollection.find_one({"id": user_id})
         if data:
             return User(
                 user_id = data["id"],
@@ -63,7 +63,7 @@ class User(UserMixin):
     def getByUsername(username):
         """ Gets the user using username
         """
-        data = db.users.find_one({"username": username})
+        data = usersCollection.find_one({"username": username})
         if data:
             return User(
                 user_id = data["id"],
@@ -77,7 +77,7 @@ class User(UserMixin):
     def getByEmail(email):
         """ Gets the user by email
         """
-        data = db.users.find_one({"email": email})
+        data = usersCollection.find_one({"email": email})
         if data:
             return User(
                 user_id = data["id"],
@@ -90,5 +90,5 @@ class User(UserMixin):
     def deleteByID(user_id):
         """ Deletes user using ID
         """
-        db.users.delete_one({"id": user_id})
-        db.results.delete_one({"user_id": user_id})
+        usersCollection.delete_one({"id": user_id})
+        resultsCollection.delete_many({"user_id": user_id})

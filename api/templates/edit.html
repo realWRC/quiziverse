@@ -10,7 +10,7 @@
 
   {% include "_verticalnav.html" %}
 
-  <form action="{{ url_for('edit', quiz_id=data['quiz_id']) }}" method="POST" id="createQuizForm">
+  <form action="{{ url_for('quiz.edit', quiz_id=data['quiz_id']) }}" method="POST" id="createQuizForm">
 
     <div class="form-group">
       <label>Quiz Title: <input type="text" name="title" value="{{ data.title }}" required></label><br><br>
@@ -39,7 +39,7 @@
       <button type="button" id="add-question-btn">Add</button>
       <button type="button" id="remove-question-btn">Remove</button><br>
       <button type="submit" class="submit-btn">Finish</button>
-      <a href="{{ url_for('myquizzes') }}" class="cancel-link"><button type="button">Cancel</button></a>
+      <a href="{{ url_for('dash.myquizzes') }}" class="cancel-link"><button type="button">Cancel</button></a>
     </div>
 
   </form>

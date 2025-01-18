@@ -17,13 +17,13 @@
         </ul>
       {% endif %}
     {% endwith %}
-    <form action="{{ url_for('register') }}" method="POST">
+    <form action="{{ url_for('auth.register') }}" method="POST">
         <label>Username: <input type="text" name="username" autocomplete="off" required/></label><br>
         <label>Email: <input type="email" name="email" autocomplete="off" required/></label><br>
         <label>Password: <input type="password" name="password" autocomplete="off" required/></label><br>
         <label>Confirm Password: <input type="password" name="confirm_password" autocomplete="off" required /></label><br>
         <button type="submit">Register</button>
-        <p>Already have an account? <a href="{{ url_for('login') }}" class="login-link">Login</a></p>
+        <p>Already have an account? <a href="{{ url_for('auth.login') }}" class="login-link">Login</a></p>
     </form>
   </div>
 </section>

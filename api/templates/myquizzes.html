@@ -19,7 +19,7 @@
 
   <section class="filter-section">
     <div class="filter-search-bar">
-      <form method="GET" action="{{ url_for('myquizzes') }}">
+      <form method="GET" action="{{ url_for('dash.myquizzes') }}">
         <div class="filter">
           {% if selected_category %}
             <input type="hidden" name="page" value="1">
@@ -63,9 +63,9 @@
             <p class="quiz-meta">Questions: {{ quiz.questions|length }}</p>
             <p class="quiz-meta">Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
             <div class="card-footing">
-              <a href="{{ url_for('edit', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Edit</button></a>
+              <a href="{{ url_for('quiz.edit', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Edit</button></a>
               <a href=""><button class="copy-id-btn" data-quizid={{ quiz.quiz_id }}>Copy ID</button></a>
-              <a href="{{ url_for('delete', quiz_id=quiz.quiz_id) }}"><button class="delete-btn">Delete</button></a>
+              <a href="{{ url_for('quiz.delete', quiz_id=quiz.quiz_id) }}"><button class="delete-btn">Delete</button></a>
             </div>
         </div>
         {% endfor %}
@@ -81,9 +81,9 @@
               <p class="quiz-meta">Questions: {{ quiz.questions|length }}</p>
               <p class="quiz-meta">Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
               <div class="card-footing">
-                <a href="{{ url_for('edit', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Edit</button></a>
+                <a href="{{ url_for('quiz.edit', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Edit</button></a>
                 <a href=""><button class="copy-id-btn" data-quizid={{ quiz.quiz_id }}>Copy ID</button></a>
-                <a href="{{ url_for('delete', quiz_id=quiz.quiz_id) }}"><button class="delete-btn">Delete</button></a>
+                <a href="{{ url_for('quiz.delete', quiz_id=quiz.quiz_id) }}"><button class="delete-btn">Delete</button></a>
               </div>
             </div>
           {% endfor %}

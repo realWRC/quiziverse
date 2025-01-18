@@ -1,5 +1,5 @@
 import uuid
-from models import db
+from models import quizzesCollection, resultsCollection
 from datetime import datetime, timezone
 
 class Quiz():
@@ -111,7 +111,7 @@ class Quiz():
     def save(self):
         """ Returns JSON form of class.
         """
-        return db.quizzes.insert_one(self.__dict__)
+        return quizzesCollection.insert_one(self.__dict__)
 
     @staticmethod
     def recreate(quiz_id):
@@ -189,31 +189,31 @@ class Quiz():
     def get(quiz_id):
         """ Returns a quiz by ID from the database
         """
-        return db.quizzes.find_one({"quiz_id": quiz_id})
+        return quizzesCollection.find_one({"quiz_id": quiz_id})
 
     @staticmethod
     def getAll():
         """ Gets all quizzes from database and orders them by title and date updated_at
         """
-        return db.quizzes.find().sort([("title", 1), ("updated_at", 1)])
+        return quizzesCollection.find().sort([("title", 1), ("updated_at", 1)])
 
     @staticmethod
     def getAllUserQuizzes(creator_id):
         """ Gets all quizzes created by the current user.
         """
-        return db.quizzes.find({"creator_id": creator_id})
+        return quizzesCollection.find({"creator_id": creator_id})
 
     @staticmethod
     def getByFilter(criteria):
         """ Returns quiz by a given field
         """
-        return db.quizzes.find(criteria)
+        return quizzesCollection.find(criteria)
 
     @staticmethod
     def delete(quiz_id):
         """ Deletes quiz by id
         """
-        result = db.quizzes.delete_one({"quiz_id": quiz_id})
+        result = quizzesCollection.delete_one({"quiz_id": quiz_id})
         if result.acknowledged and result.deleted_count == 1:
             pass
         else:
@@ -223,7 +223,7 @@ class Quiz():
     def check(quiz_id):
         """ Checks if a quiz_id is valid
         """
-        if db.results.find_one({"user_id": quiz_id}, {"_id": 1}):
+        if resultsCollection.find_one({"user_id": quiz_id}, {"_id": 1}):
             return True
         else:
             return False
@@ -236,7 +236,7 @@ class Quiz():
         assert temp is not None
         temp.addMultipleQuestions(data["questions"])
 
-        result = db.quizzes.update_one(
+        result = quizzesCollection.update_one(
             {"quiz_id": quiz_id },
             { "$set": {
                 "title": data['title'],
@@ -254,7 +254,7 @@ class Quiz():
     def search(query):
         """ Searches quiz database
         """
-        result = db.quizzes.find(
+        result = quizzesCollection.find(
             {"title": {"$regex": query, "$options": "i"}}
             ).sort([("title", 1), ("updated_at", 1)])
 
@@ -271,7 +271,7 @@ class Quiz():
         """ Searches all quizzes made by user with creator_id and querries the quizzes
         by title.
         """
-        cursor = db.quizzes.find(
+        cursor = quizzesCollection.find(
             {
                 "creator_id": creator_id,
                 "title": {"$regex": query, "$options": "i"}
