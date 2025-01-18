@@ -1,0 +1,36 @@
+{% extends "home.html" %}
+
+{% block childcss %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+{% endblock childcss %}
+
+{% block main %}
+  <main class="main-section">
+    <section class="profile-container">
+      <h1>Profile</h1>
+      <div class="profile-actions">
+      
+        <div class="action-block">
+          <h2>View Your Recent Results</h2>
+          <a href="{{ url_for('myresults') }}" title="See your quiz results" class="button">My Results</a>
+        </div>
+        
+        <div class="action-block">
+          <h2>Edit or Delete your Quizzes</h2>
+          <a href="{{ url_for('myquizzes') }}" title="Interact with your quizzes" class="button">My Quizzes</a>
+        </div>
+
+        <div class="action-block">
+          <h2>Create a New Quiz</h2>
+          <a href="{{ url_for('create') }}" title="Create a quiz" class="button">Create</a>
+        </div>
+        
+        <div class="action-block">
+          <h2>Account Options</h2>
+          <a href="{{ url_for('unregister') }}" title="Delete your account" class="button delete-account">Delete Account</a>
+        </div>
+      
+      </div>
+    </section>
+  </main>
+{% endblock main %}
