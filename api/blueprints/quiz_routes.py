@@ -185,18 +185,3 @@ def delete(quiz_id):
         print(e)
         flash("Quiz deletion failed")
     return redirect(request.referrer)
-
-@quiz_bp.route('/quizinfo/<quiz_id>', methods=['GET'])
-def quizinfo(quiz_id):
-    """ Displays information about a quiz before it is taken
-    """
-    if not current_user.is_authenticated:
-        flash("You must be logged in first")
-        return redirect(url_for('auth.login'))
-
-    quiz = Quiz.get(quiz_id)
-    if not quiz:
-        flash("Quiz not found")
-        return redirect(request.referrer)
-
-    return render_template('quizinfo.html', title=quiz['title'] , year=year, quiz=quiz)

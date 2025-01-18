@@ -63,7 +63,7 @@
             <p class="quiz-meta">Questions: {{ quiz.questions|length }}</p>
             <p class="quiz-meta">Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
             <div class="card-footing">
-              <a href="{{ url_for('quiz.quizinfo', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Take Quiz</button></a>
+              <a href="{{ url_for('taking.quizinfo', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Take Quiz</button></a>
               <a href=""><button class="copy-id-btn" data-quizid={{ quiz.quiz_id }}>Copy ID</button></a>
             </div>
         </div>
@@ -80,7 +80,7 @@
               <p class="quiz-meta">Questions: {{ quiz.questions|length }}</p>
               <p class="quiz-meta">Time Limit: {{ quiz.time_limit if quiz.time_limit > 0 else 'No Time Limit' }}</p>
               <div class="card-footing">
-                <a href="{{ url_for('quiz.quizinfo', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Take Quiz</button></a>
+                <a href="{{ url_for('taking.quizinfo', quiz_id=quiz.quiz_id) }}"><button class="take-quiz-btn">Take Quiz</button></a>
                 <a href=""><button class="copy-id-btn" data-quizid={{ quiz.quiz_id }}>Copy ID</button></a>
               </div>
             </div>
