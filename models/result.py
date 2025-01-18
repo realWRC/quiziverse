@@ -28,7 +28,9 @@ class Result():
         """ Checks if user with user_id has a results document
         return true if it does
         """
-        return resultsCollection.find_one({"user_id": user_id, "quiz_id": quiz_id}, {"_id": 1}) is not None
+        return resultsCollection.find_one(
+            {"user_id": user_id, "quiz_id": quiz_id}, {"_id": 1}
+        ) is not None
 
     @staticmethod
     def getQuizResult(user_id):
@@ -62,7 +64,7 @@ class Result():
                 "latest_attempt": kwargs["latest_attempt"]
                 }}
         )
-        
+
     @staticmethod
     def searchMyResults(user_id, query):
         """ Collects all results by user_id and query them based on title.
@@ -81,7 +83,6 @@ class Result():
         # else:
         #     return None
         results = list(cursor)
-        
         if results:
             return results
         else:
