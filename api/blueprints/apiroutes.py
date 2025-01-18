@@ -36,12 +36,16 @@ def getAll():
         cursor = quizzesCollection.find(
             {"title": {"$regex": query, "$options": "i"}},
             {"_id": False, "creator_id": False},
-            ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+            ).sort(
+                [("title", 1), ("updated_at", 1)]
+            ).skip(skip).limit(per_page)
         quizzes = list(cursor)
     else:
         total = quizzesCollection.count_documents({})
         total_pages = ceil(total / per_page) if total > 0 else 1
-        cursor = quizzesCollection.find({}, {'_id': False, 'creator_id': False}).skip(skip).sort("updated_at", 1).limit(per_page)
+        cursor = quizzesCollection.find(
+            {}, {'_id': False, 'creator_id': False}
+        ).skip(skip).sort("updated_at", 1).limit(per_page)
         quizzes = list(cursor)
 
     if quizzes:
@@ -56,7 +60,9 @@ def getAll():
 def get(quiz_id):
     """ Gets a quiz and returns it as json
     """
-    cursor = quizzesCollection.find({"quiz_id": quiz_id}, {"_id": False, "creator_id": False})
+    cursor = quizzesCollection.find(
+        {"quiz_id": quiz_id}, {"_id": False, "creator_id": False}
+    )
     quiz = list(cursor)
     if not quiz:
         return jsonify({
