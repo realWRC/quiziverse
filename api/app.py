@@ -1,26 +1,26 @@
 #!/usr/bin/env python3
 import json
 import re
-from api.config import app, login_manager
-from datetime import date, datetime, timezone, timedelta
+from api.config import app, login_manager, year, domain
+from datetime import datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect, jsonify
 from flask_login import current_user, login_required, login_user, logout_user
 from math import ceil
 from models.result import Result
 from models.user import User
 from models.quiz import Quiz
-from models import db, quizzesCollection, resultsCollection
+from models import quizzesCollection, resultsCollection
 from urllib.parse import urlparse
 from pprint import pprint
-from pymongo import ASCENDING
+# from pymongo import ASCENDING
 
 
-year = date.today().strftime("%Y")
-domain = "quiziverse.com"
-
-quizzesCollection.create_index([("created_at", ASCENDING)], name="created_at_idx")
-quizzesCollection.create_index([("updated_at", ASCENDING)], name="updated_at_idx")
-quizzesCollection.create_index([("title", ASCENDING)], name="title_idx")
+# year = date.today().strftime("%Y")
+# domain = "quiziverse.com"
+#
+# quizzesCollection.create_index([("created_at", ASCENDING)], name="created_at_idx")
+# quizzesCollection.create_index([("updated_at", ASCENDING)], name="updated_at_idx")
+# quizzesCollection.create_index([("title", ASCENDING)], name="title_idx")
 
 
 @login_manager.user_loader
