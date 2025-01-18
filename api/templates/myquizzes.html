@@ -19,7 +19,7 @@
 
   <section class="filter-section">
     <div class="filter-search-bar">
-      <form method="GET" action="{{ url_for('myquizzes') }}">
+      <form method="GET" action="{{ url_for('dash.myquizzes') }}">
         <div class="filter">
           {% if selected_category %}
             <input type="hidden" name="page" value="1">
