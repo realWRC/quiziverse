@@ -1,7 +1,8 @@
 import json
 from api.config import year
 from datetime import datetime, timezone, timedelta
-from flask import Blueprint, flash, request, session, render_template, url_for, redirect
+from flask import Blueprint, flash, request, session
+from flask import render_template, url_for, redirect
 from flask_login import current_user
 from models.result import Result
 from models.quiz import Quiz
@@ -23,7 +24,9 @@ def quizinfo(quiz_id):
         flash("Quiz not found")
         return redirect(request.referrer)
 
-    return render_template('quizinfo.html', title=quiz['title'] , year=year, quiz=quiz)
+    return render_template(
+        'quizinfo.html', title=quiz['title'], year=year, quiz=quiz
+    )
 
 
 @taking_bp.route('/take/<quiz_id>', methods=['GET'])
@@ -35,11 +38,11 @@ def takequiz(quiz_id):
         return redirect(url_for('auth.login'))
 
     quiz = Quiz.get(quiz_id)
-    if quiz == None:
+    if quiz is None:
         flash("Quiz not found")
         return redirect(request.referrer)
 
-    if not "taking_quiz" in session:
+    if "taking_quiz" not in session:
         start_time = datetime.now(timezone.utc)
         finish_time = start_time + timedelta(seconds=quiz["time_limit"])
         # This should cache without calling session.modified = True
@@ -65,10 +68,10 @@ def takequiz(quiz_id):
         del session["taking_quiz"]
         return redirect(url_for('dash.home'))
 
-    # Consider changing to redis for session storage to get faster access times by caching quiz in session
-
     start_time = session["taking_quiz"]["start_time"]
-    session["taking_quiz"]["duration"] = session["taking_quiz"]["finish_time"] - session["taking_quiz"]["current_time"]
+    session["taking_quiz"]["duration"] = \
+        session["taking_quiz"]["finish_time"] - \
+        session["taking_quiz"]["current_time"]
     session.modified = True
     return render_template(
         'takequiz.html',
@@ -88,19 +91,20 @@ def skip(quiz_id):
         flash("You must be logged in first")
         return redirect(url_for('auth.login'))
 
-    if not "taking_quiz" in session:
+    if "taking_quiz" not in session:
         flash("You are not taking a quiz")
         return redirect(url_for('dash.home'))
 
     session["taking_quiz"]["current_time"] = datetime.now(timezone.utc)
 
     quiz = Quiz.get(quiz_id)
-    if quiz == None:
+    if quiz is None:
         del session["taking_quiz"]
         flash("Quiz not found")
         return redirect(url_for('dash.home'))
 
-    if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
+    if session["taking_quiz"]["current_time"] > \
+            session["taking_quiz"]["finish_time"]:
         session["taking_quiz"]["timeout"] = True
         flash("Time Ran Out")
         return redirect(url_for('taking.finishquiz', quiz_id=quiz_id))
@@ -123,7 +127,9 @@ def skip(quiz_id):
 
     question_id, answer = list(payload['answer'].items())[0]
     del payload
-    if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
+    key = session["taking_quiz"]["current_index"]
+    if question_id != quiz["questions"][key]["question_id"]:
+        del key
         del session["taking_quiz"]
         flash("Tampering detected")
         return redirect(url_for('dash.home'))
@@ -135,8 +141,9 @@ def skip(quiz_id):
         "answer": answer
     }
 
-    session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"]
-    session["taking_quiz"]["current_index"] += 1 
+    session["taking_quiz"]["previous_index"] = \
+        session["taking_quiz"]["current_index"]
+    session["taking_quiz"]["current_index"] += 1
     session.modified = True
 
     return redirect(url_for('taking.takequiz', quiz_id=quiz_id))
@@ -150,7 +157,7 @@ def previous(quiz_id):
         flash("You must be logged in first")
         return redirect(url_for('auth.login'))
 
-    if not "taking_quiz" in session:
+    if "taking_quiz" not in session:
         flash("You are not taking a quiz")
         return redirect(url_for('dash.home'))
 
@@ -162,7 +169,8 @@ def previous(quiz_id):
         flash("Quiz not found")
         return redirect(url_for('dash.home'))
 
-    if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
+    if session["taking_quiz"]["current_time"] > \
+            session["taking_quiz"]["finish_time"]:
         session["taking_quiz"]["timeout"] = True
         flash("Time Ran Out")
         return redirect(url_for('taking.finishquiz', quiz_id=quiz_id))
@@ -182,7 +190,9 @@ def previous(quiz_id):
     question_id, answer = list(payload['answer'].items())[0]
     del payload
     del answer
-    if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
+    key = session["taking_quiz"]["current_index"]
+    if question_id != quiz["questions"][key]["question_id"]:
+        del key
         del session["taking_quiz"]
         flash("Tampering detected")
         return redirect(url_for('dash.home'))
@@ -192,8 +202,10 @@ def previous(quiz_id):
         flash("No previous question to do back to")
         return redirect(url_for('taking.takequiz', quiz_id=quiz_id))
 
-    session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"] - 1
-    session["taking_quiz"]["current_index"] = session["taking_quiz"]["previous_index"]
+    session["taking_quiz"]["previous_index"] = \
+        session["taking_quiz"]["current_index"] - 1
+    session["taking_quiz"]["current_index"] = \
+        session["taking_quiz"]["previous_index"]
     session.modified = True
     return redirect(url_for('taking.takequiz', quiz_id=quiz_id))
 
@@ -206,7 +218,7 @@ def submitanswer(quiz_id):
         flash("You must be logged in first")
         return redirect(url_for('auth.login'))
 
-    if not "taking_quiz" in session:
+    if "taking_quiz" not in session:
         flash("You are not taking a quiz")
         return redirect(url_for('dash.home'))
 
@@ -218,15 +230,11 @@ def submitanswer(quiz_id):
         flash("Quiz not found")
         return redirect(url_for('dash.home'))
 
-    if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
+    if session["taking_quiz"]["current_time"] > \
+            session["taking_quiz"]["finish_time"]:
         session["taking_quiz"]["timeout"] = True
         flash("Time Ran Out")
         return redirect(url_for('taking.finishquiz', quiz_id=quiz_id))
-
-    # if session["taking_quiz"]["current_index"] == 0 and session["taking_quiz"]["previous_index"] != None:
-    #     flash("Quiz was temtered with")
-    #     del session["taking_quiz"]
-    #     return redirect(url_for('dash.home'))
 
     payload = request.form.get('answer')
     if not payload:
@@ -241,8 +249,10 @@ def submitanswer(quiz_id):
         return redirect(request.referrer)
 
     question_id, answer = list(payload['answer'].items())[0]
+    key = session["taking_quiz"]["current_index"]
     del payload
-    if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
+    if question_id != quiz["questions"][key]["question_id"]:
+        del key
         del session["taking_quiz"]
         flash("Tampering detected")
         return redirect(url_for('dash.home'))
@@ -257,7 +267,8 @@ def submitanswer(quiz_id):
         session["taking_quiz"]["finished"] = True
         return redirect(url_for('taking.finishquiz', quiz_id=quiz_id))
 
-    session["taking_quiz"]["previous_index"] = session["taking_quiz"]["current_index"]
+    session["taking_quiz"]["previous_index"] = \
+        session["taking_quiz"]["current_index"]
     session["taking_quiz"]["current_index"] += 1
     session.modified = True
 
@@ -270,7 +281,7 @@ def quit(quiz_id):
         flash("You must be logged in first")
         return redirect(url_for('auth.login'))
 
-    if not "taking_quiz" in session:
+    if "taking_quiz" not in session:
         flash("You are not taking a quiz")
         return redirect(url_for('dash.home'))
 
@@ -295,7 +306,7 @@ def finishquiz(quiz_id):
         flash("You must be logged in first")
         return redirect(url_for('auth.login'))
 
-    if not "taking_quiz" in session:
+    if "taking_quiz" not in session:
         flash("You are not taking a quiz")
         return redirect(url_for('dash.home'))
 
@@ -319,7 +330,7 @@ def finishquiz(quiz_id):
     for question in quiz["questions"]:
         question_id = question["question_id"]
         if question_id in answers.keys():
-            if answers[question_id]["answer"] != None:
+            if answers[question_id]["answer"] is not None:
                 questions_attempted += 1
             else:
                 questions_skiped += 1
@@ -371,8 +382,8 @@ def finishquiz(quiz_id):
     return render_template(
         'finishquiz.html', year=year,
         title=quiz['title'],
-        quiz_id=quiz["quiz_id"], 
-        heading=heading, 
+        quiz_id=quiz["quiz_id"],
+        heading=heading,
         percentage_score=percentage_score,
         user_score=user_score,
         correct_answers=correct_answers,
