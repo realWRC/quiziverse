@@ -33,4 +33,8 @@ def account():
 
     user = User.getByID(current_user.get_id())
 
-    return render_template("account.html", title="PROFILE", year=year, user=user)
+    return render_template(
+        "account.html",
+        title="PROFILE",
+        year=year, user=user
+    )
