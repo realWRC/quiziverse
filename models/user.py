@@ -1,7 +1,7 @@
 import bcrypt
 import uuid
 from datetime import datetime, timezone
-from models import usersCollection
+from models import usersCollection, resultsCollection
 from flask_login import UserMixin
 
 class User(UserMixin):
@@ -91,4 +91,4 @@ class User(UserMixin):
         """ Deletes user using ID
         """
         usersCollection.delete_one({"id": user_id})
-        db.results.delete_one({"user_id": user_id})
+        resultsCollection.delete_many({"user_id": user_id})

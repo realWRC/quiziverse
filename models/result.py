@@ -1,5 +1,5 @@
 from uuid import uuid4
-from models import db
+from models import resultsCollection
 from pymongo.errors import PyMongoError
 
 
@@ -21,20 +21,20 @@ class Result():
     def save(self):
         """ Saves the results object
         """
-        return db.results.insert_one(self.__dict__)
+        return resultsCollection.insert_one(self.__dict__)
 
     @staticmethod
     def check(user_id, quiz_id):
         """ Checks if user with user_id has a results document
         return true if it does
         """
-        return db.results.find_one({"user_id": user_id, "quiz_id": quiz_id}, {"_id": 1}) is not None
+        return resultsCollection.find_one({"user_id": user_id, "quiz_id": quiz_id}, {"_id": 1}) is not None
 
     @staticmethod
     def getQuizResult(user_id):
         """ Retrieves results for a user in results collection
         """
-        match = db.results.find({"user_id": user_id})
+        match = resultsCollection.find({"user_id": user_id})
         if match:
             return list(match)
         else:
@@ -42,15 +42,15 @@ class Result():
 
     @staticmethod
     def getByUserID(user_id):
-        return db.results.find_one({"user_id": user_id})
+        return resultsCollection.find_one({"user_id": user_id})
 
     @staticmethod
     def delete(user_id, quiz_id):
-        db.results.delete_one({"user_id": user_id, "quiz_id": quiz_id})
+        resultsCollection.delete_one({"user_id": user_id, "quiz_id": quiz_id})
 
     @staticmethod
     def update(user_id, quiz_id, kwargs):
-        db.results.update_one(
+        resultsCollection.update_one(
             {"user_id": user_id, "quiz_id": quiz_id},
             {"$set": {
                 "title": kwargs["title"],
@@ -67,7 +67,7 @@ class Result():
     def searchMyResults(user_id, query):
         """ Collects all results by user_id and query them based on title.
         """
-        cursor = db.results.find(
+        cursor = resultsCollection.find(
             {
                 "user_id": user_id,
                 "title": {"$regex": query, "$options": "i"}
