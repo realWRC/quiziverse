@@ -25,7 +25,6 @@ from pprint import pprint
 
 app.register_blueprint(info_bp)
 
-
 @login_manager.user_loader
 def load_user(user_id):
     """ Flask login user loader
@@ -33,11 +32,11 @@ def load_user(user_id):
     return User.getByID(user_id)
 
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    """ Welcome Page
-    """
-    return render_template("index.html", title="QUIZIVERSE", year=year)
+# @app.route("/", methods=["GET", "POST"])
+# def index():
+#     """ Welcome Page
+#     """
+#     return render_template("index.html", title="QUIZIVERSE", year=year)
 
 
 # @app.route("/about", methods=["GET"])
@@ -338,10 +337,10 @@ def unregister():
         User.deleteByID(temp_id)
         if User.getByID(temp_id):
             flash("Account deletion unsuccesful! Please contact Administrator.")
-            return redirect(url_for("index"))
+            return redirect(url_for("info.index"))
         else:
             flash("Successfully deleted account!")
-            return redirect(url_for("index"))
+            return redirect(url_for("info.index"))
     else:
         return redirect(url_for('index'))
 
@@ -354,7 +353,7 @@ def logout():
         logout_user()
         session.clear()
         flash("Logout Successful!")
-        return redirect(url_for("index"))
+        return redirect(url_for("info.index"))
     else:
         flash("You are not logged in.")
         return redirect(url_for('login'))
