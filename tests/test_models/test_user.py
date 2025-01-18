@@ -2,6 +2,7 @@ import unittest
 from models.user import User
 from bcrypt import checkpw
 
+
 class TestUserModel(unittest.TestCase):
     """Unittests for User model."""
 
@@ -73,7 +74,7 @@ class TestUserModel(unittest.TestCase):
         self.assertEqual(user1.username, user2.username)
         self.assertEqual(user1.email, user2.email)
         self.assertEqual(user1.password, user2.password)
-    
+
     def test_get_user_by_email(self):
         """ Tests is user can be retrieved by username and email
         """
