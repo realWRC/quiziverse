@@ -1,7 +1,6 @@
 import unittest
 from models.quiz import Quiz
 from models.user import User
-from pprint import pprint
 
 
 class TestQuizModel(unittest.TestCase):
@@ -17,11 +16,11 @@ class TestQuizModel(unittest.TestCase):
         self.username = "test"
         self.email = "foo@bar.com"
         self.password = "password123"
-        self.longdescription = """Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem totam
-        officiis amet, velit tempore assumenda. Incidunt natus ex iusto
-        praesentium ab officiis numquam cumque doloribus ducimus odio suscipit
-        laboriosam tenetur at dignissimos dolore eveniet aliquam earum quam,
-        sequi, odit repudiandae."""
+        self.longdescription = """Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Autem totam officiis amet, velit tempore assumenda.
+        Incidunt natus ex iusto praesentium ab officiis numquam cumque
+        doloribus ducimus odio suscipit laboriosam tenetur at dignissimos
+        dolore eveniet aliquam earum quam, sequi, odit repudiandae."""
 
         self.question1 = "What is the Capital of Foo?"
         self.options1 = ["Lorem", "Foobar", "Bar", "Ipsum"]
@@ -37,24 +36,24 @@ class TestQuizModel(unittest.TestCase):
         """ Tests if quiz has the corret data
         """
         user = User(
-            username = self.username,
-            email = self.email,
-            password =  self.password
+            username=self.username,
+            email=self.email,
+            password=self.password
         )
         quiz = Quiz(
-            title = self.title,
-            creator_id = user.returnID(),
-            description =  self.description
+            title=self.title,
+            creator_id=user.returnID(),
+            description=self.description
         )
         quiz.addQuestion(
-            question = self.question1,
-            options = self.options1,
-            answer = self.answer1,
+            question=self.question1,
+            options=self.options1,
+            answer=self.answer1,
         )
         quiz.addQuestion(
-            question = self.question2,
-            options = self.options2,
-            answer = self.answer2,
+            question=self.question2,
+            options=self.options2,
+            answer=self.answer2,
         )
 
         self.assertEqual(user.id, quiz.creator_id)
@@ -90,24 +89,24 @@ class TestQuizModel(unittest.TestCase):
             },
         ]
         user = User(
-            username = self.username,
-            email = self.email,
-            password =  self.password
+            username=self.username,
+            email=self.email,
+            password=self.password
         )
         quiz = Quiz(
-            title = self.title,
-            creator_id = user.returnID(),
-            description = self.description,
-            time_limit = 10
+            title=self.title,
+            creator_id=user.returnID(),
+            description=self.description,
+            time_limit=10
         )
 
         quiz.addMultipleQuestions(questions)
 
         quiz.addQuestion(
-            question = self.question2,
-            options = self.options2,
-            answer = self.answer2,
-            score = self.score2,
+            question=self.question2,
+            options=self.options2,
+            answer=self.answer2,
+            score=self.score2,
         )
 
         self.assertEqual(user.id, quiz.creator_id)
@@ -131,26 +130,26 @@ class TestQuizModel(unittest.TestCase):
         """
         questions = []
         user = User(
-            username = self.username,
-            email = self.email,
-            password =  self.password
+            username=self.username,
+            email=self.email,
+            password=self.password
         )
         quizOne = Quiz(
-            title = self.title,
-            creator_id = user.returnID(),
-            description = self.description,
-            questions = questions
+            title=self.title,
+            creator_id=user.returnID(),
+            description=self.description,
+            questions=questions
         )
 
         quizOne.addQuestion(
-            question = self.question1,
-            options = self.options1,
-            answer = self.answer1,
+            question=self.question1,
+            options=self.options1,
+            answer=self.answer1,
         )
         quizOne.addQuestion(
-            question = self.question2,
-            options = self.options2,
-            answer = self.answer2,
+            question=self.question2,
+            options=self.options2,
+            answer=self.answer2,
         )
 
         quiz_id = quizOne.quiz_id
@@ -197,15 +196,15 @@ class TestQuizModel(unittest.TestCase):
             },
         ]
         user = User(
-            username = self.username,
-            email = self.email,
-            password =  self.password
+            username=self.username,
+            email=self.email,
+            password=self.password
         )
         quiz = Quiz(
-            title = self.title,
-            creator_id = user.returnID(),
-            description = self.description,
-            time_limit = 10
+            title=self.title,
+            creator_id=user.returnID(),
+            description=self.description,
+            time_limit=10
         )
 
         quiz.addMultipleQuestions(questions)
@@ -219,6 +218,7 @@ class TestQuizModel(unittest.TestCase):
         self.assertIsInstance(quiz_db['questions'][0], dict)
         self.assertIsInstance(quiz_db['questions'][0]['question'], str)
         self.assertIsInstance(quiz_db['questions'][1]['options'], list)
+
 
 if __name__ == '__main__':
     unittest.main()
