@@ -12,7 +12,7 @@ def login():
     """
     if current_user.is_authenticated:
         flash("You are already logged in.")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -33,7 +33,7 @@ def login():
         if user.checkpwd(password):
             login_user(user)
             # flash("Logged in successfully!")
-            return redirect(url_for("home"))
+            return redirect(url_for('dash.home'))
         else:
             flash("Invalid user credentials.")
             return redirect(url_for("auth.login"))

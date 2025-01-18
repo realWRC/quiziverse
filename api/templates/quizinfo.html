@@ -28,7 +28,7 @@
     <p class="quiz-meta"><em>Updated on: {{ quiz.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
     <div class="card-footing">
       <a href="{{ url_for('takequiz', quiz_id=quiz['quiz_id']) }}"><button class="take-quiz-btn">Start</button></a>
-      <a href="{{ url_for('home') }}"><button class="delete-btn">Back</button></a>
+      <a href="{{ url_for('dash.home') }}"><button class="delete-btn">Back</button></a>
       <a href=""><button class="copy-id-btn" data-quizid={{ quiz['quiz_id'] }}>Copy ID</button></a>
     </div>
   </div>

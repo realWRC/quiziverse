@@ -2,8 +2,11 @@
 import json
 import re
 from api.config import app, login_manager, year, domain
+
 from api.blueprints.information import info_bp
 from api.blueprints.authentication import auth_bp
+from api.blueprints.dashboard import dash_bp
+
 from datetime import datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect, jsonify
 from flask_login import current_user, login_required, login_user, logout_user
@@ -26,6 +29,7 @@ from pprint import pprint
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(info_bp)
+app.register_blueprint(dash_bp)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -48,93 +52,93 @@ def load_user(user_id):
 #     return render_template("about.html", title="ABOUT", year=year)
 
 
-@app.route("/home", methods=["GET", "POST"])
-def home():
-    """ Renders the users home page
-    """
-    if not current_user.is_authenticated:
-        flash("You must be logged in first.")
-        return redirect(url_for('auth.login'))
-
-    page = int(request.args.get('page', 1))
-    if page <= 0:
-        page = 1
-
-    per_page = 24
-    # if per_page > 30:
-    #     per_page = 30
-    # if per_page < 30:
-    #     per_page = 30
-
-    skip = (page - 1) * per_page
-    query = request.args.get('search', '')
-
-    category = request.args.get('category', '')
-    if category.lower() == "default" or category.lower() == '':
-        category = None
-    categories = ["title", "updated_at", "created_at"]
-    valid_categories = ["title", "updated_at", "created_at", "default", None]
-    if category not in valid_categories:
-        flash("Invalid Sort Order")
-        return redirect(url_for('home', category=None))
-    # categories = quizzesCollection.distinct("category")
-
-    pattern = re.compile(r'[^a-zA-Z0-9\s]')
-    if pattern.search(query):
-        query = re.escape(query)
-
-    def url_for_other_page(page):
-        args = request.args.copy()
-        args['page'] = page
-        return url_for('home', _external=False, **args)
-
-    if query:
-        total = quizzesCollection.count_documents(
-            {"title": {"$regex": query, "$options": "i"}}
-            )
-        total_pages = ceil(total / per_page) if total > 0 else 1
-        if category:
-            cursor = quizzesCollection.find(
-                {"title": {"$regex": query, "$options": "i"}}
-                ).sort([(category, -1), ("updated_at", -1)]).skip(skip).limit(per_page)
-        else:
-            cursor = quizzesCollection.find(
-                {"title": {"$regex": query, "$options": "i"}}
-                ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
-        quizzes = list(cursor)
-        pagination = {
-            'page': page,
-            'total_pages': total_pages,
-            'has_prev': page > 1,
-            'has_next': page < total_pages,
-            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
-            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
-        }
-    else:
-        total = quizzesCollection.count_documents({})
-        total_pages = ceil(total / per_page) if total > 0 else 1
-        if category:
-            # cursor = Quiz.getAll().skip(skip).sort([(category, 1), ("updated_at", 1)]).limit(per_page)
-            cursor = Quiz.getAll().sort(category, -1).skip(skip).limit(per_page)
-        else:
-            cursor = Quiz.getAll().sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
-        quizzes = list(cursor)
-        pagination = {
-            'page': page,
-            'total_pages': total_pages,
-            'has_prev': page > 1,
-            'has_next': page < total_pages,
-            'prev_url': url_for_other_page(page - 1) if page > 1 else None,
-            'next_url': url_for_other_page(page + 1) if page < total_pages else None,
-        }
-
-    return render_template(
-        "home.html", title="HOME",
-        year=year, query=query,
-        quizzes=quizzes, categories=categories,
-        selected_category = category,
-        pagination=pagination
-    )
+# @app.route("/home", methods=["GET", "POST"])
+# def home():
+#     """ Renders the users home page
+#     """
+#     if not current_user.is_authenticated:
+#         flash("You must be logged in first.")
+#         return redirect(url_for('auth.login'))
+#
+#     page = int(request.args.get('page', 1))
+#     if page <= 0:
+#         page = 1
+#
+#     per_page = 24
+#     # if per_page > 30:
+#     #     per_page = 30
+#     # if per_page < 30:
+#     #     per_page = 30
+#
+#     skip = (page - 1) * per_page
+#     query = request.args.get('search', '')
+#
+#     category = request.args.get('category', '')
+#     if category.lower() == "default" or category.lower() == '':
+#         category = None
+#     categories = ["title", "updated_at", "created_at"]
+#     valid_categories = ["title", "updated_at", "created_at", "default", None]
+#     if category not in valid_categories:
+#         flash("Invalid Sort Order")
+#         return redirect(url_for('dash.home', category=None))
+#     # categories = quizzesCollection.distinct("category")
+#
+#     pattern = re.compile(r'[^a-zA-Z0-9\s]')
+#     if pattern.search(query):
+#         query = re.escape(query)
+#
+#     def url_for_other_page(page):
+#         args = request.args.copy()
+#         args['page'] = page
+#         return url_for('dash.home', _external=False, **args)
+#
+#     if query:
+#         total = quizzesCollection.count_documents(
+#             {"title": {"$regex": query, "$options": "i"}}
+#             )
+#         total_pages = ceil(total / per_page) if total > 0 else 1
+#         if category:
+#             cursor = quizzesCollection.find(
+#                 {"title": {"$regex": query, "$options": "i"}}
+#                 ).sort([(category, -1), ("updated_at", -1)]).skip(skip).limit(per_page)
+#         else:
+#             cursor = quizzesCollection.find(
+#                 {"title": {"$regex": query, "$options": "i"}}
+#                 ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+#         quizzes = list(cursor)
+#         pagination = {
+#             'page': page,
+#             'total_pages': total_pages,
+#             'has_prev': page > 1,
+#             'has_next': page < total_pages,
+#             'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+#             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+#         }
+#     else:
+#         total = quizzesCollection.count_documents({})
+#         total_pages = ceil(total / per_page) if total > 0 else 1
+#         if category:
+#             # cursor = Quiz.getAll().skip(skip).sort([(category, 1), ("updated_at", 1)]).limit(per_page)
+#             cursor = Quiz.getAll().sort(category, -1).skip(skip).limit(per_page)
+#         else:
+#             cursor = Quiz.getAll().sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
+#         quizzes = list(cursor)
+#         pagination = {
+#             'page': page,
+#             'total_pages': total_pages,
+#             'has_prev': page > 1,
+#             'has_next': page < total_pages,
+#             'prev_url': url_for_other_page(page - 1) if page > 1 else None,
+#             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
+#         }
+#
+#     return render_template(
+#         "home.html", title='dash.home',
+#         year=year, query=query,
+#         quizzes=quizzes, categories=categories,
+#         selected_category = category,
+#         pagination=pagination
+#     )
 
 @app.route("/myquizzes", methods=["GET", "POST"])
 def myquizzes():
@@ -164,7 +168,7 @@ def myquizzes():
     valid_categories = ["title", "updated_at", "created_at", "default", None]
     if category not in valid_categories:
         flash("Invalid Sort Order")
-        return redirect(url_for('home', category=None))
+        return redirect(url_for('dash.home', category=None))
 
     pattern = re.compile(r'[^a-zA-Z0-9\s]')
     if pattern.search(query):
@@ -239,7 +243,7 @@ def account():
     """
     if not current_user.is_authenticated:
         flash("You are are not logged in")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     user = User.getByID(current_user.get_id())
 
@@ -252,7 +256,7 @@ def register():
     """
     if current_user.is_authenticated:
         flash("You are already registed and logged in")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -300,7 +304,7 @@ def register():
 #     """
 #     if current_user.is_authenticated:
 #         flash("You are already logged in.")
-#         return redirect(url_for('home'))
+#         return redirect(url_for('dash.home'))
 #
 #     if request.method == "POST":
 #         username = request.form.get("username")
@@ -321,7 +325,7 @@ def register():
 #         if user.checkpwd(password):
 #             login_user(user)
 #             # flash("Logged in successfully!")
-#             return redirect(url_for("home"))
+#             return redirect(url_for('dash.home'))
 #         else:
 #             flash("Invalid user credentials.")
 #             return redirect(url_for('auth.login'))
@@ -420,7 +424,7 @@ def create():
         pprint(quiz.__dict__)
         quiz.save()
         flash("Quiz created successfully")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     return render_template("create.html", title="Create", year=year)
 
@@ -437,11 +441,11 @@ def edit(quiz_id):
 
     if not quiz:
         flash("Invalid quiz id")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     if not quiz['creator_id'] == current_user.get_id():
         flash("Not authorized to edit this quiz")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     if request.method == "POST":
         data = request.form.get("quiz_json", '')
@@ -486,7 +490,7 @@ def edit(quiz_id):
         except KeyError as e:
             print(e)
             flash("Quiz update failed")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     try:
         data = session["edit_quiz_data"]
@@ -574,7 +578,7 @@ def delete(quiz_id):
 
     if not quiz['creator_id'] == current_user.get_id():
         flash("You are not authorized to delete this quiz")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     try:
         Quiz.delete(quiz_id)
@@ -639,7 +643,7 @@ def takequiz(quiz_id):
     if session["taking_quiz"]["quiz_id"] != quiz_id:
         flash("Use interface to take the quiz")
         del session["taking_quiz"]
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     # Consider changing to redis for session storage to get faster access times by caching quiz in session
 
@@ -665,7 +669,7 @@ def skip(quiz_id):
 
     if not "taking_quiz" in session:
         flash("You are not taking a quiz")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     session["taking_quiz"]["current_time"] = datetime.now(timezone.utc)
 
@@ -673,7 +677,7 @@ def skip(quiz_id):
     if quiz == None:
         del session["taking_quiz"]
         flash("Quiz not found")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
         session["taking_quiz"]["timeout"] = True
@@ -701,7 +705,7 @@ def skip(quiz_id):
     if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
         del session["taking_quiz"]
         flash("Tampering detected")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     # answer = uuid4()
     answer = None
@@ -727,7 +731,7 @@ def previous(quiz_id):
 
     if not "taking_quiz" in session:
         flash("You are not taking a quiz")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     session["taking_quiz"]["current_time"] = datetime.now(timezone.utc)
 
@@ -735,7 +739,7 @@ def previous(quiz_id):
     if not quiz:
         del session["taking_quiz"]
         flash("Quiz not found")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
         session["taking_quiz"]["timeout"] = True
@@ -760,7 +764,7 @@ def previous(quiz_id):
     if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
         del session["taking_quiz"]
         flash("Tampering detected")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     # Store answer
     if session["taking_quiz"]["current_index"] == 0:
@@ -782,7 +786,7 @@ def submitanswer(quiz_id):
 
     if not "taking_quiz" in session:
         flash("You are not taking a quiz")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     session["taking_quiz"]["current_time"] = datetime.now(timezone.utc)
 
@@ -790,7 +794,7 @@ def submitanswer(quiz_id):
     if not quiz:
         del session["taking_quiz"]
         flash("Quiz not found")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     if session["taking_quiz"]["current_time"] > session["taking_quiz"]["finish_time"]:
         session["taking_quiz"]["timeout"] = True
@@ -800,7 +804,7 @@ def submitanswer(quiz_id):
     # if session["taking_quiz"]["current_index"] == 0 and session["taking_quiz"]["previous_index"] != None:
     #     flash("Quiz was temtered with")
     #     del session["taking_quiz"]
-    #     return redirect(url_for('home'))
+    #     return redirect(url_for('dash.home'))
 
     payload = request.form.get('answer')
     if not payload:
@@ -819,7 +823,7 @@ def submitanswer(quiz_id):
     if question_id != quiz["questions"][session["taking_quiz"]["current_index"]]["question_id"]:
         del session["taking_quiz"]
         flash("Tampering detected")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     # Store answer
     session["taking_quiz"]["answers"][question_id] = {
@@ -845,13 +849,13 @@ def quit(quiz_id):
 
     if not "taking_quiz" in session:
         flash("You are not taking a quiz")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     quiz = Quiz.get(quiz_id)
     if not quiz:
         del session["taking_quiz"]
         flash("Quiz not found")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     if session["taking_quiz"]["quiz_id"] != quiz_id:
         print("Wrong quit url")
@@ -870,13 +874,13 @@ def finishquiz(quiz_id):
 
     if not "taking_quiz" in session:
         flash("You are not taking a quiz")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     quiz = Quiz.get(quiz_id)
     if not quiz:
         del session["taking_quiz"]
         flash("Quiz not found")
-        return redirect(url_for('home'))
+        return redirect(url_for('dash.home'))
 
     answers = session["taking_quiz"]["answers"]
     user_score = 0
@@ -1013,7 +1017,7 @@ def myresults():
     valid_categories = ["title", "latest_attempt", "default", None]
     if category not in valid_categories:
         flash("Invalid Sort Order")
-        return redirect(url_for('home', category=None))
+        return redirect(url_for('dash.home', category=None))
 
     def url_for_other_page(page):
         args = request.args.copy()
