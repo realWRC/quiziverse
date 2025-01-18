@@ -37,6 +37,13 @@ def index():
     return render_template("index.html", title="QUIZIVERSE", year=year)
 
 
+@app.route("/about", methods=["GET"])
+def about():
+    """ About page
+    """
+    return render_template("about.html", title="ABOUT", year=year)
+
+
 @app.route("/home", methods=["GET", "POST"])
 def home():
     """ Renders the users home page
@@ -222,8 +229,8 @@ def myquizzes():
     )
 
 
-@app.route("/profile", methods=["GET", "POST"])
-def profile():
+@app.route("/account", methods=["GET", "POST"])
+def account():
     """ Renders the users profile
     """
     if not current_user.is_authenticated:
@@ -232,7 +239,7 @@ def profile():
 
     user = User.getByID(current_user.get_id())
 
-    return render_template("profile.html", title="PROFILE", year=year, user=user)
+    return render_template("account.html", title="PROFILE", year=year, user=user)
 
 
 @app.route("/register", methods=["GET", "POST"])

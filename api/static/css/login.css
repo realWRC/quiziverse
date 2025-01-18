@@ -6,6 +6,7 @@
   padding: 80px;
   border-color: black;
   margin-bottom: 80px;
+  height: 80%;
 }
 
 .login-card {
@@ -15,7 +16,8 @@
   border-style: solid;
   border-radius: 10px;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
+  max-height: 500px;
   margin: 20px;
   padding: 40px;
   padding-right: 60px;
@@ -33,13 +35,13 @@
   justify-content: center;
 }
 
-.login-card form label {
+.login-data {
   display: block;
   margin-bottom: 5px;
   color: #fff;
 }
 
-.login-card form label input {
+.login-data input {
   width: 100%;
   padding: 10px;
   margin-bottom: 20px;
@@ -49,12 +51,12 @@
   color: #fff;
 }
 
-.login-card form label input:focus {
+.login-data input:focus {
   border-color: #FFD700;
   outline: none;
 }
 
-.login-card form button {
+.submit-button {
   width: 105%;
   padding: 15px;
   background-color: #FFD700;
@@ -64,16 +66,13 @@
   font-size: 16px;
   cursor: pointer;
   font-weight: bold;
+  border: 2px solid #FFD700;
 }
 
-.login-card form button:hover {
-  background-color: #8f7901;
+.submit-button:hover {
+  background-color: #000;
+  border: 2px solid #FFD700;
   color: #FFD700;
-}
-
-.login-card .registration-link {
-  /* text-align: center; */
-  margin-top: 15px;
 }
 
 .login-card form p {
@@ -90,4 +89,44 @@
   color: #fff;
   text-decoration: underline;
   font-weight: bold;
+}
+
+@media (max-width: 912px) {
+  .login-card h1 {
+    font-size: 18px;
+  }
+  .login-card form {
+    font-size: 12px;
+  }
+  .submit-button {
+    font-size: 14px;
+  }
+  .login-section {
+    padding: 40px;
+  }
+  .login-card {
+    margin: 0px;
+    padding: 40px;
+    padding-right: 60px;
+  }
+}
+
+@media (max-width: 600px) {
+  .login-card h1 {
+    font-size: 16px;
+  }
+  .login-card form {
+    font-size: 10px;
+  }
+  .submit-button {
+    font-size: 12px;
+  }
+  .login-section {
+    padding: 10px;
+  }
+  .login-card {
+    margin: 0px;
+    padding: 10px;
+    padding-right: 30px;
+  }
 }

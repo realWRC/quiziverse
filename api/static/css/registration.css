@@ -1,9 +1,11 @@
 .registration-section {
   display: flex;
+  min-height: 80vh;
   justify-content: center;
   background-color: #000;
   align-items: center;
   padding: 10px;
+  padding-top: 5vh;
   border-color: black;
   margin-bottom: 5px;
 }
@@ -72,7 +74,6 @@
 }
 
 .registration-card .login-link {
-  /* text-align: center; */
   margin-top: 15px;
 }
 
@@ -90,4 +91,46 @@
   color: #fff;
   text-decoration: underline;
   font-weight: bold;
+}
+
+@media (max-width: 912px) {
+  .registration-card h1 {
+    font-size: 18px;
+  }
+  .registration-card form {
+    font-size: 12px;
+  }
+  .submit-button {
+    font-size: 14px;
+  }
+  .registration-section {
+    padding: 40px;
+    padding-top: 5vh;
+  }
+  .registration-card {
+    margin: 0px;
+    padding: 40px;
+    padding-right: 60px;
+  }
+}
+
+@media (max-width: 600px) {
+  .registration-card h1 {
+    font-size: 16px;
+  }
+  .registration-card form {
+    font-size: 10px;
+  }
+  .submit-button {
+    font-size: 12px;
+  }
+  .registration-section {
+    padding: 10px;
+    padding-top: 5vh;
+  }
+  .registration-card {
+    margin: 0px;
+    padding: 10px;
+    padding-right: 30px;
+  }
 }

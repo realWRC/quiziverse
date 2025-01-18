@@ -27,10 +27,11 @@
         </div>
 
         <div class="search">
-          <label for="search">Search:</label>
-          <input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}">
-          <button type="submit" name="action" value="filter">Filter</button>
-          <button type="submit" name="action" value="search">Search</button>
+          <label for="search">Search:<input type="text" name="search" id="search" placeholder="Search by title..." value="{{ query }}"></label>
+          <div class="filter-search-btns">
+            <button type="submit" name="action" value="filter">Filter</button>
+            <button type="submit" name="action" value="search">Search</button>
+          </div>
         </div>
       </form>
     </div>
@@ -56,7 +57,7 @@
           <p class="quiz-meta">Score <strong>{{ result.user_score }}</strong></p>
           <p class="quiz-meta">Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
           <div class="card-footing">
-            <p><em>Lastest attempt on: {{ result.latest_attempt.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+            <p><em>Lastest attemp: {{ result.latest_attempt.strftime('%Y/%m/%d %H:%M') }}</em></p>
             <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}"><button class="take-quiz-btn">Details</button></a>
           </div>
         </div>
@@ -73,7 +74,7 @@
           <p class="quiz-meta">Score <strong>{{ result.user_score }}</strong></p>
           <p class="quiz-meta">Corrent Answers <strong>{{ result.correct_answers }}</strong></p>
           <div class="card-footing">
-            <p><em>Lastest attempt on: {{ result.latest_attempt.strftime('%Y-%m-%d %H:%M:%S') }}</em></p>
+            <p><em>Lastest attempt: {{ result.latest_attempt.strftime('%Y/%m/%d %H:%M') }}</em></p>
             <a href="{{ url_for('resultinfo', quiz_id=result.quiz_id) }}"><button class="take-quiz-btn">Details</button></a>
           </div>
         </div>

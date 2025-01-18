@@ -1,14 +1,10 @@
 .main-section {
-  /* Push content below the fixed top nav and to the right of the side nav */
-  margin-top: 60px;    /* Same height as top nav */
-  margin-left: 220px;  /* Same width as side nav */
-  margin-bottom: 60px; /* Same height as footer */
-  padding: 20px;
-  /* box-sizing: border-box; */
-  /* height: calc(100vh - 60px - 60px); */
+  background-color: #fff;
+  color: black;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  background-color: #fff; /* White background for main content */
 }
 
 .create-quiz-section {
@@ -31,13 +27,8 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* #createQuizForm .form-group { */
-/*   margin-bottom: 15px; */
-/*   color: #fff; */
-/* } */
 
 form .form-group label {
-  /* display: block; */
   font-weight: bold;
   margin-bottom: 5px;
   color: #000;
@@ -123,8 +114,6 @@ form fieldset legend {
 }
 
 form fieldset label {
-  /* display: block; */
-  /* font-weight: bold; */
   margin-bottom: 5px;
   color: #000;
 }
@@ -150,14 +139,45 @@ form fieldset label.question-option input[type="text"] {
   color: #333;
 }
 
-@media (max-width: 600px) {
-  .side-nav {
-    display: none;
+@media (max-width: 540px) {
+  body {
+    font-size: 12px;
   }
-  .main-section {
-    margin-left: 0;
+  form .button-group button {
+    padding: 5px 10px;
+    border-radius: 4px;
   }
-  .create-quiz-section {
-    max-width: 100%;
+
+  form .button-group .submit-btn {
+    padding: 5px 10px;
+    border-radius: 4px;
+  }
+
+  form .button-group .cancel-link button {
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+}
+
+
+@media (max-width: 412px) {
+  body {
+    font-size: 10px;
+  }
+  form .button-group button {
+    padding: 2px 5px;
+    border-radius: 4px;
+  }
+
+  form .button-group .submit-btn {
+    padding: 2px 5px;
+    border-radius: 4px;
+  }
+
+  form .button-group .cancel-link button {
+    padding: 2px 5px;
+    border-radius: 4px;
   }
 }
