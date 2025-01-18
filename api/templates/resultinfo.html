@@ -30,7 +30,7 @@
     
     <div class="results-actions">
       <a href="{{ url_for('myresults') }}" class="button return-home">Return</a>
-      <a href="{{ url_for('quizinfo', quiz_id=result.quiz_id) }}" class="button retry-quiz">Retry</a>
+      <a href="{{ url_for('quiz.quizinfo', quiz_id=result.quiz_id) }}" class="button retry-quiz">Retry</a>
     </div>
   </div>
 </main>
