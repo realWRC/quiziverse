@@ -1,5 +1,5 @@
 from api.config import year, domain
-from flask import Blueprint, request, url_for, flash, redirect, render_template
+from flask import flash, Blueprint, request, session, render_template, url_for, redirect, jsonify
 from models.user import User
 from flask_login import current_user, login_required, login_user, logout_user
 
@@ -87,3 +87,22 @@ def register():
 
     else:
         return render_template('register.html', title="Registration", year=year)
+
+
+@login_required
+@auth_bp.route("/unregister", methods=["GET", "POST"])
+def unregister():
+    if current_user.is_authenticated:
+        temp_id = current_user.id
+        logout_user()
+        session.clear()
+        User.deleteByID(temp_id)
+        if User.getByID(temp_id):
+            flash("Account deletion unsuccesful! Please contact Administrator.")
+            return redirect(url_for("info.index"))
+        else:
+            flash("Successfully deleted account!")
+            return redirect(url_for("info.index"))
+    else:
+        return redirect(url_for('index'))
+
