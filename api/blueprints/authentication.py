@@ -39,3 +39,51 @@ def login():
             return redirect(url_for("auth.login"))
     else:
         return render_template("login.html", title="Login", year=year)
+
+
+@auth_bp.route("/register", methods=["GET", "POST"])
+def register():
+    """ Registration route
+    """
+    if current_user.is_authenticated:
+        flash("You are already registed and logged in")
+        return redirect(url_for('dash.home'))
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+
+        if not username or not email or not password or not confirm_password:
+            flash("Please fill all fields")
+            return redirect(url_for('auth.register'))
+
+        username.strip()
+        email.strip()
+        password.strip()
+        confirm_password.strip()
+
+        if password != confirm_password:
+            flash("Passwords do not match.")
+            return redirect(url_for('auth.register'))
+
+        if User.getByUsername(username):
+            flash("Username already in use. Please choose another username.")
+            return redirect(url_for('auth.register'))
+
+        if User.getByEmail(email):
+            flash("Email already in use. Please choose another email.")
+            return redirect(url_for('auth.register'))
+
+        user = User(username=username, email=email, password=password)
+        if user:
+            user.save()
+            flash("Registration successful!")
+            return redirect(url_for('auth.login'))
+        else:
+            flash("Registration failed!")
+            return redirect(url_for('auth.register'))
+
+    else:
+        return render_template('register.html', title="Registration", year=year)

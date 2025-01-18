@@ -21,7 +21,7 @@
       <label class="login-data">Username: <input type="text" name="username" autocomplete="on" required></label>
       <label class="login-data">Password: <input type="password" name="password" autocomplete="on" required></label>
       <button type="submit" class="submit-button">Login</button>
-      <p>Don't have an account? <a href="{{ url_for('register') }}" class="registration-link">Register</a></p>
+      <p>Don't have an account? <a href="{{ url_for('auth.register') }}" class="registration-link">Register</a></p>
     </form>
   </div>
 </main>

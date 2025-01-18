@@ -17,7 +17,7 @@
         </ul>
       {% endif %}
     {% endwith %}
-    <form action="{{ url_for('register') }}" method="POST">
+    <form action="{{ url_for('auth.register') }}" method="POST">
         <label>Username: <input type="text" name="username" autocomplete="off" required/></label><br>
         <label>Email: <input type="email" name="email" autocomplete="off" required/></label><br>
         <label>Password: <input type="password" name="password" autocomplete="off" required/></label><br>
