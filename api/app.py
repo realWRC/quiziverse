@@ -15,6 +15,7 @@ def load_user(user_id):
     """
     return User.getByID(user_id)
 
+
 app.register_blueprint(auth_bp)
 app.register_blueprint(api_db)
 app.register_blueprint(info_bp)
@@ -22,6 +23,7 @@ app.register_blueprint(dash_bp)
 app.register_blueprint(quiz_bp)
 app.register_blueprint(taking_bp)
 app.register_blueprint(results_bp)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
