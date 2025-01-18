@@ -9,7 +9,7 @@ from math import ceil
 from models.result import Result
 from models.user import User
 from models.quiz import Quiz
-from models import db
+from models import db, quizzesCollection, resultsCollection
 from urllib.parse import urlparse
 from pprint import pprint
 from pymongo import ASCENDING
@@ -18,9 +18,9 @@ from pymongo import ASCENDING
 year = date.today().strftime("%Y")
 domain = "quiziverse.com"
 
-db.quizzes.create_index([("created_at", ASCENDING)], name="created_at_idx")
-db.quizzes.create_index([("updated_at", ASCENDING)], name="updated_at_idx")
-db.quizzes.create_index([("title", ASCENDING)], name="title_idx")
+quizzesCollection.create_index([("created_at", ASCENDING)], name="created_at_idx")
+quizzesCollection.create_index([("updated_at", ASCENDING)], name="updated_at_idx")
+quizzesCollection.create_index([("title", ASCENDING)], name="title_idx")
 
 
 @login_manager.user_loader
@@ -73,7 +73,7 @@ def home():
     if category not in valid_categories:
         flash("Invalid Sort Order")
         return redirect(url_for('home', category=None))
-    # categories = db.quizzes.distinct("category")
+    # categories = quizzesCollection.distinct("category")
 
     pattern = re.compile(r'[^a-zA-Z0-9\s]')
     if pattern.search(query):
@@ -85,16 +85,16 @@ def home():
         return url_for('home', _external=False, **args)
 
     if query:
-        total = db.quizzes.count_documents(
+        total = quizzesCollection.count_documents(
             {"title": {"$regex": query, "$options": "i"}}
             )
         total_pages = ceil(total / per_page) if total > 0 else 1
         if category:
-            cursor = db.quizzes.find(
+            cursor = quizzesCollection.find(
                 {"title": {"$regex": query, "$options": "i"}}
                 ).sort([(category, -1), ("updated_at", -1)]).skip(skip).limit(per_page)
         else:
-            cursor = db.quizzes.find(
+            cursor = quizzesCollection.find(
                 {"title": {"$regex": query, "$options": "i"}}
                 ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
         quizzes = list(cursor)
@@ -107,7 +107,7 @@ def home():
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
     else:
-        total = db.quizzes.count_documents({})
+        total = quizzesCollection.count_documents({})
         total_pages = ceil(total / per_page) if total > 0 else 1
         if category:
             # cursor = Quiz.getAll().skip(skip).sort([(category, 1), ("updated_at", 1)]).limit(per_page)
@@ -172,20 +172,20 @@ def myquizzes():
         return url_for('myquizzes', _external=False, **args)
 
     if query:
-        total = db.quizzes.count_documents(
+        total = quizzesCollection.count_documents(
             {
                 "creator_id": current_user.get_id(),
                 "title": {"$regex": query, "$options": "i"}}
             )
         total_pages = ceil(total / per_page) if total > 0 else 1
         if category:
-            cursor = db.quizzes.find(
+            cursor = quizzesCollection.find(
                 {
                     "creator_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}}
                 ).sort([(category, -1), ("updated_at", 1)]).skip(skip).limit(per_page)
         else:
-            cursor = db.quizzes.find(
+            cursor = quizzesCollection.find(
                 {
                     "creator_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}}
@@ -201,7 +201,7 @@ def myquizzes():
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
     else:
-        total = db.quizzes.count_documents({"creator_id": current_user.get_id()})
+        total = quizzesCollection.count_documents({"creator_id": current_user.get_id()})
         total_pages = ceil(total / per_page) if total > 0 else 1
         if category:
             cursor = Quiz.getAllUserQuizzes(current_user.get_id()).sort(category, -1).skip(skip).limit(per_page)
@@ -520,20 +520,20 @@ def getAll():
         query = re.escape(query)
 
     if query:
-        total = db.quizzes.count_documents(
+        total = quizzesCollection.count_documents(
             {"title": {"$regex": query, "$options": "i"}}
             )
         total_pages = ceil(total / per_page) if total > 0 else 1
-        cursor = db.quizzes.find(
+        cursor = quizzesCollection.find(
             {"title": {"$regex": query, "$options": "i"}},
             {"_id": False, "creator_id": False},
             ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
         quizzes = list(cursor)
     else:
-        total = db.quizzes.count_documents({})
+        total = quizzesCollection.count_documents({})
         total_pages = ceil(total / per_page) if total > 0 else 1
         # cursor = Quiz.getAll().skip(skip).sort("updated_at", 1).limit(per_page)
-        cursor = db.quizzes.find({}, {'_id': False, 'creator_id': False}).skip(skip).sort("updated_at", 1).limit(per_page)
+        cursor = quizzesCollection.find({}, {'_id': False, 'creator_id': False}).skip(skip).sort("updated_at", 1).limit(per_page)
         quizzes = list(cursor)
 
     if quizzes:
@@ -548,7 +548,7 @@ def getAll():
 def get(quiz_id):
     """ Gets a quiz and returns it as json
     """
-    quiz = db.quizzes.find({"quiz_id": quiz_id}, {"_id": False, "creator_id": False})
+    quiz = quizzesCollection.find({"quiz_id": quiz_id}, {"_id": False, "creator_id": False})
     if not quiz:
         return jsonify({
             "message": "Quiz not found"
@@ -971,7 +971,7 @@ def resultinfo(quiz_id):
     #         user_id = current_user.get_id(),
     # )
     # print(result)
-    result = db.results.find_one({"user_id": current_user.get_id(), "quiz_id": quiz_id})
+    result = resultsCollection.find_one({"user_id": current_user.get_id(), "quiz_id": quiz_id})
 
     return render_template("resultinfo.html", result=result)
 
@@ -1017,7 +1017,7 @@ def myresults():
         return url_for('myresults', _external=False, **args)
 
     if query:
-        total = db.results.count_documents(
+        total = resultsCollection.count_documents(
             {
                 "user_id": current_user.get_id(),
                 "title": {"$regex": query, "$options": "i"}
@@ -1025,14 +1025,14 @@ def myresults():
         )
         total_pages = ceil(total / per_page) if total > 0 else 1
         if category:
-            cursor = db.results.find(
+            cursor = resultsCollection.find(
                 {
                     "user_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}
                 }
             ).sort([(category, -1), ("updated_at", -1)]).skip(skip).limit(per_page)
         else:
-            cursor = db.results.find(
+            cursor = resultsCollection.find(
                 {
                     "user_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}
@@ -1049,14 +1049,14 @@ def myresults():
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
     else:
-        total = db.results.count_documents({"user_id": current_user.get_id()})
+        total = resultsCollection.count_documents({"user_id": current_user.get_id()})
         total_pages = ceil(total / per_page) if total > 0 else 1
         # results = Result.getQuizResult(current_user.get_id())
         # results = list(results) if results else None
         if category:
-            cursor = db.results.find({"user_id": current_user.get_id()}).sort(category, -1).skip(skip).limit(per_page)
+            cursor = resultsCollection.find({"user_id": current_user.get_id()}).sort(category, -1).skip(skip).limit(per_page)
         else:
-            cursor = db.results.find({"user_id": current_user.get_id()}).sort("title", -1).skip(skip).limit(per_page)
+            cursor = resultsCollection.find({"user_id": current_user.get_id()}).sort("title", -1).skip(skip).limit(per_page)
         results = list(cursor) if cursor else None
         pagination = {
             'page': page,
