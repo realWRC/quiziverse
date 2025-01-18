@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from models import usersCollection, resultsCollection
 from flask_login import UserMixin
 
+
 class User(UserMixin):
     """ Defines the User model for the quiziverse application
     """
@@ -20,7 +21,9 @@ class User(UserMixin):
         self.username = username
         self.email = email
         if isinstance(password, str):
-            self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            self.password = bcrypt.hashpw(
+                    password.encode('utf-8'), bcrypt.gensalt()
+                )
         else:
             self.password = password
         self.other = other
@@ -52,11 +55,11 @@ class User(UserMixin):
         data = usersCollection.find_one({"id": user_id})
         if data:
             return User(
-                user_id = data["id"],
-                username = data["username"],
-                email = data["email"],
-                password = data["password"],
-                other = data["other"]
+                user_id=data["id"],
+                username=data["username"],
+                email=data["email"],
+                password=data["password"],
+                other=data["other"]
             )
 
     @staticmethod
@@ -66,11 +69,11 @@ class User(UserMixin):
         data = usersCollection.find_one({"username": username})
         if data:
             return User(
-                user_id = data["id"],
-                username = data["username"],
-                email = data["email"],
-                password = data["password"],
-                other = data["other"]
+                user_id=data["id"],
+                username=data["username"],
+                email=data["email"],
+                password=data["password"],
+                other=data["other"]
             )
 
     @staticmethod
@@ -80,12 +83,13 @@ class User(UserMixin):
         data = usersCollection.find_one({"email": email})
         if data:
             return User(
-                user_id = data["id"],
-                username = data["username"],
-                email = data["email"],
-                password = data["password"],
-                other = data["other"]
+                user_id=data["id"],
+                username=data["username"],
+                email=data["email"],
+                password=data["password"],
+                other=data["other"]
             )
+
     @staticmethod
     def deleteByID(user_id):
         """ Deletes user using ID
