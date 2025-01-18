@@ -2,18 +2,24 @@ import uuid
 from models import quizzesCollection, resultsCollection
 from datetime import datetime, timezone
 
+
 class Quiz():
     """ Defines the datamodel for a quiz.
     """
-    
-    def __init__(self, title, creator_id, description, category="general", quiz_id=None, questions=None, time_limit=0, total_score=0, **kwargs):
+
+    def __init__(
+            self, title, creator_id, description, category="general",
+            quiz_id=None, questions=None, time_limit=0, total_score=0,
+            **kwargs):
         """ Initialises the quiz datamodel
         """
         if quiz_id is None:
             quiz_id = str(uuid.uuid4())
         if questions is None:
             questions = []
-        validation = Quiz.validateFields(title, description, category, time_limit)
+        validation = Quiz.validateFields(
+                title, description, category, time_limit
+                )
         if isinstance(questions, list) and validation[0]:
             self.quiz_id = quiz_id
             self.title = title
@@ -36,17 +42,15 @@ class Quiz():
         final_score = 0
         if questions:
             questionSet = []
-            # keys = ['question', 'options', 'answer', 'score'] 
             for question in questions:
-                # if isinstance(question, dict) and  all(key in question for key in keys):
                 validation = Quiz.validateQuestion(question)
                 if validation[0]:
                     final_score += self.__addMultipleQuestionsHelper(
-                        questionSet = questionSet,
-                        question = question['question'],
-                        options = question['options'],
-                        answer = question['answer'],
-                        score = question['score']
+                        questionSet=questionSet,
+                        question=question['question'],
+                        options=question['options'],
+                        answer=question['answer'],
+                        score=question['score']
                     )
                 else:
                     self.questions = original_questions
@@ -60,12 +64,13 @@ class Quiz():
             return []
 
     def addQuestion(self, question, options, answer, score=1):
-        """ Adds a question to a quiz
+        """
+        Adds a question to a quiz
         """
         validation = Quiz.validateQuestion({
             "question": question,
             "options": options,
-            "answer": answer, 
+            "answer": answer,
             "score": score,
         })
         if validation[0]:
@@ -74,7 +79,7 @@ class Quiz():
                 "quiz_id": self.quiz_id,
                 "question": question,
                 "options": options,
-                "answer": answer, 
+                "answer": answer,
                 "score": score,
                 "index": len(self.questions)
             }
@@ -84,13 +89,15 @@ class Quiz():
         else:
             print(validation[1])
 
-    def __addMultipleQuestionsHelper(self, questionSet, question, options, answer, score=1):
+    def __addMultipleQuestionsHelper(
+            self, questionSet, question,
+            options, answer, score=1):
         """ Adds a question to a quiz
         """
         validation = Quiz.validateQuestion({
             "question": question,
             "options": options,
-            "answer": answer, 
+            "answer": answer,
             "score": score,
         })
         if validation[0]:
@@ -99,7 +106,7 @@ class Quiz():
                 "quiz_id": self.quiz_id,
                 "question": question.strip(),
                 "options": options,
-                "answer": answer, 
+                "answer": answer,
                 "score": score,
                 "index": len(questionSet)
             }
@@ -120,32 +127,39 @@ class Quiz():
         quiz_dict = Quiz.get(quiz_id)
         if quiz_dict:
             quiz = Quiz(
-                title = quiz_dict["title"],
-                quiz_id = quiz_dict["quiz_id"],
-                creator_id = quiz_dict["creator_id"],
-                description = quiz_dict["description"],
-                category = quiz_dict["category"],
-                time_limit = quiz_dict["time_limit"],
-                total_score = quiz_dict["total_score"],
-                creatated_at = quiz_dict["created_at"],
-                updated_at = quiz_dict["updated_at"],
-                questions = quiz_dict["questions"]
+                title=quiz_dict["title"],
+                quiz_id=quiz_dict["quiz_id"],
+                creator_id=quiz_dict["creator_id"],
+                description=quiz_dict["description"],
+                category=quiz_dict["category"],
+                time_limit=quiz_dict["time_limit"],
+                total_score=quiz_dict["total_score"],
+                creatated_at=quiz_dict["created_at"],
+                updated_at=quiz_dict["updated_at"],
+                questions=quiz_dict["questions"]
             )
             return quiz
 
     @staticmethod
     def validateQuestion(question):
-        """ Validates the content of a question dict for the class
+        """
+        Validates the content of a question dict for the class
         Quiz
-        """ 
-        keys = ['question', 'options', 'answer', 'score'] 
+        """
+        keys = ['question', 'options', 'answer', 'score']
         if isinstance(question, dict):
             if not all(key in question for key in keys):
-                return (False, "A key is missing from the question dictionary.")
+                return (
+                    False, "A key is missing from the question dictionary."
+                )
             if not isinstance(question['options'], list):
-                return (False, "Options must be an array or list of strings.")
+                return (
+                    False, "Options must be an array or list of strings."
+                )
             if len(question["options"]) > 4:
-                return (False, "A question cannot have more that 4 options")
+                return (
+                    False, "A question cannot have more that 4 options"
+                )
 
             # Strip of all empty spaces if strings
             if isinstance(question["question"], str):
@@ -158,8 +172,11 @@ class Quiz():
                 question["answer"].strip()
 
             if not question['answer'] in question['options']:
-                return (False, "The answer must match one of the questions.")
-            if not isinstance(question['score'], int) and not isinstance(question['score'], float):
+                return (
+                    False, "The answer must match one of the questions."
+                )
+            if not isinstance(question['score'], int) and not\
+                    isinstance(question['score'], float):
                 return (False, "The score must be a number")
             return (True, "Valid")
         else:
@@ -167,8 +184,9 @@ class Quiz():
 
     @staticmethod
     def validateFields(title, description, category, time_limit):
-        """ Validates all external direct attributes of a Quiz object except creator_id
-        and questions.
+        """
+        Validates all external direct attributes of a
+        Quiz object except creator_id and questions.
         """
         if not isinstance(title, str) or title.isnumeric():
             return (False, "Title must be a string")
@@ -176,7 +194,8 @@ class Quiz():
             return (False, "Use words to fill the description")
         if not isinstance(category, str):
             return (False, "Category must be a string")
-        if not isinstance(time_limit, int) and not isinstance(time_limit, float):
+        if not isinstance(time_limit, int) and \
+                not isinstance(time_limit, float):
             return (False, "Time Limit must be an Integer or a Float")
 
         title.strip()
@@ -193,7 +212,9 @@ class Quiz():
 
     @staticmethod
     def getAll():
-        """ Gets all quizzes from database and orders them by title and date updated_at
+        """
+        Gets all quizzes from database and orders
+        them by title and date updated_at
         """
         return quizzesCollection.find().sort([("title", 1), ("updated_at", 1)])
 
@@ -237,18 +258,26 @@ class Quiz():
         temp.addMultipleQuestions(data["questions"])
 
         result = quizzesCollection.update_one(
-            {"quiz_id": quiz_id },
-            { "$set": {
-                "title": data['title'],
-                "questions": temp.questions,
-                "total_score": temp.total_score,
-                "time_limit": data['time_limit'],
-                "updated_at": datetime.now(timezone.utc)
-            }}
+            {
+                "quiz_id": quiz_id
+            },
+            {
+                "$set":
+                {
+                    "title": data['title'],
+                    "questions": temp.questions,
+                    "total_score": temp.total_score,
+                    "time_limit": data['time_limit'],
+                    "updated_at": datetime.now(timezone.utc)
+                }
+            }
         )
         del temp
         if result.modified_count == 0:
-            raise KeyError("Pymongo could not update the document due to an invalid quiz_id")
+            raise KeyError(
+                "Pymongo could not update the document \
+                        due to an invalid quiz_id"
+            )
 
     @staticmethod
     def search(query):
@@ -268,7 +297,9 @@ class Quiz():
 
     @staticmethod
     def searchUserQuizzes(creator_id, query):
-        """ Searches all quizzes made by user with creator_id and querries the quizzes
+        """
+        Searches all quizzes made by user with
+        creator_id and querries the quizzes
         by title.
         """
         cursor = quizzesCollection.find(
