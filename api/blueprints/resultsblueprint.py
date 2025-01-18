@@ -24,6 +24,8 @@ def resultinfo(quiz_id):
         flash("You have not taken a quiz on this site.")
         return redirect(url_for('index'))
 
-    result = resultsCollection.find_one({"user_id": current_user.get_id(), "quiz_id": quiz_id})
+    result = resultsCollection.find_one({
+        "user_id": current_user.get_id(), "quiz_id": quiz_id
+    })
 
     return render_template("resultinfo.html", result=result)
