@@ -3,6 +3,7 @@ import json
 import re
 from api.config import app, login_manager, year, domain
 from api.blueprints.information import info_bp
+from api.blueprints.authentication import auth_bp
 from datetime import datetime, timezone, timedelta
 from flask import flash, request, session, render_template, url_for, redirect, jsonify
 from flask_login import current_user, login_required, login_user, logout_user
@@ -23,6 +24,7 @@ from pprint import pprint
 # quizzesCollection.create_index([("updated_at", ASCENDING)], name="updated_at_idx")
 # quizzesCollection.create_index([("title", ASCENDING)], name="title_idx")
 
+app.register_blueprint(auth_bp)
 app.register_blueprint(info_bp)
 
 @login_manager.user_loader
@@ -52,7 +54,7 @@ def home():
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first.")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     page = int(request.args.get('page', 1))
     if page <= 0:
@@ -140,7 +142,7 @@ def myquizzes():
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first.")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     page = int(request.args.get('page', 1))
     if page <= 0:
@@ -283,7 +285,7 @@ def register():
         if user:
             user.save()
             flash("Registration successful!")
-            return redirect(url_for('login'))
+            return redirect(url_for('auth.login'))
         else:
             flash("Registration failed!")
             return redirect(url_for('register'))
@@ -292,39 +294,39 @@ def register():
         return render_template('register.html', title="Registration", year=year)
 
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    """ Login route
-    """
-    if current_user.is_authenticated:
-        flash("You are already logged in.")
-        return redirect(url_for('home'))
-
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        if not username or not password:
-            flash("Please enter both username and password.")
-            return redirect(url_for("login"))
-
-        username.strip()
-        password.strip()
-
-        user = User.getByUsername(username)
-        if not user:
-            flash("Invalid username")
-            return redirect(url_for("login"))
-
-        if user.checkpwd(password):
-            login_user(user)
-            # flash("Logged in successfully!")
-            return redirect(url_for("home"))
-        else:
-            flash("Invalid user credentials.")
-            return redirect(url_for("login"))
-    else:
-        return render_template("login.html", title="Login", year=year)
+# @app.route("/login", methods=["GET", "POST"])
+# def login():
+#     """ Login route
+#     """
+#     if current_user.is_authenticated:
+#         flash("You are already logged in.")
+#         return redirect(url_for('home'))
+#
+#     if request.method == "POST":
+#         username = request.form.get("username")
+#         password = request.form.get("password")
+#
+#         if not username or not password:
+#             flash("Please enter both username and password.")
+#             return redirect(url_for('auth.login'))
+#
+#         username.strip()
+#         password.strip()
+#
+#         user = User.getByUsername(username)
+#         if not user:
+#             flash("Invalid username")
+#             return redirect(url_for('auth.login'))
+#
+#         if user.checkpwd(password):
+#             login_user(user)
+#             # flash("Logged in successfully!")
+#             return redirect(url_for("home"))
+#         else:
+#             flash("Invalid user credentials.")
+#             return redirect(url_for('auth.login'))
+#     else:
+#         return render_template("login.html", title="Login", year=year)
 
 
 @login_required
@@ -356,7 +358,7 @@ def logout():
         return redirect(url_for("info.index"))
     else:
         flash("You are not logged in.")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -365,7 +367,7 @@ def create():
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     if request.method == "POST":
         data = request.form.get("quiz_json", '')
@@ -428,7 +430,7 @@ def edit(quiz_id):
     """ Route for editing a users quiz if they are the creator
     """
     if not current_user.is_authenticated:
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
 
     quiz = Quiz.get(quiz_id)
@@ -563,7 +565,7 @@ def get(quiz_id):
 def delete(quiz_id):
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     quiz = Quiz.get(quiz_id)
     if not quiz:
@@ -590,7 +592,7 @@ def quizinfo(quiz_id):
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     quiz = Quiz.get(quiz_id)
     if not quiz:
@@ -606,7 +608,7 @@ def takequiz(quiz_id):
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     quiz = Quiz.get(quiz_id)
     if quiz == None:
@@ -659,7 +661,7 @@ def skip(quiz_id):
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     if not "taking_quiz" in session:
         flash("You are not taking a quiz")
@@ -721,7 +723,7 @@ def previous(quiz_id):
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     if not "taking_quiz" in session:
         flash("You are not taking a quiz")
@@ -776,7 +778,7 @@ def submitanswer(quiz_id):
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     if not "taking_quiz" in session:
         flash("You are not taking a quiz")
@@ -839,7 +841,7 @@ def submitanswer(quiz_id):
 def quit(quiz_id):
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     if not "taking_quiz" in session:
         flash("You are not taking a quiz")
@@ -864,7 +866,7 @@ def finishquiz(quiz_id):
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     if not "taking_quiz" in session:
         flash("You are not taking a quiz")
@@ -959,7 +961,7 @@ def resultinfo(quiz_id):
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     if not Quiz.get(quiz_id):
         flash("The quiz does not exist")
@@ -985,7 +987,7 @@ def myresults():
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     page = int(request.args.get('page', 1))
     if page <= 0:
