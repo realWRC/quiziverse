@@ -1,3 +1,7 @@
+"""
+The entry point of the application where the app is run from.
+"""
+
 from api.config import app, login_manager
 from api.blueprints.information import info_bp
 from api.blueprints.authentication import auth_bp
@@ -11,7 +15,8 @@ from models.user import User
 
 @login_manager.user_loader
 def load_user(user_id):
-    """ Flask login user loader
+    """
+    Flask login function that acts as a user loader.
     """
     return User.getByID(user_id)
 
@@ -26,4 +31,5 @@ app.register_blueprint(results_bp)
 
 
 if __name__ == "__main__":
+    """Runs the script directly"""
     app.run(debug=True)
