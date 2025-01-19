@@ -16,6 +16,15 @@ from models import quizzesCollection, resultsCollection
 dash_bp = Blueprint('dash', __name__)
 
 
+def filter_categories(category):
+    if category == "Title":
+        return "title"
+    elif category == "Updated At":
+        return "updated_at"
+    elif category == "Created At":
+        return "created_at"
+
+
 @dash_bp.route("/home", methods=["GET", "POST"])
 def home():
     """
@@ -45,7 +54,11 @@ def home():
     category = request.args.get('category', '')
     if category.lower() == "default" or category.lower() == '':
         category = None
-    categories = ["title", "updated_at", "created_at"]
+
+    if category is not None:
+        category = filter_categories(category)
+    categories = ["Title", "Updated At", "Created At"]
+    # categories = ["title", "updated_at", "created_at"]
     valid_categories = ["title", "updated_at", "created_at", "default", None]
     if category not in valid_categories:
         flash("Invalid Sort Order")
@@ -145,7 +158,12 @@ def myquizzes():
     category = request.args.get('category', '')
     if category.lower() == "default" or category.lower() == '':
         category = None
-    categories = ["title", "updated_at", "created_at"]
+
+    if category is not None:
+        category = filter_categories(category)
+    categories = ["Title", "Updated At", "Created At"]
+
+    # categories = ["title", "updated_at", "created_at"]
     valid_categories = ["title", "updated_at", "created_at", "default", None]
     if category not in valid_categories:
         flash("Invalid Sort Order")
@@ -261,7 +279,12 @@ def myresults():
     category = request.args.get('category', '')
     if category.lower() == "default" or category.lower() == '':
         category = None
-    categories = ["title", "latest_attempt"]
+
+    if category is not None:
+        category = filter_categories(category)
+    categories = ["Title", "Updated At", "Created At"]
+
+    # categories = ["title", "latest_attempt"]
     valid_categories = ["title", "latest_attempt", "default", None]
     if category not in valid_categories:
         flash("Invalid Sort Order")
