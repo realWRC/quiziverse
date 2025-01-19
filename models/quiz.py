@@ -4,14 +4,40 @@ from datetime import datetime, timezone
 
 
 class Quiz():
-    """ Defines the datamodel for a quiz.
+    """
+    Defines the datamodel/datastructure for a quiz.
+
+    Args:
+        title(str): The title of the quiz.
+        creator_id(str): The user id of the the quizzes creator.
+        description(str): A short 300 character description of the quiz.
+        category(str): The group to which a quiz can be grouped into.
+        quiz_id(str): The unique identifier for a quiz.
+        questions(list): A list of dictionaries which represent a question.
+        time_limit(int): The time to finish a quiz in seconds.
+        total_score(int): The sum of the scores of all questions.
+        kwargs(dict): An arbitrary dictionary to add new fields.
     """
 
     def __init__(
             self, title, creator_id, description, category="general",
             quiz_id=None, questions=None, time_limit=0, total_score=0,
             **kwargs):
-        """ Initialises the quiz datamodel
+        """ 
+        Initialises an instance of a Quiz class. Performs validation using
+        the validateFields staticmethod defined below.
+
+        Args:
+            title(str): The title of the quiz.
+            creator_id(str): The user id of the the quizzes creator.
+            description(str): A short 300 character description of the quiz.
+            category(str): The group to which a quiz can be grouped into.
+            quiz_id(str): The unique identifier for a quiz.
+            questions(list): A list of dictionaries where each dict
+            represents a question.
+            time_limit(int): The time to finish a quiz in seconds.
+            total_score(int/float): The sum of the scores of all questions.
+            kwargs(dict): An arbitrary dictionary to add new fields.
         """
         if quiz_id is None:
             quiz_id = str(uuid.uuid4())
@@ -35,7 +61,20 @@ class Quiz():
             return validation[1]
 
     def addMultipleQuestions(self, questions):
-        """ Adds a list of questions to the quiz at once
+        """ 
+        Adds a list of questions to a quiz instance at once. It will copy
+        the original question set, attempt to create a new question set and
+        assign it to the Quiz instance if it success. Every question in the
+        list is validated using the validateQuestion staticmethod defined
+        below.
+
+        Args:
+            questions(list): A list of dictionaries, each representing
+            a question.
+
+        Returns:
+            list: A list of dictionaries that is assigned to the quiz
+            on success or an empty list if validation failed.
         """
         original_questions = self.questions
         original_total_score = self.total_score
@@ -65,7 +104,15 @@ class Quiz():
 
     def addQuestion(self, question, options, answer, score=1):
         """
-        Adds a question to a quiz
+        adds a question to a quiz object instance. validates the
+        question using validatequestion staticmethod.
+
+        args:
+            question(str): the question being asked.
+            options(list): a list representing the possible answers
+            to the question.
+            answers(str): a string representing the answer.
+            score(int/float): the score of a question 1 by default.
         """
         validation = Quiz.validateQuestion({
             "question": question,
@@ -74,7 +121,7 @@ class Quiz():
             "score": score,
         })
         if validation[0]:
-            question = {
+            validated_question = {
                 "question_id": str(uuid.uuid4()),
                 "quiz_id": self.quiz_id,
                 "question": question,
@@ -83,7 +130,7 @@ class Quiz():
                 "score": score,
                 "index": len(self.questions)
             }
-            self.questions.append(question)
+            self.questions.append(validated_question)
             self.total_score += score
             self.updated_at = datetime.now(timezone.utc)
         else:
@@ -92,7 +139,25 @@ class Quiz():
     def __addMultipleQuestionsHelper(
             self, questionSet, question,
             options, answer, score=1):
-        """ Adds a question to a quiz
+        """ 
+        Adds a question to a given list object. validates the
+        question using validatequestion staticmethod.
+
+        args:
+            questionSet(list): A list to which a validated question is
+            appended
+            question(str): The question being asked.
+            options(list): A list representing the possible answers
+            to the question.
+            answers(str): A string representing the answer.
+            score(int/float): The score of a question 1 by default.
+        
+        Returns:
+            int: The score of the question added.
+
+        Raises:
+            TypeError: If validation fails raise TypeError with the
+            message on the validation that failed.
         """
         validation = Quiz.validateQuestion({
             "question": question,
@@ -116,13 +181,23 @@ class Quiz():
             raise TypeError(validation[1])
 
     def save(self):
-        """ Returns JSON form of class.
+        """
+        Saves am instace of a Quiz object to the database as
+        a dictionary using the default __dict__ method.
         """
         return quizzesCollection.insert_one(self.__dict__)
 
     @staticmethod
     def recreate(quiz_id):
-        """ Recreates quiz by id
+        """ 
+        Recreates Quiz object instace based on its quiz_id.
+
+        Args:
+            quiz_id(str): A unique identifier for a quiz.
+
+        Returns:
+            Quiz: A quiz object corresponding to the quiz_id.
+            None: If not quiz matches the given quiz_id.
         """
         quiz_dict = Quiz.get(quiz_id)
         if quiz_dict:
@@ -143,8 +218,14 @@ class Quiz():
     @staticmethod
     def validateQuestion(question):
         """
-        Validates the content of a question dict for the class
-        Quiz
+        Validates the content of a question dict to be assigned to Quiz
+        instance questions attribute.
+
+        Args:
+            question(dict): A dictionary represting a question.
+
+        Return:
+            Tuple: A tuple with a bool and a string message.
         """
         keys = ['question', 'options', 'answer', 'score']
         if isinstance(question, dict):
@@ -185,8 +266,17 @@ class Quiz():
     @staticmethod
     def validateFields(title, description, category, time_limit):
         """
-        Validates all external direct attributes of a
-        Quiz object except creator_id and questions.
+        Validates attributes of a Quiz object prior to assignment
+        except creator_id and questions.
+
+        Args:
+            title(str): The title of the quiz
+            description(str): A short 300 character description of the quiz.
+            category(str): The group to which a quiz can be grouped into.
+            time_limit(int): The time to finish a quiz in seconds.
+
+        Return:
+            Tuple: A tuple with a bool and a string message.
         """
         if not isinstance(title, str) or title.isnumeric():
             return (False, "Title must be a string")
@@ -197,42 +287,79 @@ class Quiz():
         if not isinstance(time_limit, int) and \
                 not isinstance(time_limit, float):
             return (False, "Time Limit must be an Integer or a Float")
-
         title.strip()
         description.strip()
         category.strip()
-
         return (True, "Valid fields")
 
     @staticmethod
     def get(quiz_id):
-        """ Returns a quiz by ID from the database
+        """
+        Retrieves data for a quiz that corresponds to the qiven quiz_id
+        from the database.
+
+        Args:
+            quiz_id(str): A unique identifier for a quiz.
+
+        Return:
+            cursor: Iterable pymongo cursor object with the quiz data.
+            None: If the quiz with the given id is not found.
         """
         return quizzesCollection.find_one({"quiz_id": quiz_id})
 
     @staticmethod
     def getAll():
         """
-        Gets all quizzes from database and orders
-        them by title and date updated_at
+        Retrieves all quizzes from database and orders them by title and date
+        updated_at.
+
+        Return:
+            cursor: Iterable pymongo cursor object with the quiz data.
+            None: If the quiz with the given id is not found.
         """
         return quizzesCollection.find().sort([("title", 1), ("updated_at", 1)])
 
     @staticmethod
     def getAllUserQuizzes(creator_id):
-        """ Gets all quizzes created by the current user.
+        """
+        Gets all quizzes created by a user with a given creator_id.
+
+        Args:
+            creator_id(str): A unique identifier for a user(user id).
+
+        Return:
+            cursor: Iterable pymongo cursor object with the quiz data.
+            None: If the quiz with the given id is not found.
         """
         return quizzesCollection.find({"creator_id": creator_id})
 
     @staticmethod
     def getByFilter(criteria):
-        """ Returns quiz by a given field
+        """
+        Searches the quiz collection using given criteria.
+
+        Args:
+            criteria(dict): A dict using pymongo seach syntax for the find
+            function.
+
+        Returns:
+            cursor: Iterable pymongo cursor object with the quiz data.
+            None: If the quiz with the given id is not found.
         """
         return quizzesCollection.find(criteria)
 
+    # TODO refactor to clarify if database failed or quiz was not found
+    # check staticmethod can help with this
     @staticmethod
     def delete(quiz_id):
-        """ Deletes quiz by id
+        """
+        Deletes quiz data from the database using a given quiz_id.
+
+        Args:
+            quiz_id(str): A unique identifier for a quiz.
+
+        Raises:
+            KeyError: When the delete operation fails of any reason.
         """
         result = quizzesCollection.delete_one({"quiz_id": quiz_id})
         if result.acknowledged and result.deleted_count == 1:
@@ -242,7 +369,14 @@ class Quiz():
 
     @staticmethod
     def check(quiz_id):
-        """ Checks if a quiz_id is valid
+        """ 
+        Checks if a quiz with a given quiz_id exists in the database.
+
+        Args:
+            quiz_id(str): A unique identifier for a quiz.
+
+        Returns:
+            bool: True if it is in the database and false otherwise.
         """
         if resultsCollection.find_one({"user_id": quiz_id}, {"_id": 1}):
             return True
@@ -251,7 +385,12 @@ class Quiz():
 
     @staticmethod
     def update(quiz_id, data):
-        """ Updates a quiz object from storage
+        """
+        Updates the data of a quiz with a given quiz_id in storage.
+
+        Args:
+            quiz_id(str): A unique identifier for a quiz.
+            data(dict): A dict containing new data to update the quiz.
         """
         temp = Quiz.recreate(quiz_id)
         assert temp is not None
@@ -281,7 +420,17 @@ class Quiz():
 
     @staticmethod
     def search(query):
-        """ Searches quiz database
+        """ 
+        Searches the quiz database(collection) for a quiz
+        whose title matches the query.
+
+        Args:
+            query(str): A title to be searched for.
+
+        Returns:
+            list: A list containing the data of all quizzes that
+            match the query.
+            None: No quiz in the database does not match the query.
         """
         result = quizzesCollection.find(
             {"title": {"$regex": query, "$options": "i"}}
@@ -298,9 +447,18 @@ class Quiz():
     @staticmethod
     def searchUserQuizzes(creator_id, query):
         """
-        Searches all quizzes made by user with
-        creator_id and querries the quizzes
-        by title.
+        Searches all quizzes made by user with creator_id and
+        searches for a quiz whose title matches the given
+        query.
+
+        Args:
+            creator_id(str): Unique identifier of the quizzes creator.
+            query(str): A title to be searched for.
+
+        Returns:
+            list: A list containing the data of all quizzes that
+            match the query.
+            None: No quiz in the database does not match the query.
         """
         cursor = quizzesCollection.find(
             {
