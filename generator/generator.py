@@ -1,22 +1,34 @@
+"""
+This is a testing file that is used to generate some data to test the application.
+The generator does the following:
+    1. Create users based on the constant NUMBER_OF_USERS which is 6 by default.
+    2. Generate quizzes with each user creating a number of quizzes
+       defined by QUIZZES_PER_USER constant.
+    3. Generate a number of results defined by RESULTS_PER_USER with the quizzes being
+       choosen at random.
+"""
+
 import datetime
 import random
-from pymongo import MongoClient
 from models.quiz import Quiz
 from models.user import User
 from models.result import Result
-
-client = MongoClient()
-
-# Name of database and collections for users, quizzes and results
-db = client.quiziverse
 
 
 NUMBER_OF_USERS = 6
 QUIZZES_PER_USER = 50
 RESULTS_PER_USER = 50
 
+
 if RESULTS_PER_USER > (NUMBER_OF_USERS * QUIZZES_PER_USER):
-    print("Number of results must be less than the product of NUMBER_OF_USERS and QUIZZES_PER_USER")
+    print("""Number of results must be less than the product
+          of NUMBER_OF_USERS and QUIZZES_PER_USER""")
+
+
+long_quiz_description = """Lorem ipsum dolor sit amet consectetur adipisicing
+elit. Hic ut voluptate temporibus aliquam nihil tenetur quibusdam ipsam optio
+odio ex."""
+
 
 questions_1 = [
     {
@@ -122,9 +134,9 @@ user_list = []
 # Create Users
 for i in range(1, NUMBER_OF_USERS + 1):
     user = User(
-        username = f"Test_{i}",
-        email = f"test_{i}@foo.bar",
-        password = "q",
+        username=f"Test_{i}",
+        email=f"test_{i}@foo.bar",
+        password="password",
     )
     user_list.append(user.id)
     user.save()
@@ -136,14 +148,14 @@ quiz_titles = {}
 
 for user_id in user_list[:2]:
     numb = QUIZZES_PER_USER
-    for number in range (1, numb + 1):
+    for number in range(1, numb + 1):
         title = f"The Capital cities of the world {random.randrange(1000)}"
         quiz = Quiz(
-            title = title,
-            description = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic ut voluptate temporibus aliquam nihil tenetur quibusdam ipsam optio odio ex.",
-            category = "Geography",
-            creator_id = user_id,
-            time_limit = 600
+            title=title,
+            description=long_quiz_description,
+            category="Geography",
+            creator_id=user_id,
+            time_limit=600
         )
         quiz.addMultipleQuestions(questions_1)
         quiz.save()
@@ -152,14 +164,14 @@ for user_id in user_list[:2]:
 
 for user_id in user_list[2:4]:
     numb = QUIZZES_PER_USER
-    for number in range (1, numb + 1):
+    for number in range(1, numb + 1):
         title = f"The origins of food {random.randrange(1000)}"
         quiz = Quiz(
-            title = title,
-            description = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic ut voluptate temporibus aliquam nihil tenetur quibusdam ipsam optio odio ex.",
-            category = "Foods",
-            creator_id = user_id,
-            time_limit = 600
+            title=title,
+            description=long_quiz_description,
+            category="Foods",
+            creator_id=user_id,
+            time_limit=600
         )
         quiz.addMultipleQuestions(questions_2)
         quiz.save()
@@ -168,14 +180,14 @@ for user_id in user_list[2:4]:
 
 for user_id in user_list[4:]:
     numb = QUIZZES_PER_USER
-    for number in range (1, numb + 1):
+    for number in range(1, numb + 1):
         title = f"Randon fun facts {random.randrange(1000)}"
         quiz = Quiz(
-            title = title,
-            description = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic ut voluptate temporibus aliquam nihil tenetur quibusdam ipsam optio odio ex.",
-            category = "General",
-            creator_id = user_id,
-            time_limit = 600
+            title=title,
+            description=long_quiz_description,
+            category="General",
+            creator_id=user_id,
+            time_limit=600
         )
         quiz.addMultipleQuestions(questions_2)
         quiz.save()
@@ -189,15 +201,15 @@ for user_id in user_list:
     for result in range(RESULTS_PER_USER):
         quiz_id = random.choice(quiz_list)
         result = Result(
-            user_id = user_id,
-            quiz_id = quiz_id,
-            title = quiz_titles[quiz_id],
-            percentage_score = 100,
-            user_score = 5,
-            correct_answers = 5,
-            questions_attempted = 5,
-            accuracy = 100,
-            latest_attempt = datetime.datetime.now(datetime.timezone.utc)
+            user_id=user_id,
+            quiz_id=quiz_id,
+            title=quiz_titles[quiz_id],
+            percentage_score=100,
+            user_score=5,
+            correct_answers=5,
+            questions_attempted=5,
+            accuracy=100,
+            latest_attempt=datetime.datetime.now(datetime.timezone.utc)
         )
         result.save()
         results.append(result)
