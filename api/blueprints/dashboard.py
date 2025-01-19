@@ -1,3 +1,9 @@
+"""
+The Blueprint for routes used display large amounts of information to
+the user that are essentially dashboards including: home, myquizzes
+and myresults.
+"""
+
 import re
 from api.config import year
 from flask import Blueprint, flash, request, render_template, url_for, redirect
@@ -12,7 +18,12 @@ dash_bp = Blueprint('dash', __name__)
 
 @dash_bp.route("/home", methods=["GET", "POST"])
 def home():
-    """ Renders the users home page
+    """
+    Renders the home page to display all quizzes on the site. Includes functionality
+    for search, filter and pagination using args.
+
+    Response:
+        HTML page with the quizzes available on a given page.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first.")
@@ -107,7 +118,12 @@ def home():
 
 @dash_bp.route("/myquizzes", methods=["GET", "POST"])
 def myquizzes():
-    """ Shows all quizes created by a given user.
+    """
+    Retrieves all quizzes created by a user on the site. Includes functionality
+    for search, filter and pagination using args.
+
+    Response:
+        HTML page with the quizzes created by a user.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first.")
@@ -214,7 +230,12 @@ def myquizzes():
 
 @dash_bp.route('/myresults', methods=["GET", "POST"])
 def myresults():
-    """ Results page for all quizzes taken
+    """
+    Retrieves all quiz results for a user on the site. Includes functionality
+    for search, filter and pagination using args.
+
+    Response:
+        HTML page with the resulta of all quizzes taken by a user.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
