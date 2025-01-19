@@ -1,3 +1,8 @@
+"""
+The Blueprint for routes used when interacting with results.
+The only route included being the resultinfo route
+"""
+
 from flask import Blueprint, flash, render_template, url_for, redirect
 from flask_login import current_user
 from models.result import Result
@@ -10,7 +15,15 @@ results_bp = Blueprint('results_bp', __name__)
 
 @results_bp.route('/resultinfo/<quiz_id>', methods=["GET"])
 def resultinfo(quiz_id):
-    """ Renders detailed results for a given quiz
+    """
+    Renders detailed results information for a given quiz taken
+    by a user. The user is determined internally.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        HTML page created with the resultinfo.html template.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
