@@ -1,14 +1,21 @@
+#!/usr/bin/env python3
+"""
+Unittests of the Quiz class.
+"""
+
 import unittest
 from models.quiz import Quiz
 from models.user import User
 
 
 class TestQuizModel(unittest.TestCase):
-    """ Test cases for the Quiz datamodel.
+    """
+    Unittest for Quiz class using unittest.TestCase.
     """
 
     def setUp(self):
-        """ Sets up some tests for the model.
+        """
+        Sets up some tests for the Quiz model.
         """
         self.title = "Capital Cities Quiz."
         self.description = "This is lorem description"
@@ -33,7 +40,8 @@ class TestQuizModel(unittest.TestCase):
         self.score2 = 10
 
     def test_question_types(self):
-        """ Tests if quiz has the corret data
+        """
+        Tests if quiz has the corret data types
         """
         user = User(
             username=self.username,
@@ -72,7 +80,8 @@ class TestQuizModel(unittest.TestCase):
         self.assertEqual(quiz.questions[1]["index"], 1)
 
     def test_add_multiple_questions(self):
-        """ Tests if the addMultipleQuestions method works
+        """
+        Tests if the addMultipleQuestions method works as expected
         """
         questions = [
             {
@@ -126,7 +135,12 @@ class TestQuizModel(unittest.TestCase):
         self.assertEqual(quiz.questions[2]["index"], 2)
 
     def test_quiz_persistence(self):
-        """ Tests the peristence of a quiz
+        """
+        Tests the peristence of a quiz in the database.
+        Uses:
+            Quiz.addQuestion()
+            Quiz.recreate()
+            Quiz.delete()
         """
         questions = []
         user = User(
@@ -179,7 +193,9 @@ class TestQuizModel(unittest.TestCase):
         self.assertIsNone(quizThree)
 
     def test_db_quiz_data_types(self):
-        """ Tests the types for quizzes retried from database
+        """
+        Tests the types for quizzes retried from database and
+        the addMultipleQuestions method.
         """
         questions = [
             {
