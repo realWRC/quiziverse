@@ -1,19 +1,14 @@
+"""
+The Blueprint for routes used when creating, editing and deleting
+quizzes including routes for: create, edit and delete.
+"""
+
 import json
-import re
-from api.config import login_manager, year, domain
-
-from api.blueprints.information import info_bp
-from api.blueprints.authentication import auth_bp
-from api.blueprints.dashboard import dash_bp
-
-from datetime import datetime, timezone, timedelta
-from flask import Blueprint, flash, request, session, render_template, url_for, redirect, jsonify
-from flask_login import current_user, login_required, login_user, logout_user
-from math import ceil
-from models.result import Result
-from models.user import User
+from api.config import year, domain
+from flask import Blueprint, flash, request, session
+from flask import render_template, url_for, redirect
+from flask_login import current_user
 from models.quiz import Quiz
-from models import quizzesCollection, resultsCollection
 from urllib.parse import urlparse
 from pprint import pprint
 
@@ -23,7 +18,12 @@ quiz_bp = Blueprint('quiz', __name__)
 
 @quiz_bp.route("/create", methods=["GET", "POST"])
 def create():
-    """ Route for creating quizzes
+    """
+    Allows a user to create a quiz using a form page that is rendered on a get
+    request.
+
+    Response:
+        HTML page created with the create.html template.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -38,43 +38,36 @@ def create():
             data['time_limit'] = 0
 
         validation = Quiz.validateFields(
-            title = data['title'],
-            description = data['description'],
-            time_limit = data['time_limit'],
-            category = data['category'],
+            title=data['title'],
+            description=data['description'],
+            time_limit=data['time_limit'],
+            category=data['category'],
         )
         if validation[0]:
             pass
         else:
             flash(validation[1])
-            return render_template("create.html", title='quiz.create', year=year, data=data)
+            return render_template(
+                "create.html", title='quiz.create',
+                year=year, data=data
+            )
 
-        # i = 0
-        # pprint(data["questions"])
-        # print(f"length of questions list {len(data['questions'])}")
         for question in data["questions"]:
             validation = Quiz.validateQuestion(question)
-            # print(f"index {i} = {question}")
             if validation[0]:
-                # print(f"index {i} = {quest}")
-                # quiz.addQuestion(
-                #     question = quest["question"],
-                #     options = quest["options"],
-                #     answer = quest["answer"],
-                #     score = quest["score"],
-                # )
-                # pprint(quiz.__dict__)
-                # i += 1
                 pass
             else:
                 flash(validation[1])
-                return render_template("create.html", title='quiz.create', year=year, data=data)
+                return render_template(
+                    "create.html", title='quiz.create',
+                    year=year, data=data
+                )
 
         quiz = Quiz(
-            title = data['title'],
-            creator_id = current_user.get_id(),
-            description = data['description'],
-            time_limit = data['time_limit']
+            title=data['title'],
+            creator_id=current_user.get_id(),
+            description=data['description'],
+            time_limit=data['time_limit']
         )
         quiz.addMultipleQuestions(data['questions'])
         pprint(quiz.__dict__)
@@ -87,18 +80,23 @@ def create():
 
 @quiz_bp.route('/edit/<quiz_id>', methods=['GET', 'POST'])
 def edit(quiz_id):
-    """ Route for editing a users quiz if they are the creator
+    """
+    Allows a user to edit a quiz with a given quiz_id using a form page
+    that is rendered on a get request.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        HTML page created with the create.html template.
     """
     if not current_user.is_authenticated:
         return redirect(url_for('auth.login'))
 
-
     quiz = Quiz.get(quiz_id)
-
     if not quiz:
         flash("Invalid quiz id")
         return redirect(url_for('dash.home'))
-
     if not quiz['creator_id'] == current_user.get_id():
         flash("Not authorized to edit this quiz")
         return redirect(url_for('dash.home'))
@@ -119,10 +117,10 @@ def edit(quiz_id):
         pprint(data)
 
         validation = Quiz.validateFields(
-            title = data['title'],
-            description = data['description'],
-            category = data['category'],
-            time_limit = data['time_limit'],
+            title=data['title'],
+            description=data['description'],
+            category=data['category'],
+            time_limit=data['time_limit'],
         )
         if validation[0]:
             pass
@@ -153,17 +151,32 @@ def edit(quiz_id):
     except KeyError:
         data = None
         pass
-    url = urlparse(request.referrer) 
-    if (url.netloc == '127.0.0.1:5000' or url.netloc == domain) and url.path == f'/edit/{quiz_id}' and data:
-        # flash("Back in quiz bro")
+    url = urlparse(request.referrer)
+    if (url.netloc == '127.0.0.1:5000' or url.netloc == domain) \
+            and url.path == f'/edit/{quiz_id}' and data:
         data['quiz_id'] = quiz_id
-        return render_template("edit.html", title='quiz.edit', year=year, data=data)
+        return render_template(
+            "edit.html", title='quiz.edit',
+            year=year, data=data
+        )
 
-    return render_template("edit.html", title='quiz.edit', year=year, data=quiz)
+    return render_template(
+        "edit.html", title='quiz.edit',
+        year=year, data=quiz
+    )
 
 
 @quiz_bp.route('/delete/<quiz_id>', methods=['GET'])
 def delete(quiz_id):
+    """
+    Allows a user to delete a quiz with a given quiz_id.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        Redirect to the page there the operation was started.
+    """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
         return redirect(url_for('auth.login'))

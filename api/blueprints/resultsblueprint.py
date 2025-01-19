@@ -1,21 +1,13 @@
-import json
-import re
-from api.config import login_manager, year, domain
+"""
+The Blueprint for routes used when interacting with results.
+The only route included being the resultinfo route
+"""
 
-from api.blueprints.information import info_bp
-from api.blueprints.authentication import auth_bp
-from api.blueprints.dashboard import dash_bp
-
-from datetime import datetime, timezone, timedelta
-from flask import Blueprint, flash, request, session, render_template, url_for, redirect, jsonify
-from flask_login import current_user, login_required, login_user, logout_user
-from math import ceil
+from flask import Blueprint, flash, render_template, url_for, redirect
+from flask_login import current_user
 from models.result import Result
-from models.user import User
 from models.quiz import Quiz
-from models import quizzesCollection, resultsCollection
-from urllib.parse import urlparse
-from pprint import pprint
+from models import resultsCollection
 
 
 results_bp = Blueprint('results_bp', __name__)
@@ -23,7 +15,15 @@ results_bp = Blueprint('results_bp', __name__)
 
 @results_bp.route('/resultinfo/<quiz_id>', methods=["GET"])
 def resultinfo(quiz_id):
-    """ Renders detailed results for a given quiz
+    """
+    Renders detailed results information for a given quiz taken
+    by a user. The user is determined internally.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        HTML page created with the resultinfo.html template.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -37,10 +37,8 @@ def resultinfo(quiz_id):
         flash("You have not taken a quiz on this site.")
         return redirect(url_for('index'))
 
-    # result = Result.getQuizResult(
-    #         user_id = current_user.get_id(),
-    # )
-    # print(result)
-    result = resultsCollection.find_one({"user_id": current_user.get_id(), "quiz_id": quiz_id})
+    result = resultsCollection.find_one({
+        "user_id": current_user.get_id(), "quiz_id": quiz_id
+    })
 
     return render_template("resultinfo.html", result=result)

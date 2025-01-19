@@ -1,25 +1,38 @@
-import json
+"""
+The Blueprint for routes used display large amounts of information to
+the user that are essentially dashboards including: home, myquizzes
+and myresults.
+"""
+
 import re
-from api.config import app, login_manager, year, domain
-from api.blueprints.information import info_bp
-from api.blueprints.authentication import auth_bp
-from datetime import datetime, timezone, timedelta
-from flask import Blueprint, flash, request, session, render_template, url_for, redirect, jsonify
-from flask_login import current_user, login_required, login_user, logout_user
+from api.config import year
+from flask import Blueprint, flash, request, render_template, url_for, redirect
+from flask_login import current_user
 from math import ceil
-from models.result import Result
-from models.user import User
 from models.quiz import Quiz
 from models import quizzesCollection, resultsCollection
-from urllib.parse import urlparse
-from pprint import pprint
 
 
 dash_bp = Blueprint('dash', __name__)
 
+
+def filter_categories(category):
+    if category == "Title":
+        return "title"
+    elif category == "Updated At":
+        return "updated_at"
+    elif category == "Created At":
+        return "created_at"
+
+
 @dash_bp.route("/home", methods=["GET", "POST"])
 def home():
-    """ Renders the users home page
+    """
+    Renders the home page to display all quizzes on the site. Includes functionality
+    for search, filter and pagination using args.
+
+    Response:
+        HTML page with the quizzes available on a given page.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first.")
@@ -41,7 +54,11 @@ def home():
     category = request.args.get('category', '')
     if category.lower() == "default" or category.lower() == '':
         category = None
-    categories = ["title", "updated_at", "created_at"]
+
+    if category is not None:
+        category = filter_categories(category)
+    categories = ["Title", "Updated At", "Created At"]
+    # categories = ["title", "updated_at", "created_at"]
     valid_categories = ["title", "updated_at", "created_at", "default", None]
     if category not in valid_categories:
         flash("Invalid Sort Order")
@@ -65,11 +82,15 @@ def home():
         if category:
             cursor = quizzesCollection.find(
                 {"title": {"$regex": query, "$options": "i"}}
-                ).sort([(category, -1), ("updated_at", -1)]).skip(skip).limit(per_page)
+                ).sort(
+                    [(category, -1), ("updated_at", -1)]
+                ).skip(skip).limit(per_page)
         else:
             cursor = quizzesCollection.find(
                 {"title": {"$regex": query, "$options": "i"}}
-                ).sort([("title", 1), ("updated_at", 1)]).skip(skip).limit(per_page)
+                ).sort(
+                    [("title", 1), ("updated_at", 1)]
+                ).skip(skip).limit(per_page)
         quizzes = list(cursor)
         pagination = {
             'page': page,
@@ -83,10 +104,12 @@ def home():
         total = quizzesCollection.count_documents({})
         total_pages = ceil(total / per_page) if total > 0 else 1
         if category:
-            # cursor = Quiz.getAll().skip(skip).sort([(category, 1), ("updated_at", 1)]).limit(per_page)
-            cursor = Quiz.getAll().sort(category, -1).skip(skip).limit(per_page)
+            cursor = Quiz.getAll().sort(category, -1)\
+                    .skip(skip).limit(per_page)
         else:
-            cursor = Quiz.getAll().sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
+            cursor = Quiz.getAll().sort(
+                [("title", 1), ("updated_at", -1)]
+            ).skip(skip).limit(per_page)
         quizzes = list(cursor)
         pagination = {
             'page': page,
@@ -101,14 +124,19 @@ def home():
         "home.html", title='dash.home',
         year=year, query=query,
         quizzes=quizzes, categories=categories,
-        selected_category = category,
+        selected_category=category,
         pagination=pagination
     )
 
 
 @dash_bp.route("/myquizzes", methods=["GET", "POST"])
 def myquizzes():
-    """ Shows all quizes created by a given user.
+    """
+    Retrieves all quizzes created by a user on the site. Includes functionality
+    for search, filter and pagination using args.
+
+    Response:
+        HTML page with the quizzes created by a user.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first.")
@@ -130,7 +158,12 @@ def myquizzes():
     category = request.args.get('category', '')
     if category.lower() == "default" or category.lower() == '':
         category = None
-    categories = ["title", "updated_at", "created_at"]
+
+    if category is not None:
+        category = filter_categories(category)
+    categories = ["Title", "Updated At", "Created At"]
+
+    # categories = ["title", "updated_at", "created_at"]
     valid_categories = ["title", "updated_at", "created_at", "default", None]
     if category not in valid_categories:
         flash("Invalid Sort Order")
@@ -157,13 +190,17 @@ def myquizzes():
                 {
                     "creator_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}}
-                ).sort([(category, -1), ("updated_at", 1)]).skip(skip).limit(per_page)
+                ).sort(
+                    [(category, -1), ("updated_at", 1)]
+                ).skip(skip).limit(per_page)
         else:
             cursor = quizzesCollection.find(
                 {
                     "creator_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}}
-                ).sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
+                ).sort(
+                    [("title", 1), ("updated_at", -1)]
+                ).skip(skip).limit(per_page)
         quizzes = list(cursor)
         # quizzes = Quiz.searchUserQuizzes(current_user.get_id(),query)
         pagination = {
@@ -175,12 +212,18 @@ def myquizzes():
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
     else:
-        total = quizzesCollection.count_documents({"creator_id": current_user.get_id()})
+        total = quizzesCollection.count_documents({
+            "creator_id": current_user.get_id()
+        })
         total_pages = ceil(total / per_page) if total > 0 else 1
         if category:
-            cursor = Quiz.getAllUserQuizzes(current_user.get_id()).sort(category, -1).skip(skip).limit(per_page)
+            cursor = Quiz.getAllUserQuizzes(
+                current_user.get_id()
+            ).sort(category, -1).skip(skip).limit(per_page)
         else:
-            cursor = Quiz.getAllUserQuizzes(current_user.get_id()).skip(skip).sort("title", -1).limit(per_page)
+            cursor = Quiz.getAllUserQuizzes(
+                current_user.get_id()
+            ).skip(skip).sort("title", -1).limit(per_page)
         quizzes = list(cursor)
         pagination = {
             'page': page,
@@ -198,14 +241,19 @@ def myquizzes():
         title="My Quizzes",
         year=year,
         categories=categories,
-        selected_category = category,
+        selected_category=category,
         pagination=pagination
     )
 
 
 @dash_bp.route('/myresults', methods=["GET", "POST"])
 def myresults():
-    """ Results page for all quizzes taken
+    """
+    Retrieves all quiz results for a user on the site. Includes functionality
+    for search, filter and pagination using args.
+
+    Response:
+        HTML page with the resulta of all quizzes taken by a user.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -231,7 +279,12 @@ def myresults():
     category = request.args.get('category', '')
     if category.lower() == "default" or category.lower() == '':
         category = None
-    categories = ["title", "latest_attempt"]
+
+    if category is not None:
+        category = filter_categories(category)
+    categories = ["Title", "Updated At", "Created At"]
+
+    # categories = ["title", "latest_attempt"]
     valid_categories = ["title", "latest_attempt", "default", None]
     if category not in valid_categories:
         flash("Invalid Sort Order")
@@ -263,7 +316,9 @@ def myresults():
                     "user_id": current_user.get_id(),
                     "title": {"$regex": query, "$options": "i"}
                 }
-            ).sort([("title", 1), ("updated_at", -1)]).skip(skip).limit(per_page)
+            ).sort(
+                [("title", 1), ("updated_at", -1)]
+            ).skip(skip).limit(per_page)
         results = list(cursor)
         # results = Result.searchMyResults(current_user.get_id(), query=query)
         pagination = {
@@ -275,14 +330,20 @@ def myresults():
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
     else:
-        total = resultsCollection.count_documents({"user_id": current_user.get_id()})
+        total = resultsCollection.count_documents({
+            "user_id": current_user.get_id()
+        })
         total_pages = ceil(total / per_page) if total > 0 else 1
         # results = Result.getQuizResult(current_user.get_id())
         # results = list(results) if results else None
         if category:
-            cursor = resultsCollection.find({"user_id": current_user.get_id()}).sort(category, -1).skip(skip).limit(per_page)
+            cursor = resultsCollection.find(
+                {"user_id": current_user.get_id()}
+            ).sort(category, -1).skip(skip).limit(per_page)
         else:
-            cursor = resultsCollection.find({"user_id": current_user.get_id()}).sort("title", -1).skip(skip).limit(per_page)
+            cursor = resultsCollection.find({
+                    "user_id": current_user.get_id()
+            }).sort("title", -1).skip(skip).limit(per_page)
         results = list(cursor) if cursor else None
         pagination = {
             'page': page,
@@ -292,13 +353,13 @@ def myresults():
             'prev_url': url_for_other_page(page - 1) if page > 1 else None,
             'next_url': url_for_other_page(page + 1) if page < total_pages else None,
         }
-    
+
     return render_template(
         "myresults.html",
         results=results,
         query=query,
         categories=categories,
-        selected_category = category,
+        selected_category=category,
         pagination=pagination,
         year=year
     )

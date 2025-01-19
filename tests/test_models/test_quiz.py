@@ -1,15 +1,21 @@
+#!/usr/bin/env python3
+"""
+Unittests of the Quiz class.
+"""
+
 import unittest
 from models.quiz import Quiz
 from models.user import User
-from pprint import pprint
 
 
 class TestQuizModel(unittest.TestCase):
-    """ Test cases for the Quiz datamodel.
+    """
+    Unittest for Quiz class using unittest.TestCase.
     """
 
     def setUp(self):
-        """ Sets up some tests for the model.
+        """
+        Sets up some tests for the Quiz model.
         """
         self.title = "Capital Cities Quiz."
         self.description = "This is lorem description"
@@ -17,11 +23,11 @@ class TestQuizModel(unittest.TestCase):
         self.username = "test"
         self.email = "foo@bar.com"
         self.password = "password123"
-        self.longdescription = """Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem totam
-        officiis amet, velit tempore assumenda. Incidunt natus ex iusto
-        praesentium ab officiis numquam cumque doloribus ducimus odio suscipit
-        laboriosam tenetur at dignissimos dolore eveniet aliquam earum quam,
-        sequi, odit repudiandae."""
+        self.longdescription = """Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Autem totam officiis amet, velit tempore assumenda.
+        Incidunt natus ex iusto praesentium ab officiis numquam cumque
+        doloribus ducimus odio suscipit laboriosam tenetur at dignissimos
+        dolore eveniet aliquam earum quam, sequi, odit repudiandae."""
 
         self.question1 = "What is the Capital of Foo?"
         self.options1 = ["Lorem", "Foobar", "Bar", "Ipsum"]
@@ -34,27 +40,28 @@ class TestQuizModel(unittest.TestCase):
         self.score2 = 10
 
     def test_question_types(self):
-        """ Tests if quiz has the corret data
+        """
+        Tests if quiz has the corret data types
         """
         user = User(
-            username = self.username,
-            email = self.email,
-            password =  self.password
+            username=self.username,
+            email=self.email,
+            password=self.password
         )
         quiz = Quiz(
-            title = self.title,
-            creator_id = user.returnID(),
-            description =  self.description
+            title=self.title,
+            creator_id=user.returnID(),
+            description=self.description
         )
         quiz.addQuestion(
-            question = self.question1,
-            options = self.options1,
-            answer = self.answer1,
+            question=self.question1,
+            options=self.options1,
+            answer=self.answer1,
         )
         quiz.addQuestion(
-            question = self.question2,
-            options = self.options2,
-            answer = self.answer2,
+            question=self.question2,
+            options=self.options2,
+            answer=self.answer2,
         )
 
         self.assertEqual(user.id, quiz.creator_id)
@@ -73,7 +80,8 @@ class TestQuizModel(unittest.TestCase):
         self.assertEqual(quiz.questions[1]["index"], 1)
 
     def test_add_multiple_questions(self):
-        """ Tests if the addMultipleQuestions method works
+        """
+        Tests if the addMultipleQuestions method works as expected
         """
         questions = [
             {
@@ -90,24 +98,24 @@ class TestQuizModel(unittest.TestCase):
             },
         ]
         user = User(
-            username = self.username,
-            email = self.email,
-            password =  self.password
+            username=self.username,
+            email=self.email,
+            password=self.password
         )
         quiz = Quiz(
-            title = self.title,
-            creator_id = user.returnID(),
-            description = self.description,
-            time_limit = 10
+            title=self.title,
+            creator_id=user.returnID(),
+            description=self.description,
+            time_limit=10
         )
 
         quiz.addMultipleQuestions(questions)
 
         quiz.addQuestion(
-            question = self.question2,
-            options = self.options2,
-            answer = self.answer2,
-            score = self.score2,
+            question=self.question2,
+            options=self.options2,
+            answer=self.answer2,
+            score=self.score2,
         )
 
         self.assertEqual(user.id, quiz.creator_id)
@@ -127,30 +135,35 @@ class TestQuizModel(unittest.TestCase):
         self.assertEqual(quiz.questions[2]["index"], 2)
 
     def test_quiz_persistence(self):
-        """ Tests the peristence of a quiz
+        """
+        Tests the peristence of a quiz in the database.
+        Uses:
+            Quiz.addQuestion()
+            Quiz.recreate()
+            Quiz.delete()
         """
         questions = []
         user = User(
-            username = self.username,
-            email = self.email,
-            password =  self.password
+            username=self.username,
+            email=self.email,
+            password=self.password
         )
         quizOne = Quiz(
-            title = self.title,
-            creator_id = user.returnID(),
-            description = self.description,
-            questions = questions
+            title=self.title,
+            creator_id=user.returnID(),
+            description=self.description,
+            questions=questions
         )
 
         quizOne.addQuestion(
-            question = self.question1,
-            options = self.options1,
-            answer = self.answer1,
+            question=self.question1,
+            options=self.options1,
+            answer=self.answer1,
         )
         quizOne.addQuestion(
-            question = self.question2,
-            options = self.options2,
-            answer = self.answer2,
+            question=self.question2,
+            options=self.options2,
+            answer=self.answer2,
         )
 
         quiz_id = quizOne.quiz_id
@@ -180,7 +193,9 @@ class TestQuizModel(unittest.TestCase):
         self.assertIsNone(quizThree)
 
     def test_db_quiz_data_types(self):
-        """ Tests the types for quizzes retried from database
+        """
+        Tests the types for quizzes retried from database and
+        the addMultipleQuestions method.
         """
         questions = [
             {
@@ -197,15 +212,15 @@ class TestQuizModel(unittest.TestCase):
             },
         ]
         user = User(
-            username = self.username,
-            email = self.email,
-            password =  self.password
+            username=self.username,
+            email=self.email,
+            password=self.password
         )
         quiz = Quiz(
-            title = self.title,
-            creator_id = user.returnID(),
-            description = self.description,
-            time_limit = 10
+            title=self.title,
+            creator_id=user.returnID(),
+            description=self.description,
+            time_limit=10
         )
 
         quiz.addMultipleQuestions(questions)
@@ -219,6 +234,7 @@ class TestQuizModel(unittest.TestCase):
         self.assertIsInstance(quiz_db['questions'][0], dict)
         self.assertIsInstance(quiz_db['questions'][0]['question'], str)
         self.assertIsInstance(quiz_db['questions'][1]['options'], list)
+
 
 if __name__ == '__main__':
     unittest.main()
