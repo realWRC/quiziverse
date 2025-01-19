@@ -1,3 +1,8 @@
+"""
+The Blueprint for routes used when answering quizzes including:
+quizinfo, take, skip, previous, submitanswer, quit and finishquiz.
+"""
+
 import json
 from api.config import year
 from datetime import datetime, timezone, timedelta
@@ -13,17 +18,23 @@ taking_bp = Blueprint('taking', __name__)
 
 @taking_bp.route('/quizinfo/<quiz_id>', methods=['GET'])
 def quizinfo(quiz_id):
-    """ Displays information about a quiz before it is taken
+    """
+    Retrieves information about a quiz before it is taken.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        HTML page containing quiz information like
+        its decription and number of questions.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
         return redirect(url_for('auth.login'))
-
     quiz = Quiz.get(quiz_id)
     if not quiz:
         flash("Quiz not found")
         return redirect(request.referrer)
-
     return render_template(
         'quizinfo.html', title=quiz['title'], year=year, quiz=quiz
     )
@@ -31,7 +42,16 @@ def quizinfo(quiz_id):
 
 @taking_bp.route('/take/<quiz_id>', methods=['GET'])
 def takequiz(quiz_id):
-    """ Allows user to take a quiz from.
+    """
+    Allows user to take a quiz. Initialises a server side session containg
+    information the quiz being taken. The session is created if it does not
+    exist and is used for maintaining user state between requests.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        HTML page containing a UI for answering questions.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -46,7 +66,6 @@ def takequiz(quiz_id):
         start_time = datetime.now(timezone.utc)
         finish_time = start_time + timedelta(seconds=quiz["time_limit"])
         # This should cache without calling session.modified = True
-        print("IN HERE")
         session["taking_quiz"] = {
             "quiz_id": quiz_id,
             "current_index": 0,
@@ -62,7 +81,7 @@ def takequiz(quiz_id):
         del start_time
         del finish_time
 
-    # Potentially Bugged or useless
+    # Potentially useless
     if session["taking_quiz"]["quiz_id"] != quiz_id:
         flash("Use interface to take the quiz")
         del session["taking_quiz"]
@@ -73,6 +92,7 @@ def takequiz(quiz_id):
         session["taking_quiz"]["finish_time"] - \
         session["taking_quiz"]["current_time"]
     session.modified = True
+
     return render_template(
         'takequiz.html',
         title=quiz["title"],
@@ -85,7 +105,16 @@ def takequiz(quiz_id):
 
 @taking_bp.route('/skip/<quiz_id>', methods=["POST"])
 def skip(quiz_id):
-    """ Skips a quiz question
+    """
+    Skips a question in a quiz. Assigns None as the answer to the current
+    question, increments the index of the current index in session object
+    and redirects to takequiz route.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        Redirect to /take route with current quiz_id.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -121,6 +150,7 @@ def skip(quiz_id):
     try:
         payload = json.loads(payload)
     except json.JSONDecodeError:
+        # TODO use log module to track such unexpected errors
         del session["taking_quiz"]
         flash("Invalid data submitted")
         return redirect(request.referrer)
@@ -151,7 +181,16 @@ def skip(quiz_id):
 
 @taking_bp.route('/previous/<quiz_id>', methods=['POST'])
 def previous(quiz_id):
-    """ Handles going back ward in quiz
+    """
+    Allows users to go backward in quiz and answer skipped questions.
+    Decrements the current index in the session and redirects to take
+    route with current quiz_id.
+    
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        Redirect to /take route with current quiz_id.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -212,7 +251,15 @@ def previous(quiz_id):
 
 @taking_bp.route('/submitanswer/<quiz_id>', methods=["POST"])
 def submitanswer(quiz_id):
-    """ Handles Submittion of question answers
+    """
+    Allows Submittion of question answers. Saves the answer for the current
+    question in the session object and increments the current index.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        Redirect to /take route with current quiz_id.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -277,6 +324,16 @@ def submitanswer(quiz_id):
 
 @taking_bp.route('/quit/<quiz_id>', methods=['POST'])
 def quit(quiz_id):
+    """
+    Allows the user to quit answering a quiz and redirects to home route.
+    Deletes all session data related to taking a quiz.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        Redirect to /home route.
+    """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
         return redirect(url_for('auth.login'))
@@ -300,7 +357,16 @@ def quit(quiz_id):
 
 @taking_bp.route('/finishquiz/<quiz_id>')
 def finishquiz(quiz_id):
-    """ Finishes quiz
+    """
+    Ends a quiz session when the user has answered all questions
+    or when time has run out. Calculates the users score and all
+    metrices to be stored as the result of a quiz.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        HTML page containing the results of the quiz.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
