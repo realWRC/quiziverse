@@ -1,3 +1,7 @@
+"""
+The Blueprint for API route used to expose quizzes.
+"""
+
 import re
 from flask import Blueprint, request, jsonify
 from math import ceil
@@ -9,7 +13,25 @@ api_db = Blueprint('api_db', __name__)
 
 @api_db.route('/get', methods=['GET'])
 def getAll():
-    """ Gets all quizzes from database
+    """ 
+    Retrieves all quizzes from database. Retrieves 30 quizzes by
+    default, but can retrieve a maximum of 100 quizzes per
+    request. The route supports pagination and you can specify
+    the page and quizzes per page.
+
+    Args:
+        page(int): The page of the returned quizzes.
+        per_page(int): The number of quizzes per page.
+        search(str): The quiz title you are searching for.
+
+    Response:
+        JSON list of all quizzes in the database.
+
+    Example usage:
+        GET /get?page=1&per_page=5&search=food&action
+
+        Respose: JSON list of 5 quizzes sorted by title which
+        closely matches the search field of food
     """
     page = int(request.args.get('page', 1))
     if page <= 0:
@@ -58,7 +80,21 @@ def getAll():
 
 @api_db.route('/get/<quiz_id>', methods=["GET"])
 def get(quiz_id):
-    """ Gets a quiz and returns it as json
+    """
+    Retrieves a quiz from database using the given quiz_id. You
+    can copy a quizzes quiz_id in the user interface.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        JSON list containing the quiz.
+
+    Example usage:
+        GET /get/34ed5fc9-5ffd-4696-b71f-21264162b87c
+
+        Respose: JSON list containing a quiz the matches the
+        quiz_id of 34ed5fc9-5ffd-4696-b71f-21264162b87c
     """
     cursor = quizzesCollection.find(
         {"quiz_id": quiz_id}, {"_id": False, "creator_id": False}
