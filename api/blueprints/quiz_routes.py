@@ -1,3 +1,8 @@
+"""
+The Blueprint for routes used when creating, editing and deleting
+quizzes including routes for: create, edit and delete.
+"""
+
 import json
 from api.config import year, domain
 from flask import Blueprint, flash, request, session
@@ -13,7 +18,12 @@ quiz_bp = Blueprint('quiz', __name__)
 
 @quiz_bp.route("/create", methods=["GET", "POST"])
 def create():
-    """ Route for creating quizzes
+    """
+    Allows a user to create a quiz using a form page that is rendered on a get
+    request.
+
+    Response:
+        HTML page created with the create.html template.
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -70,7 +80,15 @@ def create():
 
 @quiz_bp.route('/edit/<quiz_id>', methods=['GET', 'POST'])
 def edit(quiz_id):
-    """ Route for editing a users quiz if they are the creator
+    """
+    Allows a user to edit a quiz with a given quiz_id using a form page
+    that is rendered on a get request.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        HTML page created with the create.html template.
     """
     if not current_user.is_authenticated:
         return redirect(url_for('auth.login'))
@@ -150,6 +168,15 @@ def edit(quiz_id):
 
 @quiz_bp.route('/delete/<quiz_id>', methods=['GET'])
 def delete(quiz_id):
+    """
+    Allows a user to delete a quiz with a given quiz_id.
+
+    Args:
+        quiz_id(str): Unique identifier of a quiz.
+
+    Response:
+        Redirect to the page there the operation was started.
+    """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
         return redirect(url_for('auth.login'))
