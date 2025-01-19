@@ -1,15 +1,26 @@
+"""
+The Blueprint for routes used when for authenticating the user,
+including register, login, logout and unregister routes.
+"""
+
 from api.config import year
 from flask import flash, Blueprint, request, session
 from flask import render_template, url_for, redirect
 from models.user import User
 from flask_login import current_user, login_required, login_user, logout_user
 
+
 auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
-    """ Login route
+    """
+    Allow the user to login.
+
+    Response:
+        HTML for login page on get request and redirect to home
+        page on successful login.
     """
     if current_user.is_authenticated:
         flash("You are already logged in.")
@@ -44,7 +55,13 @@ def login():
 
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
-    """ Registration route
+    """
+    Allows the user to register to the site and saves their information
+    to the database.
+
+    Response:
+        HTML for registration page on get request and redirect to login
+        page on successful registration.
     """
     if current_user.is_authenticated:
         flash("You are already registed and logged in")
@@ -94,7 +111,13 @@ def register():
 
 @auth_bp.route("/logout", methods=["GET", "POST"])
 def logout():
-    """ Logout route
+    """
+    Allows the user to logout of the site and clear user session
+    data.
+
+    Response:
+        Redirect to index page on successful logout or login if
+        user not logged in.
     """
     if current_user.is_authenticated:
         logout_user()
@@ -109,6 +132,13 @@ def logout():
 @login_required
 @auth_bp.route("/unregister", methods=["GET", "POST"])
 def unregister():
+    """
+    Allows the user to delete their account from the website.
+
+    Response:
+        Redirect to index page on successful logout .
+    """
+    # TODO Also delete all user results when account is deleted
     if current_user.is_authenticated:
         temp_id = current_user.id
         logout_user()
@@ -123,4 +153,4 @@ def unregister():
             flash("Successfully deleted account!")
             return redirect(url_for("info.index"))
     else:
-        return redirect(url_for('index'))
+        return redirect(url_for('info.index'))
