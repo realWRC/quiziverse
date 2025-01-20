@@ -1,4 +1,11 @@
+"""
+The Result class defines the datamodel for a result. The Result class defines
+the structure of what a result contains. The result for a quiz is identified
+by using two keys user_id and quiz_id.
+"""
+
 from models import resultsCollection
+
 
 class Result():
     """

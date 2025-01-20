@@ -1,6 +1,10 @@
 """
-The Blueprint for routes used when answering quizzes including:
-quizinfo, take, skip, previous, submitanswer, quit and finishquiz.
+This Blueprint is used to define which routes to use when answering
+a quiz. The only common argument given to these routes is the quiz_id
+as other required information is handled on the backend. All routes
+in this blueprint should only be accessed from the quiziverse UI.The
+routes in this Blueprint include: quizinfo, take, skip, previous,
+submitanswer, quit and finishquiz.
 """
 
 import json
@@ -27,6 +31,9 @@ def quizinfo(quiz_id):
     Response:
         HTML page containing quiz information like
         its decription and number of questions.
+
+    Example Usage:
+        GET /quizinfo/34ed5fc9-5ffd-4696-b71f-21264162b87c
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -52,6 +59,9 @@ def takequiz(quiz_id):
 
     Response:
         HTML page containing a UI for answering questions.
+
+    Example Usage:
+        GET /take/34ed5fc9-5ffd-4696-b71f-21264162b87c
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -115,6 +125,9 @@ def skip(quiz_id):
 
     Response:
         Redirect to /take route with current quiz_id.
+
+    Example Usage:
+        GET /skip/34ed5fc9-5ffd-4696-b71f-21264162b87c
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -191,6 +204,9 @@ def previous(quiz_id):
 
     Response:
         Redirect to /take route with current quiz_id.
+
+    Example Usage:
+        GET /previous/34ed5fc9-5ffd-4696-b71f-21264162b87c
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -260,6 +276,9 @@ def submitanswer(quiz_id):
 
     Response:
         Redirect to /take route with current quiz_id.
+
+    Example Usage:
+        GET /submitanswer/34ed5fc9-5ffd-4696-b71f-21264162b87c
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -333,6 +352,9 @@ def quit(quiz_id):
 
     Response:
         Redirect to /home route.
+
+    Example Usage:
+        GET /quit/34ed5fc9-5ffd-4696-b71f-21264162b87c
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
@@ -367,6 +389,9 @@ def finishquiz(quiz_id):
 
     Response:
         HTML page containing the results of the quiz.
+
+    Example Usage:
+        GET /finishquiz/34ed5fc9-5ffd-4696-b71f-21264162b87c
     """
     if not current_user.is_authenticated:
         flash("You must be logged in first")
