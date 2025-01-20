@@ -1,3 +1,10 @@
+"""
+The Quiz class defines the quiz datamodel. The Quiz class is contains
+all operations related to the manipulation of quizzes both as classes
+and as dictionaries in the database. The questions data model is
+imbeded as a subdocument array.
+"""
+
 import uuid
 from models import quizzesCollection, resultsCollection
 from datetime import datetime, timezone

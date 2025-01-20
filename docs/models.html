@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="api.blueprints package" href="api.blueprints.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Application routes" href="api.blueprints.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>models package - QUIZIVERSE 0.0.5 documentation</title>
+        <title>Models Documentation - QUIZIVERSE 0.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -200,11 +200,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 has-children"><a class="reference internal" href="api.html">api package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of api package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html">api.blueprints package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html">Application routes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#restful-api-routes">RESTful API routes</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">models package</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Models Documentation</a></li>
 </ul>
 
 </div>
@@ -245,16 +246,20 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="models-package">
-<h1>models package<a class="headerlink" href="#models-package" title="Link to this heading">¶</a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
-</section>
+          <section id="models-documentation">
+<h1>Models Documentation<a class="headerlink" href="#models-documentation" title="Link to this heading">¶</a></h1>
+<p>Quiziverse application uses various data models to achieve its functionality.
+The core datamodels are defined by the User class(defines a user), Quiz
+class(defines a quiz) and the Results class(defines a result).</p>
 <section id="module-models.quiz">
-<span id="models-quiz-module"></span><h2>models.quiz module<a class="headerlink" href="#module-models.quiz" title="Link to this heading">¶</a></h2>
+<span id="quiz-model"></span><h2>Quiz model<a class="headerlink" href="#module-models.quiz" title="Link to this heading">¶</a></h2>
+<p>The Quiz class defines the quiz datamodel. The Quiz class is contains
+all operations related to the manipulation of quizzes both as classes
+and as dictionaries in the database. The questions data model is
+imbeded as a subdocument array.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="models.quiz.Quiz">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.quiz.</span></span><span class="sig-name descname"><span class="pre">Quiz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creator_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">questions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/quiz.html#Quiz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.quiz.Quiz" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Quiz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creator_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">questions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/quiz.html#Quiz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.quiz.Quiz" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Defines the datamodel/datastructure for a quiz.</p>
 <dl class="simple">
@@ -475,10 +480,13 @@ instance questions attribute.</p>
 
 </section>
 <section id="module-models.result">
-<span id="models-result-module"></span><h2>models.result module<a class="headerlink" href="#module-models.result" title="Link to this heading">¶</a></h2>
+<span id="result-model"></span><h2>Result model<a class="headerlink" href="#module-models.result" title="Link to this heading">¶</a></h2>
+<p>The Result class defines the datamodel for a result. The Result class defines
+the structure of what a result contains. The result for a quiz is identified
+by using two keys user_id and quiz_id.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="models.result.Result">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.result.</span></span><span class="sig-name descname"><span class="pre">Result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/result.html#Result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.result.Result" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/result.html#Result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.result.Result" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Object model for how results will be stored.</p>
 <dl class="simple">
@@ -582,10 +590,10 @@ None: If no results that match the query are found.</p>
 
 </section>
 <section id="module-models.user">
-<span id="models-user-module"></span><h2>models.user module<a class="headerlink" href="#module-models.user" title="Link to this heading">¶</a></h2>
+<span id="user-module"></span><h2>User module<a class="headerlink" href="#module-models.user" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="models.user.User">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.user.</span></span><span class="sig-name descname"><span class="pre">User</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'registed_at':</span> <span class="pre">datetime.datetime(2025,</span> <span class="pre">1,</span> <span class="pre">20,</span> <span class="pre">4,</span> <span class="pre">4,</span> <span class="pre">7,</span> <span class="pre">740579,</span> <span class="pre">tzinfo=datetime.timezone.utc)}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/user.html#User"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.user.User" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">User</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'registed_at':</span> <span class="pre">datetime.datetime(2025,</span> <span class="pre">1,</span> <span class="pre">20,</span> <span class="pre">12,</span> <span class="pre">54,</span> <span class="pre">22,</span> <span class="pre">643508,</span> <span class="pre">tzinfo=datetime.timezone.utc)}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/user.html#User"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.user.User" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">UserMixin</span></code></p>
 <p>Defines the User model for the quiziverse application.</p>
 <dl class="simple">
@@ -673,9 +681,6 @@ as a dictionary.</p>
 </dd></dl>
 
 </section>
-<section id="module-models">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-models" title="Link to this heading">¶</a></h2>
-</section>
 </section>
 
         </article>
@@ -691,7 +696,7 @@ as a dictionary.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">api.blueprints package</div>
+                <div class="title">Application routes</div>
                 
               </div>
             </a>
@@ -725,9 +730,8 @@ as a dictionary.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">models package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-models.quiz">models.quiz module</a><ul>
+<li><a class="reference internal" href="#">Models Documentation</a><ul>
+<li><a class="reference internal" href="#module-models.quiz">Quiz model</a><ul>
 <li><a class="reference internal" href="#models.quiz.Quiz"><code class="docutils literal notranslate"><span class="pre">Quiz</span></code></a><ul>
 <li><a class="reference internal" href="#models.quiz.Quiz.addMultipleQuestions"><code class="docutils literal notranslate"><span class="pre">Quiz.addMultipleQuestions()</span></code></a></li>
 <li><a class="reference internal" href="#models.quiz.Quiz.addQuestion"><code class="docutils literal notranslate"><span class="pre">Quiz.addQuestion()</span></code></a></li>
@@ -748,7 +752,7 @@ as a dictionary.</p>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-models.result">models.result module</a><ul>
+<li><a class="reference internal" href="#module-models.result">Result model</a><ul>
 <li><a class="reference internal" href="#models.result.Result"><code class="docutils literal notranslate"><span class="pre">Result</span></code></a><ul>
 <li><a class="reference internal" href="#models.result.Result.check"><code class="docutils literal notranslate"><span class="pre">Result.check()</span></code></a></li>
 <li><a class="reference internal" href="#models.result.Result.delete"><code class="docutils literal notranslate"><span class="pre">Result.delete()</span></code></a></li>
@@ -761,7 +765,7 @@ as a dictionary.</p>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-models.user">models.user module</a><ul>
+<li><a class="reference internal" href="#module-models.user">User module</a><ul>
 <li><a class="reference internal" href="#models.user.User"><code class="docutils literal notranslate"><span class="pre">User</span></code></a><ul>
 <li><a class="reference internal" href="#models.user.User.checkpwd"><code class="docutils literal notranslate"><span class="pre">User.checkpwd()</span></code></a></li>
 <li><a class="reference internal" href="#models.user.User.delete"><code class="docutils literal notranslate"><span class="pre">User.delete()</span></code></a></li>
@@ -775,7 +779,6 @@ as a dictionary.</p>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-models">Module contents</a></li>
 </ul>
 </li>
 </ul>

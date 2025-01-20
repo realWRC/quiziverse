@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="api.blueprints package" href="api.blueprints.html" /><link rel="prev" title="QUIZIVERSE documentation" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Application routes" href="api.blueprints.html" /><link rel="prev" title="QUIZIVERSE documentation" href="index.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>api package - QUIZIVERSE 0.0.5 documentation</title>
+        <title>API Documentation - QUIZIVERSE 0.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -200,11 +200,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">api package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of api package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html">api.blueprints package</a></li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">API Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html">Application routes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#restful-api-routes">RESTful API routes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models Documentation</a></li>
 </ul>
 
 </div>
@@ -245,84 +246,62 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="api-package">
-<h1>api package<a class="headerlink" href="#api-package" title="Link to this heading">¶</a></h1>
-<section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api.blueprints.html">api.blueprints package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#module-api.blueprints.answering_quiz">api.blueprints.answering_quiz module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.answering_quiz.finishquiz"><code class="docutils literal notranslate"><span class="pre">finishquiz()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.answering_quiz.previous"><code class="docutils literal notranslate"><span class="pre">previous()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.answering_quiz.quit"><code class="docutils literal notranslate"><span class="pre">quit()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.answering_quiz.quizinfo"><code class="docutils literal notranslate"><span class="pre">quizinfo()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.answering_quiz.skip"><code class="docutils literal notranslate"><span class="pre">skip()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.answering_quiz.submitanswer"><code class="docutils literal notranslate"><span class="pre">submitanswer()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.answering_quiz.takequiz"><code class="docutils literal notranslate"><span class="pre">takequiz()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#module-api.blueprints.apiroutes">api.blueprints.apiroutes module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.apiroutes.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.apiroutes.getAll"><code class="docutils literal notranslate"><span class="pre">getAll()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.apiroutes.getQuizzesByUsername"><code class="docutils literal notranslate"><span class="pre">getQuizzesByUsername()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#module-api.blueprints.authentication">api.blueprints.authentication module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.authentication.login"><code class="docutils literal notranslate"><span class="pre">login()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.authentication.logout"><code class="docutils literal notranslate"><span class="pre">logout()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.authentication.register"><code class="docutils literal notranslate"><span class="pre">register()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.authentication.unregister"><code class="docutils literal notranslate"><span class="pre">unregister()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#module-api.blueprints.dashboard">api.blueprints.dashboard module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.dashboard.filter_categories"><code class="docutils literal notranslate"><span class="pre">filter_categories()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.dashboard.home"><code class="docutils literal notranslate"><span class="pre">home()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.dashboard.myquizzes"><code class="docutils literal notranslate"><span class="pre">myquizzes()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.dashboard.myresults"><code class="docutils literal notranslate"><span class="pre">myresults()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#module-api.blueprints.information">api.blueprints.information module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.information.about"><code class="docutils literal notranslate"><span class="pre">about()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.information.account"><code class="docutils literal notranslate"><span class="pre">account()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.information.index"><code class="docutils literal notranslate"><span class="pre">index()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#module-api.blueprints.quiz_routes">api.blueprints.quiz_routes module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.quiz_routes.create"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.quiz_routes.delete"><code class="docutils literal notranslate"><span class="pre">delete()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.quiz_routes.edit"><code class="docutils literal notranslate"><span class="pre">edit()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#module-api.blueprints.resultsblueprint">api.blueprints.resultsblueprint module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.blueprints.html#api.blueprints.resultsblueprint.resultinfo"><code class="docutils literal notranslate"><span class="pre">resultinfo()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#module-api.blueprints">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
-</section>
+          <section id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Link to this heading">¶</a></h1>
 <section id="module-api.app">
-<span id="api-app-module"></span><h2>api.app module<a class="headerlink" href="#module-api.app" title="Link to this heading">¶</a></h2>
-<p>The entry point of the application where the app is run from.</p>
+<span id="app"></span><h2>app<a class="headerlink" href="#module-api.app" title="Link to this heading">¶</a></h2>
+<p>The entry point of the application where the app is run. The routes for the
+application are defined as blueprints packaged into the blueprints module.
+Each blueprint defines route whose core use is some what related.</p>
+<p>The configuration for the application can be changed in the config.py file
+located in the same directory. The user_loader function included is defined in
+the application because relocating it makes the code inaccessible to the app.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.app.load_user">
-<span class="sig-prename descclassname"><span class="pre">api.app.</span></span><span class="sig-name descname"><span class="pre">load_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/app.html#load_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.app.load_user" title="Link to this definition">¶</a></dt>
-<dd><p>Flask login function that acts as a user loader.</p>
+<span class="sig-name descname"><span class="pre">load_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/app.html#load_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.app.load_user" title="Link to this definition">¶</a></dt>
+<dd><p>Flask login function that acts as a user loader. It allows flask login
+load a user before every request.</p>
 </dd></dl>
 
 </section>
 <section id="module-api.config">
-<span id="api-config-module"></span><h2>api.config module<a class="headerlink" href="#module-api.config" title="Link to this heading">¶</a></h2>
+<span id="config"></span><h2>config<a class="headerlink" href="#module-api.config" title="Link to this heading">¶</a></h2>
+<p>The configuration file initialises the app and its dependancies of the application.
+The most important dependancy in configured here is the Flask-Session. By default
+the configuration sets sessions to no permanent with a lifetime of 30 minutes. It
+also defines the database (including the collection) to store user session data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SESSION_PERMANENT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SESSION_USE_SIGNER&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;PERMANENT_SESSION_LIFETIME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SESSION_TYPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;mongodb&#39;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SESSION_MONGODB&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">client</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SESSION_MONGODB_DB&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quiziverse&#39;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SESSION_MONGODB_COLLECTION&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;sessions&#39;</span>
+</pre></div>
+</div>
 </section>
-<section id="module-api">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-api" title="Link to this heading">¶</a></h2>
+<section id="blueprints">
+<h2>blueprints<a class="headerlink" href="#blueprints" title="Link to this heading">¶</a></h2>
+<p>The blueprints defined in this submodule include all routes that allow the application
+to function as intended. The route for exposed quizzes can are all in the apiroutes
+blueprint.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.blueprints.html">Application routes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#blueprint-for-answering-quizzes-answering-quiz-py">Blueprint for answering quizzes (answering_quiz.py)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#blueprint-for-authentication-routes-authentication-py">Blueprint for authentication routes (authentication.py)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#blueprint-for-dashboard-routes-dashboard-py">Blueprint for dashboard routes (dashboard.py)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#blueprint-for-information-routes-information-py">Blueprint for information routes (information.py)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#blueprint-for-creating-and-editing-quizzes-quiz-routes-py">Blueprint for creating and editing quizzes (quiz_routes.py)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#blueprint-for-interacting-with-results-resultsblueprint-py">Blueprint for interacting with results (resultsblueprint.py)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.blueprints.html#restful-api-routes">RESTful API routes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#blueprint-for-restful-routes-apiroutes-py">Blueprint for RESTful routes (apiroutes.py)</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 </section>
 
@@ -336,7 +315,7 @@
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">api.blueprints package</div>
+                <div class="title">Application routes</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -381,15 +360,13 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">api package</a><ul>
-<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-api.app">api.app module</a><ul>
+<li><a class="reference internal" href="#">API Documentation</a><ul>
+<li><a class="reference internal" href="#module-api.app">app</a><ul>
 <li><a class="reference internal" href="#api.app.load_user"><code class="docutils literal notranslate"><span class="pre">load_user()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-api.config">api.config module</a></li>
-<li><a class="reference internal" href="#module-api">Module contents</a></li>
+<li><a class="reference internal" href="#module-api.config">config</a></li>
+<li><a class="reference internal" href="#blueprints">blueprints</a></li>
 </ul>
 </li>
 </ul>

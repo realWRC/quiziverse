@@ -1,3 +1,10 @@
+"""
+The configuration file initialises the app and its dependancies of the application.
+The most important dependancy in configured here is the Flask-Session. By default
+the configuration sets sessions to no permanent with a lifetime of 30 minutes. It
+also defines the database (including the collection) to store user session data.
+"""
+
 from flask import Flask
 from os import environ
 from flask_login import LoginManager

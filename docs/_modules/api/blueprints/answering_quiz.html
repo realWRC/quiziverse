@@ -199,11 +199,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api.html">api package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of api package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../api.blueprints.html">api.blueprints package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api.html">API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.blueprints.html">Application routes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.blueprints.html#restful-api-routes">RESTful API routes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../models.html">models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">Models Documentation</a></li>
 </ul>
 
 </div>
@@ -240,8 +241,12 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for api.blueprints.answering_quiz</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The Blueprint for routes used when answering quizzes including:</span>
-<span class="sd">quizinfo, take, skip, previous, submitanswer, quit and finishquiz.</span>
+<span class="sd">This Blueprint is used to define which routes to use when answering</span>
+<span class="sd">a quiz. The only common argument given to these routes is the quiz_id</span>
+<span class="sd">as other required information is handled on the backend. All routes</span>
+<span class="sd">in this blueprint should only be accessed from the quiziverse UI.The</span>
+<span class="sd">routes in this Blueprint include: quizinfo, take, skip, previous,</span>
+<span class="sd">submitanswer, quit and finishquiz.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
@@ -270,6 +275,9 @@
 <span class="sd">    Response:</span>
 <span class="sd">        HTML page containing quiz information like</span>
 <span class="sd">        its decription and number of questions.</span>
+
+<span class="sd">    Example Usage:</span>
+<span class="sd">        GET /quizinfo/34ed5fc9-5ffd-4696-b71f-21264162b87c</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
         <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You must be logged in first&quot;</span><span class="p">)</span>
@@ -298,6 +306,9 @@
 
 <span class="sd">    Response:</span>
 <span class="sd">        HTML page containing a UI for answering questions.</span>
+
+<span class="sd">    Example Usage:</span>
+<span class="sd">        GET /take/34ed5fc9-5ffd-4696-b71f-21264162b87c</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
         <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You must be logged in first&quot;</span><span class="p">)</span>
@@ -364,6 +375,9 @@
 
 <span class="sd">    Response:</span>
 <span class="sd">        Redirect to /take route with current quiz_id.</span>
+
+<span class="sd">    Example Usage:</span>
+<span class="sd">        GET /skip/34ed5fc9-5ffd-4696-b71f-21264162b87c</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
         <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You must be logged in first&quot;</span><span class="p">)</span>
@@ -443,6 +457,9 @@
 
 <span class="sd">    Response:</span>
 <span class="sd">        Redirect to /take route with current quiz_id.</span>
+
+<span class="sd">    Example Usage:</span>
+<span class="sd">        GET /previous/34ed5fc9-5ffd-4696-b71f-21264162b87c</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
         <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You must be logged in first&quot;</span><span class="p">)</span>
@@ -515,6 +532,9 @@
 
 <span class="sd">    Response:</span>
 <span class="sd">        Redirect to /take route with current quiz_id.</span>
+
+<span class="sd">    Example Usage:</span>
+<span class="sd">        GET /submitanswer/34ed5fc9-5ffd-4696-b71f-21264162b87c</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
         <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You must be logged in first&quot;</span><span class="p">)</span>
@@ -591,6 +611,9 @@
 
 <span class="sd">    Response:</span>
 <span class="sd">        Redirect to /home route.</span>
+
+<span class="sd">    Example Usage:</span>
+<span class="sd">        GET /quit/34ed5fc9-5ffd-4696-b71f-21264162b87c</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
         <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You must be logged in first&quot;</span><span class="p">)</span>
@@ -628,6 +651,9 @@
 
 <span class="sd">    Response:</span>
 <span class="sd">        HTML page containing the results of the quiz.</span>
+
+<span class="sd">    Example Usage:</span>
+<span class="sd">        GET /finishquiz/34ed5fc9-5ffd-4696-b71f-21264162b87c</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
         <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You must be logged in first&quot;</span><span class="p">)</span>

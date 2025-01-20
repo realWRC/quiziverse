@@ -1,37 +1,29 @@
-models package
-==============
+Models Documentation
+====================
+Quiziverse application uses various data models to achieve its functionality.
+The core datamodels are defined by the User class(defines a user), Quiz
+class(defines a quiz) and the Results class(defines a result).
 
-Submodules
+Quiz model
 ----------
-
-models.quiz module
-------------------
 
 .. automodule:: models.quiz
    :members:
    :undoc-members:
    :show-inheritance:
 
-models.result module
---------------------
+Result model
+------------
 
 .. automodule:: models.result
    :members:
    :undoc-members:
    :show-inheritance:
 
-models.user module
-------------------
+User module
+-----------
 
 .. automodule:: models.user
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: models
    :members:
    :undoc-members:
    :show-inheritance:

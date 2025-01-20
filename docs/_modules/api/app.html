@@ -199,11 +199,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../api.html">api package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of api package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api.blueprints.html">api.blueprints package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api.html">API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.blueprints.html">Application routes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.blueprints.html#restful-api-routes">RESTful API routes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../models.html">models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models.html">Models Documentation</a></li>
 </ul>
 
 </div>
@@ -240,7 +241,13 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for api.app</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The entry point of the application where the app is run from.</span>
+<span class="sd">The entry point of the application where the app is run. The routes for the</span>
+<span class="sd">application are defined as blueprints packaged into the blueprints module.</span>
+<span class="sd">Each blueprint defines route whose core use is some what related.</span>
+
+<span class="sd">The configuration for the application can be changed in the config.py file</span>
+<span class="sd">located in the same directory. The user_loader function included is defined in</span>
+<span class="sd">the application because relocating it makes the code inaccessible to the app.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">api.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span><span class="p">,</span> <span class="n">login_manager</span>
@@ -259,7 +266,8 @@
 <span class="nd">@login_manager</span><span class="o">.</span><span class="n">user_loader</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">load_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Flask login function that acts as a user loader.</span>
+<span class="sd">    Flask login function that acts as a user loader. It allows flask login</span>
+<span class="sd">    load a user before every request.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">User</span><span class="o">.</span><span class="n">getByID</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span></div>
 

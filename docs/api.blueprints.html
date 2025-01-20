@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="models package" href="models.html" /><link rel="prev" title="api package" href="api.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Models Documentation" href="models.html" /><link rel="prev" title="API Documentation" href="api.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>api.blueprints package - QUIZIVERSE 0.0.5 documentation</title>
+        <title>Application routes - QUIZIVERSE 0.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -200,11 +200,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="api.html">api package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of api package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">api.blueprints package</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="api.html">API Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Application routes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#restful-api-routes">RESTful API routes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models Documentation</a></li>
 </ul>
 
 </div>
@@ -245,18 +246,22 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="api-blueprints-package">
-<h1>api.blueprints package<a class="headerlink" href="#api-blueprints-package" title="Link to this heading">¶</a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
-</section>
-<section id="module-api.blueprints.answering_quiz">
-<span id="api-blueprints-answering-quiz-module"></span><h2>api.blueprints.answering_quiz module<a class="headerlink" href="#module-api.blueprints.answering_quiz" title="Link to this heading">¶</a></h2>
-<p>The Blueprint for routes used when answering quizzes including:
-quizinfo, take, skip, previous, submitanswer, quit and finishquiz.</p>
+          <section id="application-routes">
+<h1>Application routes<a class="headerlink" href="#application-routes" title="Link to this heading">¶</a></h1>
+<p>These routes are used by the application and can only be accessed through
+the quiziverse frontend. Most of the routes require the user to be logged
+in and enforce authentication.</p>
+<section id="blueprint-for-answering-quizzes-answering-quiz-py">
+<h2>Blueprint for answering quizzes (answering_quiz.py)<a class="headerlink" href="#blueprint-for-answering-quizzes-answering-quiz-py" title="Link to this heading">¶</a></h2>
+<p id="module-api.blueprints.answering_quiz">This Blueprint is used to define which routes to use when answering
+a quiz. The only common argument given to these routes is the quiz_id
+as other required information is handled on the backend. All routes
+in this blueprint should only be accessed from the quiziverse UI.The
+routes in this Blueprint include: quizinfo, take, skip, previous,
+submitanswer, quit and finishquiz.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.answering_quiz.finishquiz">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.answering_quiz.</span></span><span class="sig-name descname"><span class="pre">finishquiz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#finishquiz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.finishquiz" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">finishquiz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#finishquiz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.finishquiz" title="Link to this definition">¶</a></dt>
 <dd><p>Ends a quiz session when the user has answered all questions
 or when time has run out. Calculates the users score and all
 metrices to be stored as the result of a quiz.</p>
@@ -265,12 +270,14 @@ metrices to be stored as the result of a quiz.</p>
 </dd>
 <dt>Response:</dt><dd><p>HTML page containing the results of the quiz.</p>
 </dd>
+<dt>Example Usage:</dt><dd><p>GET /finishquiz/34ed5fc9-5ffd-4696-b71f-21264162b87c</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.answering_quiz.previous">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.answering_quiz.</span></span><span class="sig-name descname"><span class="pre">previous</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#previous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.previous" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">previous</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#previous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.previous" title="Link to this definition">¶</a></dt>
 <dd><p>Allows users to go backward in quiz and answer skipped questions.
 Decrements the current index in the session and redirects to take
 route with current quiz_id.</p>
@@ -279,12 +286,14 @@ route with current quiz_id.</p>
 </dd>
 <dt>Response:</dt><dd><p>Redirect to /take route with current quiz_id.</p>
 </dd>
+<dt>Example Usage:</dt><dd><p>GET /previous/34ed5fc9-5ffd-4696-b71f-21264162b87c</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.answering_quiz.quit">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.answering_quiz.</span></span><span class="sig-name descname"><span class="pre">quit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#quit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.quit" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">quit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#quit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.quit" title="Link to this definition">¶</a></dt>
 <dd><p>Allows the user to quit answering a quiz and redirects to home route.
 Deletes all session data related to taking a quiz.</p>
 <dl class="simple">
@@ -292,12 +301,14 @@ Deletes all session data related to taking a quiz.</p>
 </dd>
 <dt>Response:</dt><dd><p>Redirect to /home route.</p>
 </dd>
+<dt>Example Usage:</dt><dd><p>GET /quit/34ed5fc9-5ffd-4696-b71f-21264162b87c</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.answering_quiz.quizinfo">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.answering_quiz.</span></span><span class="sig-name descname"><span class="pre">quizinfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#quizinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.quizinfo" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">quizinfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#quizinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.quizinfo" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves information about a quiz before it is taken.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>quiz_id(str): Unique identifier of a quiz.</p>
@@ -305,12 +316,14 @@ Deletes all session data related to taking a quiz.</p>
 <dt>Response:</dt><dd><p>HTML page containing quiz information like
 its decription and number of questions.</p>
 </dd>
+<dt>Example Usage:</dt><dd><p>GET /quizinfo/34ed5fc9-5ffd-4696-b71f-21264162b87c</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.answering_quiz.skip">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.answering_quiz.</span></span><span class="sig-name descname"><span class="pre">skip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#skip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.skip" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">skip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#skip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.skip" title="Link to this definition">¶</a></dt>
 <dd><p>Skips a question in a quiz. Assigns None as the answer to the current
 question, increments the index of the current index in session object
 and redirects to takequiz route.</p>
@@ -319,12 +332,14 @@ and redirects to takequiz route.</p>
 </dd>
 <dt>Response:</dt><dd><p>Redirect to /take route with current quiz_id.</p>
 </dd>
+<dt>Example Usage:</dt><dd><p>GET /skip/34ed5fc9-5ffd-4696-b71f-21264162b87c</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.answering_quiz.submitanswer">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.answering_quiz.</span></span><span class="sig-name descname"><span class="pre">submitanswer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#submitanswer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.submitanswer" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">submitanswer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#submitanswer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.submitanswer" title="Link to this definition">¶</a></dt>
 <dd><p>Allows Submittion of question answers. Saves the answer for the current
 question in the session object and increments the current index.</p>
 <dl class="simple">
@@ -332,12 +347,14 @@ question in the session object and increments the current index.</p>
 </dd>
 <dt>Response:</dt><dd><p>Redirect to /take route with current quiz_id.</p>
 </dd>
+<dt>Example Usage:</dt><dd><p>GET /submitanswer/34ed5fc9-5ffd-4696-b71f-21264162b87c</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.answering_quiz.takequiz">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.answering_quiz.</span></span><span class="sig-name descname"><span class="pre">takequiz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#takequiz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.takequiz" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">takequiz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/answering_quiz.html#takequiz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.answering_quiz.takequiz" title="Link to this definition">¶</a></dt>
 <dd><p>Allows user to take a quiz. Initialises a server side session containg
 information the quiz being taken. The session is created if it does not
 exist and is used for maintaining user state between requests.</p>
@@ -346,16 +363,211 @@ exist and is used for maintaining user state between requests.</p>
 </dd>
 <dt>Response:</dt><dd><p>HTML page containing a UI for answering questions.</p>
 </dd>
+<dt>Example Usage:</dt><dd><p>GET /take/34ed5fc9-5ffd-4696-b71f-21264162b87c</p>
+</dd>
 </dl>
 </dd></dl>
 
 </section>
-<section id="module-api.blueprints.apiroutes">
-<span id="api-blueprints-apiroutes-module"></span><h2>api.blueprints.apiroutes module<a class="headerlink" href="#module-api.blueprints.apiroutes" title="Link to this heading">¶</a></h2>
-<p>The Blueprint for API route used to expose quizzes.</p>
+<section id="blueprint-for-authentication-routes-authentication-py">
+<h2>Blueprint for authentication routes (authentication.py)<a class="headerlink" href="#blueprint-for-authentication-routes-authentication-py" title="Link to this heading">¶</a></h2>
+<p id="module-api.blueprints.authentication">The Blueprint for routes used when for authenticating the user,
+including register, login, logout and unregister routes.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.authentication.login">
+<span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/authentication.html#login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.authentication.login" title="Link to this definition">¶</a></dt>
+<dd><p>Allow the user to login.</p>
+<dl class="simple">
+<dt>Response:</dt><dd><p>HTML for login page on get request and redirect to home
+page on successful login.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.authentication.logout">
+<span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/authentication.html#logout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.authentication.logout" title="Link to this definition">¶</a></dt>
+<dd><p>Allows the user to logout of the site and clear user session
+data.</p>
+<dl class="simple">
+<dt>Response:</dt><dd><p>Redirect to index page on successful logout or login if
+user not logged in.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.authentication.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/authentication.html#register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.authentication.register" title="Link to this definition">¶</a></dt>
+<dd><p>Allows the user to register to the site and saves their information
+to the database.</p>
+<dl class="simple">
+<dt>Response:</dt><dd><p>HTML for registration page on get request and redirect to login
+page on successful registration.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.authentication.unregister">
+<span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/authentication.html#unregister"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.authentication.unregister" title="Link to this definition">¶</a></dt>
+<dd><p>Allows the user to delete their account from the website.</p>
+<dl class="simple">
+<dt>Response:</dt><dd><p>Redirect to index page on successful logout .</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="blueprint-for-dashboard-routes-dashboard-py">
+<h2>Blueprint for dashboard routes (dashboard.py)<a class="headerlink" href="#blueprint-for-dashboard-routes-dashboard-py" title="Link to this heading">¶</a></h2>
+<p id="module-api.blueprints.dashboard">The Blueprint for routes used display large amounts of information to
+the user that are essentially dashboards including: home, myquizzes
+and myresults.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.dashboard.filter_categories">
+<span class="sig-name descname"><span class="pre">filter_categories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/dashboard.html#filter_categories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.dashboard.filter_categories" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.dashboard.home">
+<span class="sig-name descname"><span class="pre">home</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/dashboard.html#home"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.dashboard.home" title="Link to this definition">¶</a></dt>
+<dd><p>Renders the home page to display all quizzes on the site. Includes functionality
+for search, filter and pagination using args.</p>
+<dl class="simple">
+<dt>Response:</dt><dd><p>HTML page with the quizzes available on a given page.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.dashboard.myquizzes">
+<span class="sig-name descname"><span class="pre">myquizzes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/dashboard.html#myquizzes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.dashboard.myquizzes" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all quizzes created by a user on the site. Includes functionality
+for search, filter and pagination using args.</p>
+<dl class="simple">
+<dt>Response:</dt><dd><p>HTML page with the quizzes created by a user.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.dashboard.myresults">
+<span class="sig-name descname"><span class="pre">myresults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/dashboard.html#myresults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.dashboard.myresults" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all quiz results for a user on the site. Includes functionality
+for search, filter and pagination using args.</p>
+<dl class="simple">
+<dt>Response:</dt><dd><p>HTML page with the resulta of all quizzes taken by a user.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="blueprint-for-information-routes-information-py">
+<h2>Blueprint for information routes (information.py)<a class="headerlink" href="#blueprint-for-information-routes-information-py" title="Link to this heading">¶</a></h2>
+<p id="module-api.blueprints.information">Defines Blueprint for routes that presents simple information to
+the user, including: index, about and accout routes.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.information.about">
+<span class="sig-name descname"><span class="pre">about</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/information.html#about"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.information.about" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the about page where the infomation about the developer is
+displayed.</p>
+<dl class="simple">
+<dt>Response:</dt><dd><p>HTML page for the about page.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.information.account">
+<span class="sig-name descname"><span class="pre">account</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/information.html#account"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.information.account" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the users account information including all actions they
+can do to their account.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.information.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/information.html#index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.information.index" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the index page where the product information
+is displayed.</p>
+<dl class="simple">
+<dt>Response:</dt><dd><p>HTML page for the index page.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="blueprint-for-creating-and-editing-quizzes-quiz-routes-py">
+<h2>Blueprint for creating and editing quizzes (quiz_routes.py)<a class="headerlink" href="#blueprint-for-creating-and-editing-quizzes-quiz-routes-py" title="Link to this heading">¶</a></h2>
+<p id="module-api.blueprints.quiz_routes">The Blueprint for routes used when creating, editing and deleting
+quizzes including routes for: create, edit and delete.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.quiz_routes.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/quiz_routes.html#create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.quiz_routes.create" title="Link to this definition">¶</a></dt>
+<dd><p>Allows a user to create a quiz using a form page that is rendered on a get
+request.</p>
+<dl class="simple">
+<dt>Response:</dt><dd><p>HTML page created with the create.html template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.quiz_routes.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/quiz_routes.html#delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.quiz_routes.delete" title="Link to this definition">¶</a></dt>
+<dd><p>Allows a user to delete a quiz with a given quiz_id.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>quiz_id(str): Unique identifier of a quiz.</p>
+</dd>
+<dt>Response:</dt><dd><p>Redirect to the page there the operation was started.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.quiz_routes.edit">
+<span class="sig-name descname"><span class="pre">edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/quiz_routes.html#edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.quiz_routes.edit" title="Link to this definition">¶</a></dt>
+<dd><p>Allows a user to edit a quiz with a given quiz_id using a form page
+that is rendered on a get request.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>quiz_id(str): Unique identifier of a quiz.</p>
+</dd>
+<dt>Response:</dt><dd><p>HTML page created with the create.html template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="blueprint-for-interacting-with-results-resultsblueprint-py">
+<h2>Blueprint for interacting with results (resultsblueprint.py)<a class="headerlink" href="#blueprint-for-interacting-with-results-resultsblueprint-py" title="Link to this heading">¶</a></h2>
+<p id="module-api.blueprints.resultsblueprint">The Blueprint for routes used when interacting with results.
+The only route included being the resultinfo route</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.blueprints.resultsblueprint.resultinfo">
+<span class="sig-name descname"><span class="pre">resultinfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/resultsblueprint.html#resultinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.resultsblueprint.resultinfo" title="Link to this definition">¶</a></dt>
+<dd><p>Renders detailed results information for a given quiz taken
+by a user. The user is determined internally.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>quiz_id(str): Unique identifier of a quiz.</p>
+</dd>
+<dt>Response:</dt><dd><p>HTML page created with the resultinfo.html template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="restful-api-routes">
+<h1>RESTful API routes<a class="headerlink" href="#restful-api-routes" title="Link to this heading">¶</a></h1>
+<p>These routes can be used to obtain data from the quiziverse API. The route
+retian any session state. The route does not require authentication as of
+not but my be included in the future.</p>
+<section id="blueprint-for-restful-routes-apiroutes-py">
+<h2>Blueprint for RESTful routes (apiroutes.py)<a class="headerlink" href="#blueprint-for-restful-routes-apiroutes-py" title="Link to this heading">¶</a></h2>
+<p id="module-api.blueprints.apiroutes">The Blueprint for API route used to expose quizzes.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.apiroutes.get">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.apiroutes.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/apiroutes.html#get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.apiroutes.get" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/apiroutes.html#get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.apiroutes.get" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves a quiz from database using the given quiz_id. You
 can copy a quizzes quiz_id in the user interface.</p>
 <dl>
@@ -372,7 +584,7 @@ quiz_id of 34ed5fc9-5ffd-4696-b71f-21264162b87c</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.apiroutes.getAll">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.apiroutes.</span></span><span class="sig-name descname"><span class="pre">getAll</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/apiroutes.html#getAll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.apiroutes.getAll" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">getAll</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/apiroutes.html#getAll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.apiroutes.getAll" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves all quizzes from database. Retrieves 30 quizzes by
 default, but can retrieve a maximum of 100 quizzes per
 request. The route supports pagination and you can specify
@@ -393,7 +605,7 @@ closely matches the search field of food</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.apiroutes.getQuizzesByUsername">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.apiroutes.</span></span><span class="sig-name descname"><span class="pre">getQuizzesByUsername</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/apiroutes.html#getQuizzesByUsername"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.apiroutes.getQuizzesByUsername" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">getQuizzesByUsername</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/apiroutes.html#getQuizzesByUsername"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.apiroutes.getQuizzesByUsername" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves all quizzes from database created by a user with a given
 username. Retrieves 30 quizzes by default, but can retrieve a
 maximum of 100 quizzes per request. The route supports pagination
@@ -413,196 +625,6 @@ closely matches the search field of food</p>
 </dd></dl>
 
 </section>
-<section id="module-api.blueprints.authentication">
-<span id="api-blueprints-authentication-module"></span><h2>api.blueprints.authentication module<a class="headerlink" href="#module-api.blueprints.authentication" title="Link to this heading">¶</a></h2>
-<p>The Blueprint for routes used when for authenticating the user,
-including register, login, logout and unregister routes.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.authentication.login">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.authentication.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/authentication.html#login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.authentication.login" title="Link to this definition">¶</a></dt>
-<dd><p>Allow the user to login.</p>
-<dl class="simple">
-<dt>Response:</dt><dd><p>HTML for login page on get request and redirect to home
-page on successful login.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.authentication.logout">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.authentication.</span></span><span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/authentication.html#logout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.authentication.logout" title="Link to this definition">¶</a></dt>
-<dd><p>Allows the user to logout of the site and clear user session
-data.</p>
-<dl class="simple">
-<dt>Response:</dt><dd><p>Redirect to index page on successful logout or login if
-user not logged in.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.authentication.register">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.authentication.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/authentication.html#register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.authentication.register" title="Link to this definition">¶</a></dt>
-<dd><p>Allows the user to register to the site and saves their information
-to the database.</p>
-<dl class="simple">
-<dt>Response:</dt><dd><p>HTML for registration page on get request and redirect to login
-page on successful registration.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.authentication.unregister">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.authentication.</span></span><span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/authentication.html#unregister"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.authentication.unregister" title="Link to this definition">¶</a></dt>
-<dd><p>Allows the user to delete their account from the website.</p>
-<dl class="simple">
-<dt>Response:</dt><dd><p>Redirect to index page on successful logout .</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-api.blueprints.dashboard">
-<span id="api-blueprints-dashboard-module"></span><h2>api.blueprints.dashboard module<a class="headerlink" href="#module-api.blueprints.dashboard" title="Link to this heading">¶</a></h2>
-<p>The Blueprint for routes used display large amounts of information to
-the user that are essentially dashboards including: home, myquizzes
-and myresults.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.dashboard.filter_categories">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.dashboard.</span></span><span class="sig-name descname"><span class="pre">filter_categories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/dashboard.html#filter_categories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.dashboard.filter_categories" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.dashboard.home">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.dashboard.</span></span><span class="sig-name descname"><span class="pre">home</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/dashboard.html#home"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.dashboard.home" title="Link to this definition">¶</a></dt>
-<dd><p>Renders the home page to display all quizzes on the site. Includes functionality
-for search, filter and pagination using args.</p>
-<dl class="simple">
-<dt>Response:</dt><dd><p>HTML page with the quizzes available on a given page.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.dashboard.myquizzes">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.dashboard.</span></span><span class="sig-name descname"><span class="pre">myquizzes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/dashboard.html#myquizzes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.dashboard.myquizzes" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves all quizzes created by a user on the site. Includes functionality
-for search, filter and pagination using args.</p>
-<dl class="simple">
-<dt>Response:</dt><dd><p>HTML page with the quizzes created by a user.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.dashboard.myresults">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.dashboard.</span></span><span class="sig-name descname"><span class="pre">myresults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/dashboard.html#myresults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.dashboard.myresults" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves all quiz results for a user on the site. Includes functionality
-for search, filter and pagination using args.</p>
-<dl class="simple">
-<dt>Response:</dt><dd><p>HTML page with the resulta of all quizzes taken by a user.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-api.blueprints.information">
-<span id="api-blueprints-information-module"></span><h2>api.blueprints.information module<a class="headerlink" href="#module-api.blueprints.information" title="Link to this heading">¶</a></h2>
-<p>Defines Blueprint for routes that presents simple information to
-the user, including: index, about and accout routes.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.information.about">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.information.</span></span><span class="sig-name descname"><span class="pre">about</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/information.html#about"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.information.about" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves the about page where the infomation about the developer is
-displayed.</p>
-<dl class="simple">
-<dt>Response:</dt><dd><p>HTML page for the about page.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.information.account">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.information.</span></span><span class="sig-name descname"><span class="pre">account</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/information.html#account"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.information.account" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves the users account information including all actions they
-can do to their account.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.information.index">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.information.</span></span><span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/information.html#index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.information.index" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves the index page where the product information
-is displayed.</p>
-<dl class="simple">
-<dt>Response:</dt><dd><p>HTML page for the index page.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-api.blueprints.quiz_routes">
-<span id="api-blueprints-quiz-routes-module"></span><h2>api.blueprints.quiz_routes module<a class="headerlink" href="#module-api.blueprints.quiz_routes" title="Link to this heading">¶</a></h2>
-<p>The Blueprint for routes used when creating, editing and deleting
-quizzes including routes for: create, edit and delete.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.quiz_routes.create">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.quiz_routes.</span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/quiz_routes.html#create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.quiz_routes.create" title="Link to this definition">¶</a></dt>
-<dd><p>Allows a user to create a quiz using a form page that is rendered on a get
-request.</p>
-<dl class="simple">
-<dt>Response:</dt><dd><p>HTML page created with the create.html template.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.quiz_routes.delete">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.quiz_routes.</span></span><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/quiz_routes.html#delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.quiz_routes.delete" title="Link to this definition">¶</a></dt>
-<dd><p>Allows a user to delete a quiz with a given quiz_id.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>quiz_id(str): Unique identifier of a quiz.</p>
-</dd>
-<dt>Response:</dt><dd><p>Redirect to the page there the operation was started.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.quiz_routes.edit">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.quiz_routes.</span></span><span class="sig-name descname"><span class="pre">edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/quiz_routes.html#edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.quiz_routes.edit" title="Link to this definition">¶</a></dt>
-<dd><p>Allows a user to edit a quiz with a given quiz_id using a form page
-that is rendered on a get request.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>quiz_id(str): Unique identifier of a quiz.</p>
-</dd>
-<dt>Response:</dt><dd><p>HTML page created with the create.html template.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-api.blueprints.resultsblueprint">
-<span id="api-blueprints-resultsblueprint-module"></span><h2>api.blueprints.resultsblueprint module<a class="headerlink" href="#module-api.blueprints.resultsblueprint" title="Link to this heading">¶</a></h2>
-<p>The Blueprint for routes used when interacting with results.
-The only route included being the resultinfo route</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="api.blueprints.resultsblueprint.resultinfo">
-<span class="sig-prename descclassname"><span class="pre">api.blueprints.resultsblueprint.</span></span><span class="sig-name descname"><span class="pre">resultinfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/resultsblueprint.html#resultinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.resultsblueprint.resultinfo" title="Link to this definition">¶</a></dt>
-<dd><p>Renders detailed results information for a given quiz taken
-by a user. The user is determined internally.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>quiz_id(str): Unique identifier of a quiz.</p>
-</dd>
-<dt>Response:</dt><dd><p>HTML page created with the resultinfo.html template.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-api.blueprints">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-api.blueprints" title="Link to this heading">¶</a></h2>
-</section>
 </section>
 
         </article>
@@ -615,7 +637,7 @@ by a user. The user is determined internally.</p>
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">models package</div>
+                <div class="title">Models Documentation</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -626,7 +648,7 @@ by a user. The user is determined internally.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">api package</div>
+                <div class="title">API Documentation</div>
                 
               </div>
             </a>
@@ -660,9 +682,8 @@ by a user. The user is determined internally.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">api.blueprints package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-api.blueprints.answering_quiz">api.blueprints.answering_quiz module</a><ul>
+<li><a class="reference internal" href="#">Application routes</a><ul>
+<li><a class="reference internal" href="#blueprint-for-answering-quizzes-answering-quiz-py">Blueprint for answering quizzes (answering_quiz.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.answering_quiz.finishquiz"><code class="docutils literal notranslate"><span class="pre">finishquiz()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.answering_quiz.previous"><code class="docutils literal notranslate"><span class="pre">previous()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.answering_quiz.quit"><code class="docutils literal notranslate"><span class="pre">quit()</span></code></a></li>
@@ -672,43 +693,45 @@ by a user. The user is determined internally.</p>
 <li><a class="reference internal" href="#api.blueprints.answering_quiz.takequiz"><code class="docutils literal notranslate"><span class="pre">takequiz()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-api.blueprints.apiroutes">api.blueprints.apiroutes module</a><ul>
-<li><a class="reference internal" href="#api.blueprints.apiroutes.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
-<li><a class="reference internal" href="#api.blueprints.apiroutes.getAll"><code class="docutils literal notranslate"><span class="pre">getAll()</span></code></a></li>
-<li><a class="reference internal" href="#api.blueprints.apiroutes.getQuizzesByUsername"><code class="docutils literal notranslate"><span class="pre">getQuizzesByUsername()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-api.blueprints.authentication">api.blueprints.authentication module</a><ul>
+<li><a class="reference internal" href="#blueprint-for-authentication-routes-authentication-py">Blueprint for authentication routes (authentication.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.authentication.login"><code class="docutils literal notranslate"><span class="pre">login()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.authentication.logout"><code class="docutils literal notranslate"><span class="pre">logout()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.authentication.register"><code class="docutils literal notranslate"><span class="pre">register()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.authentication.unregister"><code class="docutils literal notranslate"><span class="pre">unregister()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-api.blueprints.dashboard">api.blueprints.dashboard module</a><ul>
+<li><a class="reference internal" href="#blueprint-for-dashboard-routes-dashboard-py">Blueprint for dashboard routes (dashboard.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.dashboard.filter_categories"><code class="docutils literal notranslate"><span class="pre">filter_categories()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.dashboard.home"><code class="docutils literal notranslate"><span class="pre">home()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.dashboard.myquizzes"><code class="docutils literal notranslate"><span class="pre">myquizzes()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.dashboard.myresults"><code class="docutils literal notranslate"><span class="pre">myresults()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-api.blueprints.information">api.blueprints.information module</a><ul>
+<li><a class="reference internal" href="#blueprint-for-information-routes-information-py">Blueprint for information routes (information.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.information.about"><code class="docutils literal notranslate"><span class="pre">about()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.information.account"><code class="docutils literal notranslate"><span class="pre">account()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.information.index"><code class="docutils literal notranslate"><span class="pre">index()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-api.blueprints.quiz_routes">api.blueprints.quiz_routes module</a><ul>
+<li><a class="reference internal" href="#blueprint-for-creating-and-editing-quizzes-quiz-routes-py">Blueprint for creating and editing quizzes (quiz_routes.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.quiz_routes.create"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.quiz_routes.delete"><code class="docutils literal notranslate"><span class="pre">delete()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.quiz_routes.edit"><code class="docutils literal notranslate"><span class="pre">edit()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-api.blueprints.resultsblueprint">api.blueprints.resultsblueprint module</a><ul>
+<li><a class="reference internal" href="#blueprint-for-interacting-with-results-resultsblueprint-py">Blueprint for interacting with results (resultsblueprint.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.resultsblueprint.resultinfo"><code class="docutils literal notranslate"><span class="pre">resultinfo()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-api.blueprints">Module contents</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#restful-api-routes">RESTful API routes</a><ul>
+<li><a class="reference internal" href="#blueprint-for-restful-routes-apiroutes-py">Blueprint for RESTful routes (apiroutes.py)</a><ul>
+<li><a class="reference internal" href="#api.blueprints.apiroutes.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
+<li><a class="reference internal" href="#api.blueprints.apiroutes.getAll"><code class="docutils literal notranslate"><span class="pre">getAll()</span></code></a></li>
+<li><a class="reference internal" href="#api.blueprints.apiroutes.getQuizzesByUsername"><code class="docutils literal notranslate"><span class="pre">getQuizzesByUsername()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

@@ -199,11 +199,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../api.html">api package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of api package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api.blueprints.html">api.blueprints package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api.html">API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.blueprints.html">Application routes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.blueprints.html#restful-api-routes">RESTful API routes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../models.html">models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models.html">Models Documentation</a></li>
 </ul>
 
 </div>
@@ -239,7 +240,14 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for models.result</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">models</span><span class="w"> </span><span class="kn">import</span> <span class="n">resultsCollection</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The Result class defines the datamodel for a result. The Result class defines</span>
+<span class="sd">the structure of what a result contains. The result for a quiz is identified</span>
+<span class="sd">by using two keys user_id and quiz_id.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">models</span><span class="w"> </span><span class="kn">import</span> <span class="n">resultsCollection</span>
+
 
 <div class="viewcode-block" id="Result">
 <a class="viewcode-back" href="../../models.html#models.result.Result">[docs]</a>
