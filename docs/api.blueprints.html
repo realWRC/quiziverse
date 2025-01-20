@@ -200,6 +200,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="starting.html">Running the Application</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="api.html">API Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Application routes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#restful-api-routes">RESTful API routes</a></li>
@@ -251,9 +252,9 @@
 <p>These routes are used by the application and can only be accessed through
 the quiziverse frontend. Most of the routes require the user to be logged
 in and enforce authentication.</p>
-<section id="blueprint-for-answering-quizzes-answering-quiz-py">
-<h2>Blueprint for answering quizzes (answering_quiz.py)<a class="headerlink" href="#blueprint-for-answering-quizzes-answering-quiz-py" title="Link to this heading">¶</a></h2>
-<p id="module-api.blueprints.answering_quiz">This Blueprint is used to define which routes to use when answering
+<section id="module-api.blueprints.answering_quiz">
+<span id="blueprint-for-answering-quizzes-answering-quiz-py"></span><h2>Blueprint for answering quizzes (answering_quiz.py)<a class="headerlink" href="#module-api.blueprints.answering_quiz" title="Link to this heading">¶</a></h2>
+<p>This Blueprint is used to define which routes to use when answering
 a quiz. The only common argument given to these routes is the quiz_id
 as other required information is handled on the backend. All routes
 in this blueprint should only be accessed from the quiziverse UI.The
@@ -369,9 +370,9 @@ exist and is used for maintaining user state between requests.</p>
 </dd></dl>
 
 </section>
-<section id="blueprint-for-authentication-routes-authentication-py">
-<h2>Blueprint for authentication routes (authentication.py)<a class="headerlink" href="#blueprint-for-authentication-routes-authentication-py" title="Link to this heading">¶</a></h2>
-<p id="module-api.blueprints.authentication">The Blueprint for routes used when for authenticating the user,
+<section id="module-api.blueprints.authentication">
+<span id="blueprint-for-authentication-routes-authentication-py"></span><h2>Blueprint for authentication routes (authentication.py)<a class="headerlink" href="#module-api.blueprints.authentication" title="Link to this heading">¶</a></h2>
+<p>The Blueprint for routes used when for authenticating the user,
 including register, login, logout and unregister routes.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.authentication.login">
@@ -419,9 +420,9 @@ page on successful registration.</p>
 </dd></dl>
 
 </section>
-<section id="blueprint-for-dashboard-routes-dashboard-py">
-<h2>Blueprint for dashboard routes (dashboard.py)<a class="headerlink" href="#blueprint-for-dashboard-routes-dashboard-py" title="Link to this heading">¶</a></h2>
-<p id="module-api.blueprints.dashboard">The Blueprint for routes used display large amounts of information to
+<section id="module-api.blueprints.dashboard">
+<span id="blueprint-for-dashboard-routes-dashboard-py"></span><h2>Blueprint for dashboard routes (dashboard.py)<a class="headerlink" href="#module-api.blueprints.dashboard" title="Link to this heading">¶</a></h2>
+<p>The Blueprint for routes used display large amounts of information to
 the user that are essentially dashboards including: home, myquizzes
 and myresults.</p>
 <dl class="py function">
@@ -463,9 +464,9 @@ for search, filter and pagination using args.</p>
 </dd></dl>
 
 </section>
-<section id="blueprint-for-information-routes-information-py">
-<h2>Blueprint for information routes (information.py)<a class="headerlink" href="#blueprint-for-information-routes-information-py" title="Link to this heading">¶</a></h2>
-<p id="module-api.blueprints.information">Defines Blueprint for routes that presents simple information to
+<section id="module-api.blueprints.information">
+<span id="blueprint-for-information-routes-information-py"></span><h2>Blueprint for information routes (information.py)<a class="headerlink" href="#module-api.blueprints.information" title="Link to this heading">¶</a></h2>
+<p>Defines Blueprint for routes that presents simple information to
 the user, including: index, about and accout routes.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.information.about">
@@ -497,9 +498,9 @@ is displayed.</p>
 </dd></dl>
 
 </section>
-<section id="blueprint-for-creating-and-editing-quizzes-quiz-routes-py">
-<h2>Blueprint for creating and editing quizzes (quiz_routes.py)<a class="headerlink" href="#blueprint-for-creating-and-editing-quizzes-quiz-routes-py" title="Link to this heading">¶</a></h2>
-<p id="module-api.blueprints.quiz_routes">The Blueprint for routes used when creating, editing and deleting
+<section id="module-api.blueprints.quiz_routes">
+<span id="blueprint-for-creating-and-editing-quizzes-quiz-routes-py"></span><h2>Blueprint for creating and editing quizzes (quiz_routes.py)<a class="headerlink" href="#module-api.blueprints.quiz_routes" title="Link to this heading">¶</a></h2>
+<p>The Blueprint for routes used when creating, editing and deleting
 quizzes including routes for: create, edit and delete.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.quiz_routes.create">
@@ -538,9 +539,9 @@ that is rendered on a get request.</p>
 </dd></dl>
 
 </section>
-<section id="blueprint-for-interacting-with-results-resultsblueprint-py">
-<h2>Blueprint for interacting with results (resultsblueprint.py)<a class="headerlink" href="#blueprint-for-interacting-with-results-resultsblueprint-py" title="Link to this heading">¶</a></h2>
-<p id="module-api.blueprints.resultsblueprint">The Blueprint for routes used when interacting with results.
+<section id="module-api.blueprints.resultsblueprint">
+<span id="blueprint-for-interacting-with-results-resultsblueprint-py"></span><h2>Blueprint for interacting with results (resultsblueprint.py)<a class="headerlink" href="#module-api.blueprints.resultsblueprint" title="Link to this heading">¶</a></h2>
+<p>The Blueprint for routes used when interacting with results.
 The only route included being the resultinfo route</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.resultsblueprint.resultinfo">
@@ -562,9 +563,9 @@ by a user. The user is determined internally.</p>
 <p>These routes can be used to obtain data from the quiziverse API. The route
 retian any session state. The route does not require authentication as of
 not but my be included in the future.</p>
-<section id="blueprint-for-restful-routes-apiroutes-py">
-<h2>Blueprint for RESTful routes (apiroutes.py)<a class="headerlink" href="#blueprint-for-restful-routes-apiroutes-py" title="Link to this heading">¶</a></h2>
-<p id="module-api.blueprints.apiroutes">The Blueprint for API route used to expose quizzes.</p>
+<section id="module-api.blueprints.apiroutes">
+<span id="blueprint-for-restful-routes-apiroutes-py"></span><h2>Blueprint for RESTful routes (apiroutes.py)<a class="headerlink" href="#module-api.blueprints.apiroutes" title="Link to this heading">¶</a></h2>
+<p>The Blueprint for API route used to expose quizzes.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.blueprints.apiroutes.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quiz_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/blueprints/apiroutes.html#get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#api.blueprints.apiroutes.get" title="Link to this definition">¶</a></dt>
@@ -683,7 +684,7 @@ closely matches the search field of food</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Application routes</a><ul>
-<li><a class="reference internal" href="#blueprint-for-answering-quizzes-answering-quiz-py">Blueprint for answering quizzes (answering_quiz.py)</a><ul>
+<li><a class="reference internal" href="#module-api.blueprints.answering_quiz">Blueprint for answering quizzes (answering_quiz.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.answering_quiz.finishquiz"><code class="docutils literal notranslate"><span class="pre">finishquiz()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.answering_quiz.previous"><code class="docutils literal notranslate"><span class="pre">previous()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.answering_quiz.quit"><code class="docutils literal notranslate"><span class="pre">quit()</span></code></a></li>
@@ -693,40 +694,40 @@ closely matches the search field of food</p>
 <li><a class="reference internal" href="#api.blueprints.answering_quiz.takequiz"><code class="docutils literal notranslate"><span class="pre">takequiz()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#blueprint-for-authentication-routes-authentication-py">Blueprint for authentication routes (authentication.py)</a><ul>
+<li><a class="reference internal" href="#module-api.blueprints.authentication">Blueprint for authentication routes (authentication.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.authentication.login"><code class="docutils literal notranslate"><span class="pre">login()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.authentication.logout"><code class="docutils literal notranslate"><span class="pre">logout()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.authentication.register"><code class="docutils literal notranslate"><span class="pre">register()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.authentication.unregister"><code class="docutils literal notranslate"><span class="pre">unregister()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#blueprint-for-dashboard-routes-dashboard-py">Blueprint for dashboard routes (dashboard.py)</a><ul>
+<li><a class="reference internal" href="#module-api.blueprints.dashboard">Blueprint for dashboard routes (dashboard.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.dashboard.filter_categories"><code class="docutils literal notranslate"><span class="pre">filter_categories()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.dashboard.home"><code class="docutils literal notranslate"><span class="pre">home()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.dashboard.myquizzes"><code class="docutils literal notranslate"><span class="pre">myquizzes()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.dashboard.myresults"><code class="docutils literal notranslate"><span class="pre">myresults()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#blueprint-for-information-routes-information-py">Blueprint for information routes (information.py)</a><ul>
+<li><a class="reference internal" href="#module-api.blueprints.information">Blueprint for information routes (information.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.information.about"><code class="docutils literal notranslate"><span class="pre">about()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.information.account"><code class="docutils literal notranslate"><span class="pre">account()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.information.index"><code class="docutils literal notranslate"><span class="pre">index()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#blueprint-for-creating-and-editing-quizzes-quiz-routes-py">Blueprint for creating and editing quizzes (quiz_routes.py)</a><ul>
+<li><a class="reference internal" href="#module-api.blueprints.quiz_routes">Blueprint for creating and editing quizzes (quiz_routes.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.quiz_routes.create"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.quiz_routes.delete"><code class="docutils literal notranslate"><span class="pre">delete()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.quiz_routes.edit"><code class="docutils literal notranslate"><span class="pre">edit()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#blueprint-for-interacting-with-results-resultsblueprint-py">Blueprint for interacting with results (resultsblueprint.py)</a><ul>
+<li><a class="reference internal" href="#module-api.blueprints.resultsblueprint">Blueprint for interacting with results (resultsblueprint.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.resultsblueprint.resultinfo"><code class="docutils literal notranslate"><span class="pre">resultinfo()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a class="reference internal" href="#restful-api-routes">RESTful API routes</a><ul>
-<li><a class="reference internal" href="#blueprint-for-restful-routes-apiroutes-py">Blueprint for RESTful routes (apiroutes.py)</a><ul>
+<li><a class="reference internal" href="#module-api.blueprints.apiroutes">Blueprint for RESTful routes (apiroutes.py)</a><ul>
 <li><a class="reference internal" href="#api.blueprints.apiroutes.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.apiroutes.getAll"><code class="docutils literal notranslate"><span class="pre">getAll()</span></code></a></li>
 <li><a class="reference internal" href="#api.blueprints.apiroutes.getQuizzesByUsername"><code class="docutils literal notranslate"><span class="pre">getQuizzesByUsername()</span></code></a></li>

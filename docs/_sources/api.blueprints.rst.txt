@@ -5,7 +5,7 @@ the quiziverse frontend. Most of the routes require the user to be logged
 in and enforce authentication.
 
 Blueprint for answering quizzes (answering\_quiz.py)
---------------------------------------------------
+----------------------------------------------------
 
 .. automodule:: api.blueprints.answering_quiz
    :members:
@@ -14,7 +14,7 @@ Blueprint for answering quizzes (answering\_quiz.py)
 
 
 Blueprint for authentication routes (authentication.py)
-----------------------------------------------
+-------------------------------------------------------
 
 .. automodule:: api.blueprints.authentication
    :members:
@@ -22,7 +22,7 @@ Blueprint for authentication routes (authentication.py)
    :show-inheritance:
 
 Blueprint for dashboard routes (dashboard.py)
--------------------------------------------
+---------------------------------------------
 
 .. automodule:: api.blueprints.dashboard
    :members:
@@ -30,7 +30,7 @@ Blueprint for dashboard routes (dashboard.py)
    :show-inheritance:
 
 Blueprint for information routes (information.py)
-----------------------------------------------
+-------------------------------------------------
 
 .. automodule:: api.blueprints.information
    :members:
@@ -38,7 +38,7 @@ Blueprint for information routes (information.py)
    :show-inheritance:
 
 Blueprint for creating and editing quizzes (quiz\_routes.py)
----------------------------------------------------------
+------------------------------------------------------------
 
 .. automodule:: api.blueprints.quiz_routes
    :members:
@@ -46,7 +46,7 @@ Blueprint for creating and editing quizzes (quiz\_routes.py)
    :show-inheritance:
 
 Blueprint for interacting with results (resultsblueprint.py)
----------------------------------------------------------
+------------------------------------------------------------
 
 .. automodule:: api.blueprints.resultsblueprint
    :members:
@@ -60,7 +60,7 @@ retian any session state. The route does not require authentication as of
 not but my be included in the future.
 
 Blueprint for RESTful routes (apiroutes.py)
-----------------------------------------
+-------------------------------------------
 
 .. automodule:: api.blueprints.apiroutes
    :members:
