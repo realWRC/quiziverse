@@ -1,7 +1,7 @@
 # QUIZIVERSE
 
-Quiziverse is a web application with a user friendly interface to users to create and answer quizzes. It also provides a backend api for developers to reuse the quizzes in their own application (for more detailed information checkout our RESTful API routes documentation).
-Follow the tutorial below  to setup the application and run it for yourself. For more information about the inner workings of the application check out the documentation.
+Quiziverse is a web application with a user friendly interface to users to create and answer quizzes. It also provides a backend api for developers to reuse the quizzes in their own application (for more detailed information checkout our [RESTful API routes documentation](https://realwrc.github.io/quiziverse/api.blueprints.html#restful-api-routes)).
+Follow the tutorial below  to setup the application and run it for yourself. For more information about the inner workings of the application check out the [documentation](https://realwrc.github.io/quiziverse/index.html).
 
 ---
 
