@@ -122,7 +122,7 @@ If everything is configured correctly, the Flask server will start, and you can 
 To populate the database with test data, use the `generator.py` script located in the `generator` directory.
 
 ```bash
-$ python generator/generator.py
+$ python -m generator.generator
 ```
 
 This script will create:
