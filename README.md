@@ -2,6 +2,7 @@
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
+2. [Demo](#demo)
 2. [Running the Application](#running-the-application)
    - [1. Installing Python](#1-installing-python)
    - [2. Configuring Your Virtual Environment](#2-configuring-your-virtual-environment)
@@ -26,6 +27,12 @@ Key Features:
 To set up and run the application, follow the tutorial below. For more technical details about the architecture and inner workings of Quiziverse, explore our comprehensive [documentation](https://realwrc.github.io/quiziverse/index.html).
 
 ---
+
+## Demo
+
+You can preview a demo of the application [here](https://drive.google.com/file/d/1Oo3QQmChwJV_MQ0IyZXaPauDHzGEld7W/view?usp=sharing)
+
+___
 
 ## Running the Application
 

@@ -281,8 +281,11 @@ def myresults():
         category = None
 
     if category is not None:
-        category = filter_categories(category)
-    categories = ["Title", "Updated At", "Created At"]
+        if category == "Title":
+            category = "title"
+        elif category == "Latest Attempt":
+            category = "latest_attempt"
+    categories = ["Title", "Latest Attempt"]
 
     # categories = ["title", "latest_attempt"]
     valid_categories = ["title", "latest_attempt", "default", None]
@@ -343,7 +346,7 @@ def myresults():
         else:
             cursor = resultsCollection.find({
                     "user_id": current_user.get_id()
-            }).sort("title", -1).skip(skip).limit(per_page)
+            }).sort("latest_attempt", -1).skip(skip).limit(per_page)
         results = list(cursor) if cursor else None
         pagination = {
             'page': page,
