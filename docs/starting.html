@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Documentation" href="api.html" /><link rel="prev" title="QUIZIVERSE documentation" href="index.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Running the Application - QUIZIVERSE 0.0.5 documentation</title>
+        <title>Project Overview - QUIZIVERSE 0.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -200,7 +200,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Running the Application</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Project Overview</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.blueprints.html">Application routes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.blueprints.html#restful-api-routes">RESTful API routes</a></li>
@@ -247,31 +247,55 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="running-the-application">
-<h1>Running the Application<a class="headerlink" href="#running-the-application" title="Link to this heading">¶</a></h1>
-<p>The Quiziverse application is built using Python with the Flask framework. It was developed with Python 3.12, so any system with a modern Python 3 interpreter should work. The application also uses MongoDB as its database. This tutorial assumes you have a running instance of MongoDB Community Edition on your machine. If you do not yet have MongoDB installed, please follow the instructions on the <a class="reference external" href="https://www.mongodb.com/">MongoDB website</a>.</p>
+          <section id="project-overview">
+<h1>Project Overview<a class="headerlink" href="#project-overview" title="Link to this heading">¶</a></h1>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="#project-description">Project Description</a></p></li>
+<li><p><a class="reference external" href="#running-the-application">Running the Application</a></p></li>
+<li><p><a class="reference external" href="#documentation">Documentation</a></p></li>
+<li><p><a class="reference external" href="#contributing">Contributing</a></p></li>
+<li><p><a class="reference external" href="#license">License</a></p></li>
+</ol>
+</section>
+<section id="id1">
+<h2>Project Description<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p id="id2">Quiziverse is a dynamic and interactive web application designed to simplify the process of creating, managing, and participating in quizzes. Its intuitive user interface enables users to create quizzes effortlessly and take part in them with ease. For developers, Quiziverse offers a robust backend API, allowing seamless integration of quizzes into their own applications.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li><p>User-friendly quiz creation and participation.</p></li>
+<li><p>Backend API for integration into external applications (refer to our <a class="reference external" href="https://realwrc.github.io/quiziverse/api.blueprints.html#restful-api-routes">RESTful API routes documentation</a>).</p></li>
+<li><p>Flexibility in customizing scoring and time limits.</p></li>
+</ul>
+<p>To set up and run the application, follow the tutorial below. For more technical details about the architecture and inner workings of Quiziverse, explore our comprehensive <a class="reference external" href="https://realwrc.github.io/quiziverse/index.html">documentation</a>.</p>
+</section>
+<section id="id4">
+<h2>Running the Application<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<p id="id5">The Quiziverse application is built using Python with the Flask framework. It was developed with Python 3.12, so any system with a modern Python 3 interpreter should work. The application also uses MongoDB as its database. This tutorial assumes you have a running instance of MongoDB Community Edition on your machine. If you do not yet have MongoDB installed, please follow the instructions on the <a class="reference external" href="https://www.mongodb.com/">MongoDB website</a>.</p>
 <p>Follow the steps below to install and run the application.</p>
 <section id="installing-python">
-<h2>1. Installing Python<a class="headerlink" href="#installing-python" title="Link to this heading">¶</a></h2>
-<p>First, ensure that you have a modern version of Python 3 installed. Download it from the <a class="reference external" href="https://www.python.org/downloads/">official Python website</a>. On many Linux distributions, Python is pre-installed.</p>
-<p>After installing, open your terminal (or command prompt) and type:</p>
+<h3>1. Installing Python<a class="headerlink" href="#installing-python" title="Link to this heading">¶</a></h3>
+<p id="id6">First, ensure that you have a modern version of Python 3 installed. Download it from the <a class="reference external" href="https://www.python.org/downloads/">official Python website</a>. On many Linux distributions, Python is pre-installed.</p>
+<p>To verify your installation, open your terminal (or PowerShell) and type:</p>
+<p><strong>On Linux/macOS:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python3
 Python<span class="w"> </span><span class="m">3</span>.12.4<span class="w"> </span><span class="o">(</span>main,<span class="w"> </span>Dec<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="m">2024</span>,<span class="w"> </span><span class="m">07</span>:20:02<span class="o">)</span><span class="w"> </span><span class="o">[</span>GCC<span class="w"> </span><span class="m">9</span>.4.0<span class="o">]</span><span class="w"> </span>on<span class="w"> </span>linux
 Type<span class="w"> </span><span class="s2">&quot;help&quot;</span>,<span class="w"> </span><span class="s2">&quot;copyright&quot;</span>,<span class="w"> </span><span class="s2">&quot;credits&quot;</span><span class="w"> </span>or<span class="w"> </span><span class="s2">&quot;license&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>more<span class="w"> </span>information.
 &gt;&gt;&gt;<span class="w"> </span>exit<span class="o">()</span>
 </pre></div>
 </div>
-</section>
-<section id="cloning-the-github-repository">
-<h2>2. Cloning the github repository<a class="headerlink" href="#cloning-the-github-repository" title="Link to this heading">¶</a></h2>
-<p>Clone the quiziverse repository (Assuming you already have git installed) anywhere on your local machine using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/realWRC/quiziverse.git
+<p><strong>On Windows (PowerShell):</strong></p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">PS </span><span class="n">C</span><span class="p">:\&gt;</span> <span class="n">python</span>
+<span class="n">Python</span> <span class="n">3</span><span class="p">.</span><span class="n">12</span><span class="p">.</span><span class="n">4</span> <span class="p">(</span><span class="n">tags</span><span class="p">/</span><span class="n">v3</span><span class="p">.</span><span class="n">12</span><span class="p">.</span><span class="n">4</span><span class="p">:</span><span class="n">8e8a4ba</span><span class="p">,</span> <span class="n">Jun</span>  <span class="n">6</span> <span class="n">2024</span><span class="p">,</span> <span class="n">19</span><span class="p">:</span><span class="n">30</span><span class="p">:</span><span class="n">16</span><span class="p">)</span> <span class="p">[</span><span class="n">MSC</span> <span class="n">v</span><span class="p">.</span><span class="n">1940</span> <span class="n">64</span> <span class="n">bit</span> <span class="p">(</span><span class="n">AMD64</span><span class="p">)]</span> <span class="n">on</span> <span class="n">win32</span>
+<span class="nb">Type </span><span class="s2">&quot;help&quot;</span><span class="p">,</span> <span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="s2">&quot;credits&quot;</span> <span class="n">or</span> <span class="s2">&quot;license&quot;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span><span class="p">.</span>
+<span class="p">&gt;&gt;&gt;</span> <span class="n">exit</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="configuring-your-virtual-environment">
-<h2>3. Configuring Your Virtual Environment<a class="headerlink" href="#configuring-your-virtual-environment" title="Link to this heading">¶</a></h2>
-<p>Create a virtual environment to manage the dependencies for the application. In this tutorial, we use Python’s built-in <strong class="program">venv</strong> module. Execute the following command in your project directory:</p>
+<h3>2. Configuring Your Virtual Environment<a class="headerlink" href="#configuring-your-virtual-environment" title="Link to this heading">¶</a></h3>
+<p id="id7">Create a virtual environment to manage the dependencies for the application. In this tutorial, we use Python’s <code class="docutils literal notranslate"><span class="pre">venv</span></code> module. Execute the following command in your project directory:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
 </pre></div>
 </div>
@@ -303,40 +327,49 @@ Type<span class="w"> </span><span class="s2">&quot;help&quot;</span>,<span class
 </ul>
 </section>
 <section id="installing-dependencies">
-<h2>4. Installing Dependencies<a class="headerlink" href="#installing-dependencies" title="Link to this heading">¶</a></h2>
-<p>Install the application’s dependencies using pip. All required packages are listed in the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file:</p>
+<h3>3. Installing Dependencies<a class="headerlink" href="#installing-dependencies" title="Link to this heading">¶</a></h3>
+<p id="id8">Install the application’s dependencies using <code class="docutils literal notranslate"><span class="pre">pip</span></code>. All required packages are listed in the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
 </pre></div>
 </div>
 </section>
 <section id="starting-the-flask-server">
-<h2>5. Starting the Flask Server<a class="headerlink" href="#starting-the-flask-server" title="Link to this heading">¶</a></h2>
-<p>With your environment set up and dependencies installed, you can now start the Flask server. Run the following command:</p>
+<h3>4. Starting the Flask Server<a class="headerlink" href="#starting-the-flask-server" title="Link to this heading">¶</a></h3>
+<p id="id9">With your environment set up and dependencies installed, you can now start the Flask server. Run the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>api.app
 </pre></div>
 </div>
-<p>&gt; <strong>Note:</strong> On some Linux systems, you may need to use <code class="docutils literal notranslate"><span class="pre">python3</span></code> instead of <code class="docutils literal notranslate"><span class="pre">python</span></code>:</p>
+<p><strong>Note:</strong> On some Linux systems, you may need to use <code class="docutils literal notranslate"><span class="pre">python3</span></code> instead of <code class="docutils literal notranslate"><span class="pre">python</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>api.app
 </pre></div>
 </div>
 <p>If everything is configured correctly, the Flask server will start, and you can begin registering for the Quiziverse application.</p>
 </section>
 <section id="generating-fake-data-optional">
-<h2>6. Generating Fake Data (Optional)<a class="headerlink" href="#generating-fake-data-optional" title="Link to this heading">¶</a></h2>
-<p>To generate fake data for testing, use the <code class="docutils literal notranslate"><span class="pre">generator.py</span></code> script located in the <code class="docutils literal notranslate"><span class="pre">generator</span></code> directory. Run the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>generator/generator.py
+<h3>5. Generating Fake Data (Optional)<a class="headerlink" href="#generating-fake-data-optional" title="Link to this heading">¶</a></h3>
+<p id="id10">To populate the database with test data, use the <code class="docutils literal notranslate"><span class="pre">generator.py</span></code> script located in the <code class="docutils literal notranslate"><span class="pre">generator</span></code> directory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>generator.generator
 </pre></div>
 </div>
 <p>This script will create:
 - <strong>6 users</strong>
 - <strong>300 quizzes</strong>
 - <strong>300 results</strong></p>
-<p>You can read the docstrings in the generator.py file for more details.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Ensure that your MongoDB instance is running before generating fake data.</p>
-</div>
-<p>Congratulations! You have now set up the Quiziverse application.</p>
+<p><strong>Note:</strong> Ensure that your MongoDB instance is running before executing this script.</p>
+<p>Congratulations! You have now set up the Quiziverse application. You can register, log in, and have some fun.</p>
+</section>
+</section>
+<section id="id11">
+<h2>Documentation<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<p id="id12">For more detailed information, visit the official <a class="reference external" href="https://realwrc.github.io/quiziverse/index.html">Quiziverse documentation</a>.</p>
+</section>
+<section id="id13">
+<h2>Contributing<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
+<p id="id14">If you wish to contribute, please fork the <a class="reference external" href="https://github.com/realWRC/quiziverse">repository</a>, make your changes, and submit a pull request.</p>
+</section>
+<section id="id15">
+<h2>License<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<p id="id16">Quiziverse is released under the MIT License. See the <code class="docutils literal notranslate"><span class="pre">LICENSE</span></code> file in our <a class="reference external" href="https://github.com/realWRC/quiziverse">repository</a> for more details.</p>
 </section>
 </section>
 
@@ -395,13 +428,20 @@ Type<span class="w"> </span><span class="s2">&quot;help&quot;</span>,<span class
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Running the Application</a><ul>
+<li><a class="reference internal" href="#">Project Overview</a><ul>
+<li><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
+<li><a class="reference internal" href="#id1">Project Description</a></li>
+<li><a class="reference internal" href="#id4">Running the Application</a><ul>
 <li><a class="reference internal" href="#installing-python">1. Installing Python</a></li>
-<li><a class="reference internal" href="#cloning-the-github-repository">2. Cloning the github repository</a></li>
-<li><a class="reference internal" href="#configuring-your-virtual-environment">3. Configuring Your Virtual Environment</a></li>
-<li><a class="reference internal" href="#installing-dependencies">4. Installing Dependencies</a></li>
-<li><a class="reference internal" href="#starting-the-flask-server">5. Starting the Flask Server</a></li>
-<li><a class="reference internal" href="#generating-fake-data-optional">6. Generating Fake Data (Optional)</a></li>
+<li><a class="reference internal" href="#configuring-your-virtual-environment">2. Configuring Your Virtual Environment</a></li>
+<li><a class="reference internal" href="#installing-dependencies">3. Installing Dependencies</a></li>
+<li><a class="reference internal" href="#starting-the-flask-server">4. Starting the Flask Server</a></li>
+<li><a class="reference internal" href="#generating-fake-data-optional">5. Generating Fake Data (Optional)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id11">Documentation</a></li>
+<li><a class="reference internal" href="#id13">Contributing</a></li>
+<li><a class="reference internal" href="#id15">License</a></li>
 </ul>
 </li>
 </ul>
