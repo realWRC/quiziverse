@@ -1,17 +1,40 @@
-# Project Overview
+# Quiziverse
 
-Quiziverse is a web application with a user friendly interface to users to create and answer quizzes. It also provides a backend api for developers to reuse the quizzes in their own application (for more detailed information checkout our [RESTful API routes documentation](https://realwrc.github.io/quiziverse/api.blueprints.html#restful-api-routes)).
-Follow the tutorial below  to setup the application and run it for yourself. For more information about the inner workings of the application check out the [documentation](https://realwrc.github.io/quiziverse/index.html).
+## Table of Contents
+1. [Project Overview](#project-overview)
+2. [Running the Application](#running-the-application)
+   - [1. Installing Python](#1-installing-python)
+   - [2. Configuring Your Virtual Environment](#2-configuring-your-virtual-environment)
+   - [3. Installing Dependencies](#3-installing-dependencies)
+   - [4. Starting the Flask Server](#4-starting-the-flask-server)
+   - [5. Generating Fake Data (Optional)](#5-generating-fake-data-optional)
+3. [Documentation](#documentation)
+4. [Contributing](#contributing)
+5. [License](#license)
 
 ---
 
-# Running the Application
+## Project Overview
+
+Quiziverse is a dynamic and interactive web application designed to simplify the process of creating, managing, and participating in quizzes. Its intuitive user interface enables users to create quizzes effortlessly and take part in them with ease. For developers, Quiziverse offers a robust backend API, allowing seamless integration of quizzes into their own applications. 
+
+Key Features:
+- User-friendly quiz creation and participation.
+- Backend API for integration into external applications (refer to our [RESTful API routes documentation](https://realwrc.github.io/quiziverse/api.blueprints.html#restful-api-routes)).
+- Flexibility in customizing scoring and time limits.
+
+To set up and run the application, follow the tutorial below. For more technical details about the architecture and inner workings of Quiziverse, explore our comprehensive [documentation](https://realwrc.github.io/quiziverse/index.html).
+
+---
+
+## Running the Application
+
 
 The Quiziverse application is built using Python with the Flask framework. It was developed with Python 3.12, so any system with a modern Python 3 interpreter should work. The application also uses MongoDB as its database. This tutorial assumes you have a running instance of MongoDB Community Edition on your machine. If you do not yet have MongoDB installed, please follow the instructions on the [MongoDB website](https://www.mongodb.com/).
 
 Follow the steps below to install and run the application.
 
-## 1. Installing Python
+### 1. Installing Python
 
 First, ensure that you have a modern version of Python 3 installed. Download it from the [official Python website](https://www.python.org/downloads/). On many Linux distributions, Python is pre-installed.
 
@@ -24,7 +47,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> exit()
 ```
 
-## 2. Configuring Your Virtual Environment
+### 2. Configuring Your Virtual Environment
 
 Create a virtual environment to manage the dependencies for the application. In this tutorial, we use Python’s built-in `venv` module. Execute the following command in your project directory:
 
@@ -60,7 +83,7 @@ After activating the environment, set an environment variable called `SECRET` fo
   > $Env:SECRET = "your_secret_key"
   ```
 
-## 3. Installing Dependencies
+### 3. Installing Dependencies
 
 Install the application's dependencies using `pip`. All required packages are listed in the `requirements.txt` file:
 
@@ -68,7 +91,7 @@ Install the application's dependencies using `pip`. All required packages are li
 $ pip install -r requirements.txt
 ```
 
-## 4. Starting the Flask Server
+### 4. Starting the Flask Server
 
 With your environment set up and dependencies installed, you can now start the Flask server. Run the following command:
 
@@ -84,7 +107,7 @@ $ python -m api.app
 
 If everything is configured correctly, the Flask server will start, and you can begin registering for the Quiziverse application.
 
-## 5. Generating Fake Data (Optional)
+### 5. Generating Fake Data (Optional)
 
 To generate fake data for testing, use the `generator.py` script located in the `generator` directory. Run the following command:
 
@@ -102,3 +125,19 @@ This script will create:
 ---
 
 Congratulations! You have now set up the Quiziverse application.
+
+## Documentation
+
+Detailed information about Quiziverse's architecture, API routes, and functionality is available in our [official documentation](https://realwrc.github.io/quiziverse/index.html).
+
+---
+
+## Contributing
+
+We welcome contributions to Quiziverse! If you would like to contribute, please fork the repository, make your changes, and submit a pull request.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
