@@ -3,15 +3,15 @@
 ## Table of Contents
 1. [Project Overview](#project-overview)
 2. [Demo](#demo)
-2. [Running the Application](#running-the-application)
+3. [Running the Application](#running-the-application)
    - [1. Installing Python](#1-installing-python)
    - [2. Configuring Your Virtual Environment](#2-configuring-your-virtual-environment)
    - [3. Installing Dependencies](#3-installing-dependencies)
    - [4. Starting the Flask Server](#4-starting-the-flask-server)
    - [5. Generating Fake Data (Optional)](#5-generating-fake-data-optional)
-3. [Documentation](#documentation)
-4. [Contributing](#contributing)
-5. [License](#license)
+4. [Documentation](#documentation)
+5. [Contributing](#contributing)
+6. [License](#license)
 
 ---
 
@@ -30,7 +30,7 @@ To set up and run the application, follow the tutorial below. For more technical
 
 ## Demo
 
-You can preview a demo of the application [here](https://drive.google.com/file/d/1Oo3QQmChwJV_MQ0IyZXaPauDHzGEld7W/view?usp=sharing)
+You can preview a demo of the application [here](https://drive.google.com/file/d/1MNMwMwC0s4caE0ES1RbMVp5yRQkObXWa/view?usp=sharing)
 
 ___
 
