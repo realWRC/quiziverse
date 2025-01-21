@@ -38,7 +38,9 @@ Follow the steps below to install and run the application.
 
 First, ensure that you have a modern version of Python 3 installed. Download it from the [official Python website](https://www.python.org/downloads/). On many Linux distributions, Python is pre-installed.
 
-After installing, open your terminal (or command prompt) and type:
+To verify your installation, open your terminal (or powershell) and type:
+
+- **On Linux/macOS:**
 
 ```bash
 $ python3
@@ -46,10 +48,18 @@ Python 3.12.4 (main, Dec 18 2024, 07:20:02) [GCC 9.4.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> exit()
 ```
+- **On Windows (PowerShell):**
+
+```powershell
+PS C:\> python
+Python 3.12.4 (tags/v3.12.4:8e8a4ba, Jun  6 2024, 19:30:16) [MSC v.1940 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> exit()
+```
 
 ### 2. Configuring Your Virtual Environment
 
-Create a virtual environment to manage the dependencies for the application. In this tutorial, we use Python’s built-in `venv` module. Execute the following command in your project directory:
+Create a virtual environment to manage the dependencies for the application. In this tutorial, we use Python’s `venv` module. Execute the following command in your project directory:
 
 ```bash
 $ python -m venv .venv
@@ -109,7 +119,7 @@ If everything is configured correctly, the Flask server will start, and you can 
 
 ### 5. Generating Fake Data (Optional)
 
-To generate fake data for testing, use the `generator.py` script located in the `generator` directory. Run the following command:
+To populate the database with test data, use the `generator.py` script located in the `generator` directory.
 
 ```bash
 $ python generator/generator.py
@@ -120,11 +130,11 @@ This script will create:
 - **300 quizzes**
 - **300 results**
 
-> **Note:** Ensure that your MongoDB instance is running before generating fake data.
+> **Note:** Ensure that your MongoDB instance is running before executing this script.
 
 ---
 
-Congratulations! You have now set up the Quiziverse application.
+Congratulations! You have now set up the Quiziverse application. You can register, login and have some fun.
 
 ## Documentation
 
